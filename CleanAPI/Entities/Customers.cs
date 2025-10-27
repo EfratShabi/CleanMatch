@@ -1,0 +1,14 @@
+﻿namespace CleanAPI.Entities
+{
+    public class Customers
+    {
+        public int Id { get; set; }
+        public string IdOfCustomer{ get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string PhonNumber { get; set; }
+        public int CodeCity { get; set; }
+        public string Mikud { get; set; }
+
+    }
+}
