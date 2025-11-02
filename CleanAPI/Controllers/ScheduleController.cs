@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CleanAPI.Entities;
+using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -8,24 +9,36 @@ namespace CleanAPI.Controllers
     [ApiController]
     public class ScheduleController : ControllerBase
     {
+        private IDataContext _context;
+        public ScheduleController(IDataContext context)
+        {
+            _context = context;
+        }
+
         // GET: api/<ScheduleController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public ActionResult Get()
         {
-            return new string[] { "value1", "value2" };
+            return Ok(_context.Schedule);
         }
 
         // GET api/<ScheduleController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public ActionResult Get(int id)
         {
-            return "value";
+            var s = _context.Schedule.Find(s => s.CodeCleaner== id);
+            if (s== null)
+            {
+                return NotFound();
+            }
+            return Ok(s);
         }
 
         // POST api/<ScheduleController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public ActionResult Post([FromBody] Schedule newSchedule)
         {
+           
         }
 
         // PUT api/<ScheduleController>/5

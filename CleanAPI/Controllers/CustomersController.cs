@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CleanAPI.Entities;
+using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -8,24 +9,46 @@ namespace CleanAPI.Controllers
     [ApiController]
     public class CustomersController : ControllerBase
     {
+        private IDataContext _context;
+        public CustomersController(IDataContext context)
+        {
+            _context = context;
+        }
+
+
         // GET: api/<CustomersController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public ActionResult Get()
         {
-            return new string[] { "value1", "value2" };
+            return Ok(_context.Customers);
+
         }
 
         // GET api/<CustomersController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public ActionResult Get(int id)
         {
-            return "value";
+            var a = _context.Customers.Find(x => x.IdOfCustomer == id);
+            if (a == null)
+            {
+                return NotFound();
+            }
+            return Ok(a);
         }
 
         // POST api/<CustomersController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public ActionResult Post([FromBody] Customers newCustomer)
         {
+            var exsitCustomer=_context.Customers.Find(c=>c.IdOfCustomer==newCustomer.IdOfCustomer);
+            if (exsitCustomer == null)
+            {
+                _context.Customers.Add(newCustomer);
+                return Ok(exsitCustomer);
+            }
+            else
+                return Conflict(exsitCustomer);
+
         }
 
         // PUT api/<CustomersController>/5

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CleanAPI.Entities;
+using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -8,24 +9,44 @@ namespace CleanAPI.Controllers
     [ApiController]
     public class CleanersController : ControllerBase
     {
+        private IDataContext _context;
+        public CleanersController(IDataContext context)
+        {
+            _context = context;
+        }
+
         // GET: api/<CleanersController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public ActionResult Get()
         {
-            return new string[] { "value1", "value2" };
+            return Ok(_context.Cleaners);
         }
 
         // GET api/<CleanersController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public ActionResult Get(int id)
         {
-            return "value";
+            var a = _context.Cleaners.Find(x => x.IdOfCleaner == id);
+            if (a == null) 
+            {
+                return NotFound();
+            }
+            return Ok(a);
+
         }
 
         // POST api/<CleanersController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public ActionResult Post([FromBody] Cleaners newCleaner)
         {
+            var existCleaner = _context.Cleaners.Find(c => c.IdOfCleaner == newCleaner.IdOfCleaner);
+            if (existCleaner == null) 
+            {
+                 _context.Cleaners.Add(newCleaner);
+                return Ok(existCleaner);
+            }
+            else
+                return Conflict(existCleaner);
         }
 
         // PUT api/<CleanersController>/5

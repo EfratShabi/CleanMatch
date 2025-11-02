@@ -4,5 +4,6 @@
     {
       public List<TimeOnly> StartWork { get; set; }
       public List<TimeOnly> EndWork { get;set; }
+
     }
 }

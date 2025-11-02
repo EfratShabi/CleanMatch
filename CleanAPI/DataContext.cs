@@ -8,7 +8,7 @@ namespace CleanAPI
         public List<Cleaners> Cleaners { get; set; }
         public List<Customers> Customers { get; set; }
         public List<Bookings> Bookings { get; set; }
-        public List<Schedule> schedules { get; set; }
+        public List<Schedule> Schedule { get; set; }
 
         public DataContext()
         {
@@ -17,7 +17,7 @@ namespace CleanAPI
                 new Cleaners
                 {
                     Id = 1,
-                    IdOfCleaner = "1212",
+                    IdOfCleaner = 1212,
                     FirstName = "shiri",
                     LastName = "choen",
                     PhonNumber = "054444",
@@ -53,7 +53,7 @@ namespace CleanAPI
                 new Customers
                 {
                     Id = 1,
-                    IdOfCustomer = "12345",
+                    IdOfCustomer = 12345,
                     FirstName = "ee",
                     LastName = "ww",
                     PhonNumber = "0488888",
@@ -78,8 +78,8 @@ namespace CleanAPI
                 }
             };
 
-            // --- תיקון #2: אתחול רשימות ה-TimeOnly בתוך Schedule ---
-            schedules = new List<Schedule>
+            
+            Schedule = new List<Schedule>
             {
                 new Schedule
                 {
