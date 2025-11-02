@@ -4,10 +4,12 @@
     {
 
         public int BookingCode { get; set; }
-        public string IdOfCleaner { get; set; }
-        public string IdOfCustomer { get; set; }
-
         public double TotalPrice { get; set; }
+        
+        public int CodeCustomer {  get; set; }
+        public int CodeCleaner { get; set; }
+
+        public DateTime Date { get; set; }
 
         public TimeOnly StartWork { get; set; }
 
