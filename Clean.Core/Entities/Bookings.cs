@@ -1,4 +1,4 @@
-﻿namespace CleanAPI.Entities
+﻿namespace Clean.Core.Entities
 {
     public class Bookings
     {

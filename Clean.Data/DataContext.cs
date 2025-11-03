@@ -1,9 +1,10 @@
-﻿using CleanAPI.Entities;
+﻿
+using Clean.Core.Entities;
 
-namespace CleanAPI
+namespace Clean.Data
 {
 
-    public class DataContext : IDataContext
+    public class DataContext
     {
         public List<Cleaners> Cleaners { get; set; }
         public List<Customers> Customers { get; set; }

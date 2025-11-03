@@ -1,4 +1,5 @@
-﻿using CleanAPI.Entities;
+﻿
+using Clean.Core.Entities;
 
 namespace CleanAPI
 {

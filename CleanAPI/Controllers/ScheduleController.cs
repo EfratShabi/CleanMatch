@@ -1,4 +1,4 @@
-﻿using CleanAPI.Entities;
+﻿using Clean.Core.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -23,23 +23,23 @@ namespace CleanAPI.Controllers
         }
 
         // GET api/<ScheduleController>/5
-        [HttpGet("{id}")]
-        public ActionResult Get(int id)
-        {
-            var s = _context.Schedule.Find(s => s.CodeCleaner== id);
-            if (s== null)
-            {
-                return NotFound();
-            }
-            return Ok(s);
-        }
+        //[HttpGet("{id}")]
+        //public ActionResult Get(int id)
+        //{
+        //    //var s = _context.Schedule.Find(s => s.CodeCleaner== id);
+        //    //if (s== null)
+        //    //{
+        //    //    return NotFound();
+        //    //}
+        //    //return Ok(s);
+        //}
 
         // POST api/<ScheduleController>
-        [HttpPost]
-        public ActionResult Post([FromBody] Schedule newSchedule)
-        {
+        //[HttpPost]
+        //public ActionResult Post([FromBody] Schedule newSchedule)
+        //{
            
-        }
+        //}
 
         // PUT api/<ScheduleController>/5
         [HttpPut("{id}")]

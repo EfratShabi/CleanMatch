@@ -1,4 +1,6 @@
-using CleanAPI;
+using Clean.Core.Repositories;
+using Clean.Data;
+//using CleanAPI;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,7 +10,11 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddSingleton<IDataContext,DataContext>();
+
+//builder.Services.AddSingleton<IDataContext,DataContext>();
+builder.Services.AddSingleton<DataContext>();
+//cleaners
+builder.Services.AddScoped<ICleanerRepository, CleanerRepository>();
 
 var app = builder.Build();
 
