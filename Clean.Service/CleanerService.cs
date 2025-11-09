@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace Clean.Service
 {
-    public class CleanerRepository: ICleanerService
+    public class CleanerService: ICleanerService
     {
         private readonly ICleanerRepository _cleanerRepository;
-        public CleanerRepository(ICleanerRepository cleanerRepository)
+        public CleanerService(ICleanerRepository cleanerRepository)
         {
             _cleanerRepository = cleanerRepository;
         }

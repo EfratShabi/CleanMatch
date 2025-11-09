@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Clean.Service
+namespace Clean.Core.Services
 {
-    internal class BookingRepository
+    public interface IScheduleService
     {
+
     }
 }

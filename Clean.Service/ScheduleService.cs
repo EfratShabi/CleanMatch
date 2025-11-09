@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Clean.Service
 {
-    internal class ScheduleRepository
+    internal class ScheduleService
     {
     }
 }
