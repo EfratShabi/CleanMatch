@@ -1,4 +1,5 @@
 ﻿using Clean.Core.Entities;
+using Clean.Core.Services;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -9,24 +10,24 @@ namespace CleanAPI.Controllers
     [ApiController]
     public class BookingsController : ControllerBase
     {
-        private IDataContext _context;
-        public BookingsController(IDataContext context)
+        private IBookingService _bookingService;
+        public BookingsController(IBookingService bookingService)
         {
-            _context = context;
+            _bookingService = bookingService;
         }
 
         // GET: api/<BookingsController>
         [HttpGet]
         public ActionResult Get()
         {
-            return Ok(_context.Bookings);
+            return Ok(_bookingService.GetBookings());
         }
 
         // GET api/<BookingsController>/5
         [HttpGet("{id}")]
         public ActionResult Get(int id)
         {
-            var b = _context.Bookings.Find(b => b.BookingCode == id);
+            var b = _bookingService.GetBookings().Find(b => b.BookingCode == id);
             if (b== null)
             {
                 return NotFound();
@@ -38,10 +39,10 @@ namespace CleanAPI.Controllers
         [HttpPost]
         public ActionResult Post([FromBody] Bookings newBooking)
         {
-            var exsitBooking = _context.Bookings.Find(b=> b.BookingCode==newBooking.BookingCode);
+            var exsitBooking = _bookingService.GetBookings().Find(b=> b.BookingCode==newBooking.BookingCode);
             if (exsitBooking == null)
             {
-                _context.Bookings.Add(newBooking);
+                _bookingService.GetBookings().Add(newBooking);
                 return Ok(exsitBooking);
             }
             else

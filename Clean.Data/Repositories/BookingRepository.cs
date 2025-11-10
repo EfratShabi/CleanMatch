@@ -19,11 +19,11 @@ namespace Clean.Data.Repositories
 
         public List<Bookings> GetBookings()
         { 
-            return _context.Bookings;
+            return _context.Bookings.ToList();
         }
         public Bookings GetBookingsById(int id) 
         {
-            var b= _context.Bookings.Find(b=>b.BookingCode==id);
+            var b= _context.Bookings.ToList().Find(b=>b.BookingCode==id);
             return b;
         }
     }

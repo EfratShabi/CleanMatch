@@ -1,4 +1,5 @@
 ﻿using Clean.Core.Entities;
+using Clean.Core.Services;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -9,10 +10,10 @@ namespace CleanAPI.Controllers
     [ApiController]
     public class CustomersController : ControllerBase
     {
-        private IDataContext _context;
-        public CustomersController(IDataContext context)
+        private ICustomerService _customerServise;
+        public CustomersController(ICustomerService customerServise)
         {
-            _context = context;
+            _customerServise = customerServise;
         }
 
 
@@ -20,15 +21,14 @@ namespace CleanAPI.Controllers
         [HttpGet]
         public ActionResult Get()
         {
-            return Ok(_context.Customers);
-
+            return Ok(_customerServise.GetAllCustomers());
         }
 
         // GET api/<CustomersController>/5
         [HttpGet("{id}")]
         public ActionResult Get(int id)
         {
-            var a = _context.Customers.Find(x => x.IdOfCustomer == id);
+            var a = _customerServise.GetAllCustomers().Find(x => x.Id == id);
             if (a == null)
             {
                 return NotFound();
@@ -40,10 +40,10 @@ namespace CleanAPI.Controllers
         [HttpPost]
         public ActionResult Post([FromBody] Customers newCustomer)
         {
-            var exsitCustomer=_context.Customers.Find(c=>c.IdOfCustomer==newCustomer.IdOfCustomer);
+            var exsitCustomer=_customerServise.GetAllCustomers().Find(c=>c.Id==newCustomer.Id);
             if (exsitCustomer == null)
             {
-                _context.Customers.Add(newCustomer);
+                _customerServise.GetAllCustomers().Add(newCustomer);
                 return Ok(exsitCustomer);
             }
             else

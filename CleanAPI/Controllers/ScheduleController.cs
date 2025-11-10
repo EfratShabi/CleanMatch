@@ -1,4 +1,5 @@
 ﻿using Clean.Core.Entities;
+using Clean.Core.Services;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -9,42 +10,43 @@ namespace CleanAPI.Controllers
     [ApiController]
     public class ScheduleController : ControllerBase
     {
-        private IDataContext _context;
-        public ScheduleController(IDataContext context)
+        private IScheduleService _scheduleServise;
+        public ScheduleController(IScheduleService scheduleServise)
         {
-            _context = context;
+            _scheduleServise = scheduleServise;
         }
 
         // GET: api/<ScheduleController>
         [HttpGet]
         public ActionResult Get()
         {
-            return Ok(_context.Schedule);
+            return Ok(_scheduleServise.GetAll());
         }
 
         // GET api/<ScheduleController>/5
-        //[HttpGet("{id}")]
-        //public ActionResult Get(int id)
-        //{
-        //    //var s = _context.Schedule.Find(s => s.CodeCleaner== id);
-        //    //if (s== null)
-        //    //{
-        //    //    return NotFound();
-        //    //}
-        //    //return Ok(s);
-        //}
+        [HttpGet("{id}")]
+        public ActionResult Get(int id)
+        {
+            var s = _scheduleServise.GetAll().Find(s => s.Id == id);
+            if (s == null)
+            {
+                return NotFound();
+            }
+            return Ok(s);
+        }
 
         // POST api/<ScheduleController>
         //[HttpPost]
         //public ActionResult Post([FromBody] Schedule newSchedule)
         //{
-           
+
         //}
 
         // PUT api/<ScheduleController>/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {
+
         }
 
         // DELETE api/<ScheduleController>/5

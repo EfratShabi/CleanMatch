@@ -18,11 +18,11 @@ namespace Clean.Data.Repositories
 
         public List<Customers> GetAllCustomers()
         {
-            return _context.Customers;
+            return _context.Customers.ToList();
         }
         public Customers GetCustomerById(int id)
         {
-            var customer = _context.Customers.Find(customer=>customer.IdOfCustomer == id);
+            var customer = _context.Customers.ToList().Find(customer=>customer.Id == id);
             return customer;
         }
 

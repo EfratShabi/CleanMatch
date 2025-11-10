@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Clean.Core.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,7 @@ namespace Clean.Core.Services
 {
     public interface IScheduleService
     {
-
+        public List<Schedule> GetAll();
+        public Schedule GetById(int id);
     }
 }

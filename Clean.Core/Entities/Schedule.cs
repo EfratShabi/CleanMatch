@@ -2,8 +2,9 @@
 {
     public class Schedule
     {
-      public List<TimeOnly> StartWork { get; set; }
-      public List<TimeOnly> EndWork { get;set; }
+      public int Id { get; set; }
+      public List<DateTime> StartWork { get; set; }
+      public List<DateTime> EndWork { get;set; }
 
     }
 }

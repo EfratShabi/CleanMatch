@@ -17,11 +17,11 @@ namespace Clean.Data
         }
         public List<Cleaners> GetAllCleaners()
         {
-            return _context.Cleaners;
+            return _context.Cleaners.ToList();
         }
         public Cleaners GetCleanerById(int id)
         {
-            var s = _context.Cleaners.Find(c => c.IdOfCleaner == id);
+            var s = _context.Cleaners.ToList().Find(c => c.Id == id);
             return s;
         }
 
