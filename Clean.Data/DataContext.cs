@@ -11,7 +11,7 @@ namespace Clean.Data
         public DbSet<Customers> Customers { get; set; }
         public DbSet<Bookings> Bookings { get; set; }
         public DbSet<Schedule> Schedule { get; set; }
-
+        public DbSet<Feedback> Feedback { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=Clean_DB");
