@@ -55,10 +55,6 @@ namespace Clean.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ArrFidback")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("BornIsrael")
                         .HasColumnType("bit");
 
@@ -131,6 +127,31 @@ namespace Clean.Data.Migrations
                     b.ToTable("Customers");
                 });
 
+            modelBuilder.Entity("Clean.Core.Entities.Feedback", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CleanerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CleanersId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TextOfFeedback")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CleanersId");
+
+                    b.ToTable("Feedback");
+                });
+
             modelBuilder.Entity("Clean.Core.Entities.Schedule", b =>
                 {
                     b.Property<int>("Id")
@@ -150,6 +171,22 @@ namespace Clean.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Schedule");
+                });
+
+            modelBuilder.Entity("Clean.Core.Entities.Feedback", b =>
+                {
+                    b.HasOne("Clean.Core.Entities.Cleaners", "Cleaners")
+                        .WithMany("ArrFidback")
+                        .HasForeignKey("CleanersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cleaners");
+                });
+
+            modelBuilder.Entity("Clean.Core.Entities.Cleaners", b =>
+                {
+                    b.Navigation("ArrFidback");
                 });
 #pragma warning restore 612, 618
         }

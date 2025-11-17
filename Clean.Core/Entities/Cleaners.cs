@@ -18,10 +18,8 @@
         public int PricePerHour { get; set; }
 
         public int  UpToKm { get; set; }
+        public List<Feedback> ArrFidback { get; set; }
 
-        //public List<string> ArrFidback { get; set; }
-
-        //public List<Bookings>  ArrBookings { get; set; }
 
 
     }

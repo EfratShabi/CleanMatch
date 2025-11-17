@@ -9,7 +9,10 @@ namespace Clean.Core.Entities
     public class Feedback
     {
         public int Id { get; set; }
-        public string TextOfFeedback {  get; set; }
+        public string TextOfFeedback {  get; set; }        
+        public int CleanerId { get; set; }
+        public Cleaners Cleaners { get; set; }
+
 
 
     }
