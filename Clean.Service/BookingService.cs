@@ -26,5 +26,24 @@ namespace Clean.Service
         {
             return _bookingRepository.GetBookingsById(id);
         }
+        public void AddBooking(Bookings newBooking) 
+        {
+             _bookingRepository.AddBooking(newBooking);
+             _bookingRepository.Save();
+
+        }
+
+        public void UpdateBooking(Bookings updatedBooking) 
+        {
+            _bookingRepository.UpdateBooking(updatedBooking);
+            _bookingRepository.Save();
+        }
+
+        public void DeleteBooking(int id)
+        {
+            _bookingRepository.DeleteBooking(id);
+            _bookingRepository.Save();
+        }
+
     }
 }

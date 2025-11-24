@@ -1,5 +1,6 @@
 ﻿using Clean.Core.Entities;
 using Clean.Core.Services;
+using Clean.Service;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -28,7 +29,7 @@ namespace CleanAPI.Controllers
         public ActionResult Get(int id)
         {
             var b = _bookingService.GetBookings().Find(b => b.BookingCode == id);
-            if (b== null)
+            if (b == null)
             {
                 return NotFound();
             }
@@ -39,7 +40,7 @@ namespace CleanAPI.Controllers
         [HttpPost]
         public ActionResult Post([FromBody] Bookings newBooking)
         {
-            var exsitBooking = _bookingService.GetBookings().Find(b=> b.BookingCode==newBooking.BookingCode);
+            var exsitBooking = _bookingService.GetBookings().Find(b => b.BookingCode == newBooking.BookingCode);
             if (exsitBooking == null)
             {
                 _bookingService.GetBookings().Add(newBooking);
@@ -50,16 +51,34 @@ namespace CleanAPI.Controllers
 
         }
 
-        // PUT api/<BookingsController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
 
+        [HttpPut("{id}")]
+        public ActionResult Put(int id, [FromBody] Bookings updatedBooking)
+        {
+            // עכשיו המחשב מכיר את updatedBooking כי הצהרנו עליו למעלה
+            var existingBooking = _bookingService.GetBookings().Find(b => b.BookingCode == id);
+
+            if (existingBooking == null)
+            {
+                return NotFound();
+            }
+            _bookingService.GetBookings().Remove(existingBooking);
+            // הנה השימוש במשתנה שהצהרנו עליו בכותרת הפונקציה
+            _bookingService.GetBookings().Add(updatedBooking);
+
+            return Ok(updatedBooking);
+        }
         // DELETE api/<BookingsController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public ActionResult Delete(int id)
         {
+            var existingBooking = _bookingService.GetBookings().Find(b => b.BookingCode == id);
+            if (existingBooking==null)
+            {
+                return NotFound();
+            }
+            _bookingService.GetBookings().Remove(existingBooking);
+            return Ok(existingBooking);
         }
     }
 }

@@ -24,5 +24,21 @@ namespace Clean.Service
         {
             return _cleanerRepository.GetCleanerById(id);
         }
+        public void AddCleaner(Cleaners newCleaner)
+        {
+            _cleanerRepository.AddCleaner(newCleaner);
+            _cleanerRepository.Save();
+        }
+        public void UpdateCleaner(Cleaners updatedCleaner)
+        {
+            _cleanerRepository.UpdateCleaner(updatedCleaner);
+            _cleanerRepository.Save();
+        }
+        public void DeleteCleaner(int id)
+        {
+            _cleanerRepository.DeleteCleaner(id);
+            _cleanerRepository.Save();
+        }
+
     }
 }

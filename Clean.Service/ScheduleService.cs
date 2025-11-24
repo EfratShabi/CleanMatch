@@ -25,5 +25,20 @@ namespace Clean.Service
         {
             return _scheduleRepository.GetById(id);
         }
+        public void AddSchedule(Schedule newSchedule)
+        {
+            _scheduleRepository.AddSchedule(newSchedule);
+            _scheduleRepository.Save();
+        }
+        public void UpdateSchedule(Schedule updatedSchedule)
+        {
+            _scheduleRepository.UpdateSchedule(updatedSchedule);
+            _scheduleRepository.Save();
+        }
+        public void DeleteSchedule(int id)
+        {
+            _scheduleRepository.DeleteSchedule(id);
+            _scheduleRepository.Save();
+        }
     }
 }

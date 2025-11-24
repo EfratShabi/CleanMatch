@@ -25,5 +25,22 @@ namespace Clean.Service
         {
             return _feedbackRepository.GetFeedbackById(id);
         }
+        public void AddFeedback(Feedback newFeedback)
+        {
+            _feedbackRepository.AddFeedback(newFeedback);
+            _feedbackRepository.Save();
+        }
+        public void UpdateFeedback(Feedback updatedFeedback)
+        {
+            _feedbackRepository.UpdateFeedback(updatedFeedback);
+            _feedbackRepository.Save();
+        }
+        public void DeleteFeedback(int id)
+        {
+            _feedbackRepository.DeleteFeedback(id);
+            _feedbackRepository.Save();
+
+        }
+       
     }
 }

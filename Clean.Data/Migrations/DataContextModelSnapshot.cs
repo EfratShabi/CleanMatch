@@ -30,6 +30,12 @@ namespace Clean.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BookingCode"));
 
+                    b.Property<int>("CleanersId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CustomersId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
@@ -42,7 +48,17 @@ namespace Clean.Data.Migrations
                     b.Property<double>("TotalPrice")
                         .HasColumnType("float");
 
+                    b.Property<int>("cleanerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("customerId")
+                        .HasColumnType("int");
+
                     b.HasKey("BookingCode");
+
+                    b.HasIndex("CleanersId");
+
+                    b.HasIndex("CustomersId");
 
                     b.ToTable("Bookings");
                 });
@@ -58,6 +74,10 @@ namespace Clean.Data.Migrations
                     b.Property<bool>("BornIsrael")
                         .HasColumnType("bit");
 
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("DescriptionOnMe")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -68,6 +88,9 @@ namespace Clean.Data.Migrations
 
                     b.Property<bool>("HebrewSpeaker")
                         .HasColumnType("bit");
+
+                    b.Property<int>("IdOfCleaner")
+                        .HasColumnType("int");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -84,6 +107,13 @@ namespace Clean.Data.Migrations
                     b.Property<int>("PricePerHour")
                         .HasColumnType("int");
 
+                    b.Property<int>("ScheduleId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Street")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("UpToKm")
                         .HasColumnType("int");
 
@@ -91,6 +121,9 @@ namespace Clean.Data.Migrations
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ScheduleId")
+                        .IsUnique();
 
                     b.ToTable("Cleaners");
                 });
@@ -103,9 +136,16 @@ namespace Clean.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("IdOfCustomer")
+                        .HasColumnType("int");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -119,6 +159,10 @@ namespace Clean.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("PhonNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Street")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -173,6 +217,36 @@ namespace Clean.Data.Migrations
                     b.ToTable("Schedule");
                 });
 
+            modelBuilder.Entity("Clean.Core.Entities.Bookings", b =>
+                {
+                    b.HasOne("Clean.Core.Entities.Cleaners", "Cleaners")
+                        .WithMany()
+                        .HasForeignKey("CleanersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Clean.Core.Entities.Customers", "Customers")
+                        .WithMany()
+                        .HasForeignKey("CustomersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cleaners");
+
+                    b.Navigation("Customers");
+                });
+
+            modelBuilder.Entity("Clean.Core.Entities.Cleaners", b =>
+                {
+                    b.HasOne("Clean.Core.Entities.Schedule", "Schedule")
+                        .WithOne("Cleaners")
+                        .HasForeignKey("Clean.Core.Entities.Cleaners", "ScheduleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Schedule");
+                });
+
             modelBuilder.Entity("Clean.Core.Entities.Feedback", b =>
                 {
                     b.HasOne("Clean.Core.Entities.Cleaners", "Cleaners")
@@ -187,6 +261,12 @@ namespace Clean.Data.Migrations
             modelBuilder.Entity("Clean.Core.Entities.Cleaners", b =>
                 {
                     b.Navigation("ArrFidback");
+                });
+
+            modelBuilder.Entity("Clean.Core.Entities.Schedule", b =>
+                {
+                    b.Navigation("Cleaners")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

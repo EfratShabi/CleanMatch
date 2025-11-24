@@ -26,5 +26,21 @@ namespace Clean.Data.Repositories
             var feedback = _context.Feedback.ToList().Find(feedback => feedback.Id == id);
             return feedback;
         }
+        public void AddFeedback(Feedback newFeedback)
+        {
+            _context.Feedback.Add(newFeedback);
+        }
+        public void UpdateFeedback(Feedback updatedFeedback)
+        {
+            _context.Feedback.Update(updatedFeedback);
+        }
+        public  void DeleteFeedback(int id)
+        {
+            _context.Feedback.Remove(GetFeedbackById(id));
+        }
+        public void Save()
+        {
+            _context.SaveChanges();
+        }
     }
 }

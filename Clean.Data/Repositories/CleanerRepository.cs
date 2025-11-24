@@ -24,6 +24,21 @@ namespace Clean.Data
             var s = _context.Cleaners.ToList().Find(c => c.Id == id);
             return s;
         }
-
+        public void AddCleaner(Cleaners newCleaner)
+        {
+            _context.Cleaners.Add(newCleaner);
+        }
+        public void UpdateCleaner(Cleaners updatedCleaner)
+        {
+            _context.Cleaners.Update(updatedCleaner);
+        }
+        public void DeleteCleaner(int id)
+        {
+            _context.Cleaners.Remove(GetCleanerById(id));
+        }
+        public void Save()
+        {
+            _context.SaveChanges();
+        }
     }
 }

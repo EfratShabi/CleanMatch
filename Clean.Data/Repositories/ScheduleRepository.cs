@@ -25,5 +25,21 @@ namespace Clean.Data.Repositories
             var schedule = _context.Schedule.ToList().Find(schedule => schedule.Id == id);
             return schedule;
         }
+        public void AddSchedule(Schedule newSchedule)
+        {
+            _context.Schedule.Add(newSchedule);
+        }
+        public void UpdateSchedule(Schedule updatedSchedule)
+        {
+            _context.Schedule.Update(updatedSchedule);
+        }
+        public void DeleteSchedule(int id)
+        {
+            _context.Schedule.Remove(GetById(id));
+        }
+        public void Save()
+        {
+            _context.SaveChanges();
+        }
     }
 }

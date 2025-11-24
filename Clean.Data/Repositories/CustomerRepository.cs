@@ -25,6 +25,22 @@ namespace Clean.Data.Repositories
             var customer = _context.Customers.ToList().Find(customer=>customer.Id == id);
             return customer;
         }
+        public void AddCustomer(Customers newCustomer)
+        {
+            _context.Customers.Add(newCustomer);
+        }
+        public  void UpdateCustomer(Customers updatedCustomer)
+        {
+            _context.Customers.Update(updatedCustomer);
+        }
+        public void DeleteCustomer(int id)
+        {
+            _context.Customers.Remove(GetCustomerById(id));
+        }
+        public void Save()
+        {
+            _context.SaveChanges();
+        }
 
 
 

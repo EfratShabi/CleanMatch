@@ -11,5 +11,9 @@ namespace Clean.Core.Repositories
     {
         public List<Feedback> GetAllFeedbacks();
         public Feedback GetFeedbackById(int id);
+        public void AddFeedback(Feedback newFeedback);
+        public void UpdateFeedback(Feedback updatedFeedback);
+        public void DeleteFeedback(int id);
+        public void Save();
     }
 }

@@ -25,6 +25,22 @@ namespace Clean.Service
         {
             return _customerRepository.GetCustomerById(id);
         }
+        public void AddCustomer(Customers newCustomer)
+        {
+            _customerRepository.AddCustomer(newCustomer);
+            _customerRepository.Save();
+        }
+        public void UpdateCustomer(Customers updatedCustomer)
+        {
+            _customerRepository.UpdateCustomer(updatedCustomer);
+            _customerRepository.Save();
+        }
+        public void DeleteCustomer(int id)
+        {
+            _customerRepository.DeleteCustomer(id);
+            _customerRepository.Save();
+        }
+
 
     }
 }
