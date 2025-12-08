@@ -4,7 +4,7 @@
     {
        
         public int Id { get; set; }
-        public int IdOfCleaner { get; set; }
+        public int IdOfCleaner { get; set; }//תז של המנקה
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string PhonNumber { get; set; }

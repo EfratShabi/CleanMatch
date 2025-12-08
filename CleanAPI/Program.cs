@@ -1,8 +1,10 @@
+using Clean.Core;
 using Clean.Core.Repositories;
 using Clean.Core.Services;
 using Clean.Data;
 using Clean.Data.Repositories;
 using Clean.Service;
+using Microsoft.Extensions.DependencyInjection;
 using System.Text.Json.Serialization;
 //using CleanAPI;
 
@@ -39,6 +41,8 @@ builder.Services.AddScoped<IScheduleService, ScheduleService>();
 
 builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
 builder.Services.AddScoped<IFeedbackService, FeedbackService>();
+
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 var app = builder.Build();
 

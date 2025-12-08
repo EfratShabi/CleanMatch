@@ -36,6 +36,12 @@ namespace Clean.Data
         {
             _context.Cleaners.Remove(GetCleanerById(id));
         }
+        public Cleaners GetCleanerByIDOfCleaner(int IdOfCleaner) 
+        { 
+            var s = _context.Cleaners.ToList().Find(c => c.IdOfCleaner == IdOfCleaner);
+            return s;
+        }
+
         public void Save()
         {
             _context.SaveChanges();

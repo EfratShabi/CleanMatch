@@ -8,8 +8,6 @@ namespace Clean.Core.Entities
         public int BookingCode { get; set; }
         public double TotalPrice { get; set; }
 
-
-
         public DateTime Date { get; set; }
 
         public TimeOnly StartWork { get; set; }

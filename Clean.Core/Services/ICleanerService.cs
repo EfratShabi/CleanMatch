@@ -15,6 +15,8 @@ namespace Clean.Core.Services
         public void UpdateCleaner(Cleaners updatedCleaner);
         public void DeleteCleaner(int id);
 
+        public Cleaners GetCleanerByIDOfCleaner(int IdOfCleaner);
+
 
     }
 }

@@ -1,4 +1,8 @@
-﻿using Clean.Core.Services;
+﻿using AutoMapper;
+using Clean.Core.DTO;
+using Clean.Core.Entities;
+using Clean.Core.Services;
+using CleanAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -11,17 +15,20 @@ namespace CleanAPI.Controllers
     {
         //private IDataContext _cleanerServise;
         private readonly ICleanerService _cleanerServise;
+        private readonly IMapper _mapper;
 
-        public CleanersController(ICleanerService cleanerService)
+        public CleanersController(ICleanerService cleanerService,IMapper map)
         {
             _cleanerServise = cleanerService;
+            _mapper = map;
         }
 
         // GET: api/<CleanersController>
         [HttpGet]
         public ActionResult Get()
         {
-            return Ok(_cleanerServise.GetAllCleaners());
+            var cleaners= _cleanerServise.GetAllCleaners();
+            return Ok(_mapper.Map<List<CleanerDTO>>(cleaners));
         }
 
         //GET api/<CleanersController>/5
@@ -33,34 +40,48 @@ namespace CleanAPI.Controllers
             {
                 return NotFound();
             }
-            return Ok(a);
+            return Ok(_mapper.Map<CleanerDTO>(a));
 
         }
 
-        // POST api/<CleanersController>
-        //[HttpPost]
-        //public ActionResult Post([FromBody] Cleaners newCleaner)
-        //{
-        //    var existCleaner = _context.Cleaners.Find(c => c.IdOfCleaner == newCleaner.IdOfCleaner);
-        //    if (existCleaner == null) 
-        //    {
-        //         _context.Cleaners.Add(newCleaner);
-        //        return Ok(existCleaner);
-        //    }
-        //    else
-        //        return Conflict(existCleaner);
-        //}
+        //POST api/<CleanersController>
+        [HttpPost]
+        public ActionResult Post([FromBody] CleanerPostModel c)
+        {
+            var cl= _cleanerServise.GetCleanerByIDOfCleaner(c.IdOfCleaner);
+
+            if(cl==null)
+            {
+                return Ok(_mapper.Map<Cleaners>(c));
+
+            }
+            return Conflict();
+        }
 
         // PUT api/<CleanersController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public void Put(int id, [FromBody] CleanerPutModel cl)
         {
+            var c = _cleanerServise.GetCleanerById(id);
+            if (c == null)
+            {
+                NotFound();
+            }
+            Ok(_mapper.Map<CleanerDTO>(cl));
+
         }
 
         // DELETE api/<CleanersController>/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+            var c = _cleanerServise.GetCleanerById(id);
+            if (c == null)
+            {
+                NotFound();
+            }
+            _cleanerServise.DeleteCleaner(id);
+            Ok();
         }
     }
 }

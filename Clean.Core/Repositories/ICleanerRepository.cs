@@ -14,7 +14,10 @@ namespace Clean.Core.Repositories
         public void AddCleaner(Cleaners newCleaner);
         public void UpdateCleaner(Cleaners updatedCleaner);
         public void DeleteCleaner(int id);
+        public Cleaners GetCleanerByIDOfCleaner(int IdOfCleaner);
+
         public void Save();
+
 
 
     }

@@ -21,6 +21,7 @@ namespace Clean.Service
         {
             return _customerRepository.GetAllCustomers();
         }
+
         public Customers GetCustomerById(int id)
         {
             return _customerRepository.GetCustomerById(id);
@@ -44,3 +45,8 @@ namespace Clean.Service
 
     }
 }
+
+//public void AddCustomer(Customers newCustomer);
+//public void UpdateCustomer(Customers newCustomer);
+
+//public void DeleteCustomer(int id);

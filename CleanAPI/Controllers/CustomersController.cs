@@ -1,5 +1,8 @@
-﻿using Clean.Core.Entities;
+﻿using AutoMapper;
+using Clean.Core.DTO;
+using Clean.Core.Entities;
 using Clean.Core.Services;
+using Clean.Service;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -10,10 +13,14 @@ namespace CleanAPI.Controllers
     [ApiController]
     public class CustomersController : ControllerBase
     {
-        private ICustomerService _customerServise;
-        public CustomersController(ICustomerService customerServise)
+        private readonly ICustomerService _customerServise;
+        private readonly IMapper _mapper;
+
+
+        public CustomersController(ICustomerService customerServise, IMapper map)
         {
             _customerServise = customerServise;
+            _mapper = map;
         }
 
 
@@ -21,33 +28,35 @@ namespace CleanAPI.Controllers
         [HttpGet]
         public ActionResult Get()
         {
-            return Ok(_customerServise.GetAllCustomers());
+            var customers = _customerServise.GetAllCustomers();
+            return Ok(_mapper.Map<List<CustomerDTO>>(customers));
         }
 
         // GET api/<CustomersController>/5
         [HttpGet("{id}")]
         public ActionResult Get(int id)
         {
-            var a = _customerServise.GetAllCustomers().Find(x => x.Id == id);
+            var a = _customerServise.GetCustomerById(id);
             if (a == null)
             {
                 return NotFound();
             }
-            return Ok(a);
+            return Ok(_mapper.Map<CustomerDTO>(a));
         }
 
         // POST api/<CustomersController>
         [HttpPost]
         public ActionResult Post([FromBody] Customers newCustomer)
         {
-            var exsitCustomer=_customerServise.GetAllCustomers().Find(c=>c.Id==newCustomer.Id);
-            if (exsitCustomer == null)
+            var cust=_mapper.Map<Customers>(newCustomer);
+            var existingCustomer = _customerServise.GetCustomerByIdofCustomer(cust.IdOfCustomer);
+            if (existingCustomer == null)
             {
-                _customerServise.GetAllCustomers().Add(newCustomer);
-                return Ok(exsitCustomer);
+                
+                return Ok();
             }
-            else
-                return Conflict(exsitCustomer);
+            return Conflict();
+            
 
         }
 

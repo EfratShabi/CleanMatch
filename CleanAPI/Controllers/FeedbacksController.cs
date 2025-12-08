@@ -1,5 +1,9 @@
-﻿using Clean.Core.Services;
+﻿using AutoMapper;
+using Clean.Core.DTO;
+using Clean.Core.Entities;
+using Clean.Core.Services;
 using Clean.Service;
+using CleanAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -10,24 +14,22 @@ namespace CleanAPI.Controllers
     [ApiController]
     public class FeedbacksController : ControllerBase
     {
-        private IFeedbackService _feedbackServise;
-        public FeedbacksController(IFeedbackService feedbackServise)
+        private readonly IFeedbackService _feedbackServise;
+        private readonly IMapper _mapper;
+
+        public FeedbacksController(IFeedbackService feedbackServise, IMapper map)
         {
             _feedbackServise = feedbackServise;
+            _mapper = map;
+
         }
         [HttpGet]
         public ActionResult Get()
         {
-            return Ok(_feedbackServise.GetAllFeedbacks());
+            var feedback = _feedbackServise.GetAllFeedbacks();
+            return Ok(_mapper.Map<List<FeedbackDTO>>(feedback));
         }
-        // GET: api/<FeedbacksController>
-        //[HttpGet]
-        //public IEnumerable<string> Get()
-        //{
-        //    return new string[] { "value1", "value2" };
-        //}
 
-        // GET api/<FeedbacksController>/5
         [HttpGet("{id}")]
         public ActionResult Get(int id)
         {
@@ -40,21 +42,33 @@ namespace CleanAPI.Controllers
         }
 
         // POST api/<FeedbacksController>
-        //[HttpPost]
-        //public void Post([FromBody] string value)
-        //{
-        //}
+        [HttpPost]
+        public ActionResult Post([FromBody] FeedbackPostModel f)
+        {
+            var cl = _feedbackServise.GetAllFeedbacks().Find(s => s.CleanerId == f.CleanerId);
+            var feedback = _mapper.Map<Feedback>(f);
+            _feedbackServise.AddFeedback(feedback);
+            return Ok(feedback);
+
+        }
 
         //// PUT api/<FeedbacksController>/5
-        //[HttpPut("{id}")]
+        [HttpPut("{id}")]
         //public void Put(int id, [FromBody] string value)
         //{
+            
         //}
 
-        //// DELETE api/<FeedbacksController>/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
+        // DELETE api/<FeedbacksController>/5
+        [HttpDelete("{id}")]
+        public void Delete(int id)
+        {
+            var f= _feedbackServise.GetFeedbackById(id);
+            if (f != null)
+            {
+                _feedbackServise.DeleteFeedback(id);
+            }
+
+        }
     }
 }

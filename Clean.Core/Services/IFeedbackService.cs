@@ -14,6 +14,6 @@ namespace Clean.Core.Services
         public void AddFeedback(Feedback newFeedback);
         public void UpdateFeedback(Feedback updatedFeedback);
         public void DeleteFeedback(int id);
-
+       
     }
 }
