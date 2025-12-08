@@ -49,7 +49,6 @@ namespace CleanAPI.Controllers
         public ActionResult Post([FromBody] CleanerPostModel c)
         {
             var cl= _cleanerServise.GetCleanerByIDOfCleaner(c.IdOfCleaner);
-
             if(cl==null)
             {
                 return Ok(_mapper.Map<Cleaners>(c));
@@ -60,28 +59,30 @@ namespace CleanAPI.Controllers
 
         // PUT api/<CleanersController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] CleanerPutModel cl)
+        public ActionResult Put(int id, [FromBody] CleanerPutModel cl)
         {
             var c = _cleanerServise.GetCleanerById(id);
             if (c == null)
             {
-                NotFound();
+               return NotFound();
             }
-            Ok(_mapper.Map<CleanerDTO>(cl));
+            _mapper.Map(cl, c);
+            _cleanerServise.UpdateCleaner(c);
+            return Ok(_mapper.Map<CleanerDTO>(c));
 
         }
 
         // DELETE api/<CleanersController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public ActionResult Delete(int id)
         {
             var c = _cleanerServise.GetCleanerById(id);
             if (c == null)
             {
-                NotFound();
+                return NotFound();
             }
             _cleanerServise.DeleteCleaner(id);
-            Ok();
+            return Ok();
         }
     }
 }

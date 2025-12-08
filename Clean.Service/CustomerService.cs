@@ -21,6 +21,10 @@ namespace Clean.Service
         {
             return _customerRepository.GetAllCustomers();
         }
+        public Customers GetCustomerByIdofCustomer(int IdOfCustomer)
+        {
+           return _customerRepository.GetCustomerByIdofCustomer(IdOfCustomer);
+        }
 
         public Customers GetCustomerById(int id)
         {

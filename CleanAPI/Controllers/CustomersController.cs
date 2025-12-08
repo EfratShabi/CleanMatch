@@ -3,6 +3,7 @@ using Clean.Core.DTO;
 using Clean.Core.Entities;
 using Clean.Core.Services;
 using Clean.Service;
+using CleanAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -46,30 +47,41 @@ namespace CleanAPI.Controllers
 
         // POST api/<CustomersController>
         [HttpPost]
-        public ActionResult Post([FromBody] Customers newCustomer)
+        public ActionResult Post([FromBody] Customers customer)
         {
-            var cust=_mapper.Map<Customers>(newCustomer);
-            var existingCustomer = _customerServise.GetCustomerByIdofCustomer(cust.IdOfCustomer);
-            if (existingCustomer == null)
+            var cl = _customerServise.GetCustomerByIdofCustomer(customer.IdOfCustomer);
+            if (cl == null)
             {
-                
-                return Ok();
+                return Ok(_mapper.Map<Customers>(customer));
             }
             return Conflict();
-            
-
         }
 
         // PUT api/<CustomersController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public ActionResult Put(int id, [FromBody] CustomerPostModel cu)
         {
+            var c = _customerServise.GetCustomerById(id);
+            if (c == null)
+            {
+                return NotFound();
+            }
+            _mapper.Map(cu, c);
+            _customerServise.UpdateCustomer(c);
+            return Ok(_mapper.Map<CustomerDTO>(c));
         }
 
         // DELETE api/<CustomersController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public ActionResult Delete(int id)
         {
+            var c = _customerServise.GetCustomerById(id);
+            if (c == null)
+            {
+                return NotFound();
+            }
+            _customerServise.DeleteCustomer(id);
+            return Ok();
         }
     }
 }

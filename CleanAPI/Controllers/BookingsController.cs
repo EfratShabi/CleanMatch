@@ -1,4 +1,5 @@
-﻿using Clean.Core.Entities;
+﻿using AutoMapper;
+using Clean.Core.Entities;
 using Clean.Core.Services;
 using Clean.Service;
 using Microsoft.AspNetCore.Mvc;
@@ -11,10 +12,12 @@ namespace CleanAPI.Controllers
     [ApiController]
     public class BookingsController : ControllerBase
     {
-        private IBookingService _bookingService;
-        public BookingsController(IBookingService bookingService)
+        private readonly IBookingService _bookingService;
+        private readonly IMapper _mapper;
+        public BookingsController(IBookingService bookingService, IMapper map)
         {
             _bookingService = bookingService;
+            _mapper = map;
         }
 
         // GET: api/<BookingsController>

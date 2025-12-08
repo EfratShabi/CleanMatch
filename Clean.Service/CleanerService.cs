@@ -24,6 +24,10 @@ namespace Clean.Service
         {
             return _cleanerRepository.GetCleanerById(id);
         }
+        public Cleaners GetCleanerByIDOfCleaner(int IdOfCleaner)
+        {
+            return _cleanerRepository.GetCleanerById(IdOfCleaner);
+        }
         public void AddCleaner(Cleaners newCleaner)
         {
             _cleanerRepository.AddCleaner(newCleaner);

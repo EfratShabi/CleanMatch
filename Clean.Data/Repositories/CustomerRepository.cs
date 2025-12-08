@@ -20,6 +20,10 @@ namespace Clean.Data.Repositories
         {
             return _context.Customers.ToList();
         }
+        public Customers GetCustomerByIdofCustomer(int IdOfCustomer)
+        {
+            return _context.Customers.FirstOrDefault(customer => customer.IdOfCustomer == IdOfCustomer);
+        }
         public Customers GetCustomerById(int id)
         {
             var customer = _context.Customers.ToList().Find(customer=>customer.Id == id);
@@ -37,12 +41,6 @@ namespace Clean.Data.Repositories
         {
             _context.Customers.Remove(GetCustomerById(id));
         }
-        public Customers GetCustomerByIdofCustomer(int IdOfCustomer)
-            {
-            var customer = _context.Customers.ToList().Find(customer => customer.IdOfCustomer == IdOfCustomer);
-            return customer;
-        }
-
 
         public void Save()
         {
