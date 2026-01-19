@@ -4,7 +4,6 @@ namespace CleanAPI.Models
 {
     public class BookingPostModel
     {
-        public double TotalPrice { get; set; }
 
         public DateTime Date { get; set; }
 
@@ -14,6 +13,5 @@ namespace CleanAPI.Models
 
         public int customerId { get; set; }
 
-        public int cleanerId { get; set; }
     }
 }

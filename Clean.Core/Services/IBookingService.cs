@@ -11,7 +11,7 @@ namespace Clean.Core.Services
     {
         public List<Bookings> GetBookings();
         public Bookings GetBookingsById(int id);
-        public void AddBooking(Bookings newBooking);
+        public Task AddBooking(Bookings newBooking);
         public void UpdateBooking(Bookings updatedBooking);
         public void DeleteBooking(int id);
 

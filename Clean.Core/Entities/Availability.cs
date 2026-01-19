@@ -6,7 +6,14 @@ using System.Threading.Tasks;
 
 namespace Clean.Core.Entities
 {
-    internal class Availability
+    public class Availability
     {
+        public int Id { get; set; }
+        public int CleanerId { get; set; }
+        public Cleaners Cleaner { get; set; }
+        int DayOfWeek { get; set; }
+        public TimeSpan StartTime { get; set; }
+        public TimeSpan EndTime { get; set; }
+
     }
 }

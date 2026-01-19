@@ -10,7 +10,6 @@ namespace CleanAPI.Models
         public string City { get; set; }
         public string Street { get; set; }
         public string DescriptionOnMe { get; set; }
-        public bool HebrewSpeaker { get; set; }
         public string Mikud { get; set; }
         public int PricePerHour { get; set; }
         public int UpToKm { get; set; }

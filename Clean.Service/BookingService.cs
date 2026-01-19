@@ -26,10 +26,15 @@ namespace Clean.Service
         {
             return _bookingRepository.GetBookingsById(id);
         }
-        public void AddBooking(Bookings newBooking) 
+        public async Task AddBooking(Bookings newBooking)
         {
-             _bookingRepository.AddBooking(newBooking);
-             _bookingRepository.Save();
+            bool exists = await _bookingRepository.HasBookingOnDateAsync(newBooking.customerId, newBooking.Date);
+            if (exists)
+            {
+                throw new ArgumentException("כבר קיימת לך הזמנה לתאריך זה.");
+            }
+            _bookingRepository.AddBooking(newBooking);
+            _bookingRepository.Save();
 
         }
 

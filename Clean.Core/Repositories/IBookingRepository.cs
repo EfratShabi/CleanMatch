@@ -9,6 +9,7 @@ namespace Clean.Core.Repositories
 {
     public interface IBookingRepository
     {
+        Task<bool> HasBookingOnDateAsync(int customerId, DateTime date);
         public List<Bookings> GetBookings();
         public Bookings GetBookingsById(int id);
 

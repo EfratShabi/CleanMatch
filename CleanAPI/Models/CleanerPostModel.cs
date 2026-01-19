@@ -16,7 +16,7 @@ namespace CleanAPI.Models
         public string Mikud { get; set; }
         public int PricePerHour { get; set; }
         public int UpToKm { get; set; }
-        public int ScheduleId { get; set; }
+        //public int ScheduleId { get; set; }
 
     }
 

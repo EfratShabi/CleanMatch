@@ -4,6 +4,7 @@ using Clean.Core.Services;
 using Clean.Data;
 using Clean.Data.Repositories;
 using Clean.Service;
+using CleanAPI;
 using Microsoft.Extensions.DependencyInjection;
 using System.Text.Json.Serialization;
 //using CleanAPI;
@@ -42,6 +43,10 @@ builder.Services.AddScoped<IScheduleService, ScheduleService>();
 builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
 builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 
+//users
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
+
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 var app = builder.Build();
@@ -56,6 +61,9 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseShabbat();
+//app.UseMiddleware<ShabatMidellWare>();
 
 app.MapControllers();
 

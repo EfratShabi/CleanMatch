@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Clean.Core.DTO
 {
-    public class BookingDTO
+    public class BookingOfCleanerDTO
     {
         public double TotalPrice { get; set; }
 
@@ -17,7 +17,6 @@ namespace Clean.Core.DTO
 
         public TimeOnly EndWork { get; set; }
 
-        public int customerId { get; set; }
 
         public int cleanerId { get; set; }
     }

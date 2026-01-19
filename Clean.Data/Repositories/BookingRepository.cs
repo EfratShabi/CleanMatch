@@ -1,5 +1,6 @@
 ﻿using Clean.Core.Entities;
 using Clean.Core.Repositories;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,6 +41,12 @@ namespace Clean.Data.Repositories
         public void DeleteBooking(int id)
         {
             _context.Bookings.Remove(GetBookingsById(id));
+        }
+        public async Task<bool> HasBookingOnDateAsync(int customerId, DateTime date)
+        {
+            return await _context.Bookings.AnyAsync(b=>
+            b.customerId==customerId&&b.Date.Date==date.Date
+            );
         }
         public void Save()
         {

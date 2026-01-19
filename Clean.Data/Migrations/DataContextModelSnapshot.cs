@@ -22,6 +22,30 @@ namespace Clean.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Clean.Core.Entities.Availability", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CleanerId")
+                        .HasColumnType("int");
+
+                    b.Property<TimeSpan>("EndTime")
+                        .HasColumnType("time");
+
+                    b.Property<TimeSpan>("StartTime")
+                        .HasColumnType("time");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CleanerId");
+
+                    b.ToTable("Availability");
+                });
+
             modelBuilder.Entity("Clean.Core.Entities.Bookings", b =>
                 {
                     b.Property<int>("BookingCode")
@@ -107,9 +131,6 @@ namespace Clean.Data.Migrations
                     b.Property<int>("PricePerHour")
                         .HasColumnType("int");
 
-                    b.Property<int>("ScheduleId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Street")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -117,13 +138,15 @@ namespace Clean.Data.Migrations
                     b.Property<int>("UpToKm")
                         .HasColumnType("int");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("availability")
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ScheduleId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.ToTable("Cleaners");
                 });
@@ -166,7 +189,12 @@ namespace Clean.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Customers");
                 });
@@ -204,6 +232,9 @@ namespace Clean.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("CleanersId")
+                        .HasColumnType("int");
+
                     b.Property<string>("EndWork")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -214,7 +245,44 @@ namespace Clean.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CleanersId");
+
                     b.ToTable("Schedule");
+                });
+
+            modelBuilder.Entity("Clean.Core.Entities.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Clean.Core.Entities.Availability", b =>
+                {
+                    b.HasOne("Clean.Core.Entities.Cleaners", "Cleaner")
+                        .WithMany("ArrAvailability")
+                        .HasForeignKey("CleanerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cleaner");
                 });
 
             modelBuilder.Entity("Clean.Core.Entities.Bookings", b =>
@@ -238,13 +306,24 @@ namespace Clean.Data.Migrations
 
             modelBuilder.Entity("Clean.Core.Entities.Cleaners", b =>
                 {
-                    b.HasOne("Clean.Core.Entities.Schedule", "Schedule")
-                        .WithOne("Cleaners")
-                        .HasForeignKey("Clean.Core.Entities.Cleaners", "ScheduleId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.HasOne("Clean.Core.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Schedule");
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Clean.Core.Entities.Customers", b =>
+                {
+                    b.HasOne("Clean.Core.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Clean.Core.Entities.Feedback", b =>
@@ -258,15 +337,22 @@ namespace Clean.Data.Migrations
                     b.Navigation("Cleaners");
                 });
 
-            modelBuilder.Entity("Clean.Core.Entities.Cleaners", b =>
-                {
-                    b.Navigation("ArrFidback");
-                });
-
             modelBuilder.Entity("Clean.Core.Entities.Schedule", b =>
                 {
-                    b.Navigation("Cleaners")
+                    b.HasOne("Clean.Core.Entities.Cleaners", "Cleaners")
+                        .WithMany()
+                        .HasForeignKey("CleanersId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Cleaners");
+                });
+
+            modelBuilder.Entity("Clean.Core.Entities.Cleaners", b =>
+                {
+                    b.Navigation("ArrAvailability");
+
+                    b.Navigation("ArrFidback");
                 });
 #pragma warning restore 612, 618
         }

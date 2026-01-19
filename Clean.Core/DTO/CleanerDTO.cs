@@ -9,7 +9,7 @@ namespace Clean.Core.DTO
 {
     public class CleanerDTO
     {
-        public int IdOfCleaner { get; set; }
+        //public int IdOfCleaner { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string PhonNumber { get; set; }
@@ -22,6 +22,9 @@ namespace Clean.Core.DTO
         public int PricePerHour { get; set; }
         public int UpToKm { get; set; }
         public List<Feedback> ArrFidback { get; set; }
-        public Schedule Schedule { get; set; }
+
+        public List<Availability> ArrAvailability { get; set; }
+
+        //public Schedule Schedule { get; set; }
     }
 }
