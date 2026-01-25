@@ -20,14 +20,12 @@ namespace Clean.Data.Repositories
 
         public async Task<User> GetByUserNameAsync(string userName, string Password)
         {
-            // מחפש משתמש שתואם לשם וסיסמה
             return await _context.Users.FirstOrDefaultAsync(u => u.UserName == userName && u.Password == Password);
         }
 
         public async Task<User> AddUserAsync(User user)
         {
             await _context.Users.AddAsync(user);
-            // שימי לב: לא עושים כאן SaveChanges() לפי הוראת המורה!
             return user;
         }
     }

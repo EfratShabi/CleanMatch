@@ -16,32 +16,32 @@ namespace Clean.Service
         {
             _cleanerRepository = cleanerRepository;
         }
-        public List<Cleaners> GetAllCleaners()
+        public  async Task<List<Cleaners>> GetAllCleanersAsync()
         {
-            return _cleanerRepository.GetAllCleaners();
+            return await  _cleanerRepository.GetAllCleanersAsync();
         }
-        public Cleaners GetCleanerById(int id)
+        public  async Task<Cleaners> GetCleanerByIdAsync(int id)
         {
-            return _cleanerRepository.GetCleanerById(id);
+            return  await _cleanerRepository.GetCleanerByIdAsync(id);
         }
-        public Cleaners GetCleanerByIDOfCleaner(int IdOfCleaner)
+        public  async Task<Cleaners> GetCleanerByIDOfCleaner(int IdOfCleaner)
         {
-            return _cleanerRepository.GetCleanerById(IdOfCleaner);
+            return await _cleanerRepository.GetCleanerByIdAsync(IdOfCleaner);
         }
-        public void AddCleaner(Cleaners newCleaner)
+        public async Task AddCleanerAsync(Cleaners newCleaner)
         {
-            _cleanerRepository.AddCleaner(newCleaner);
-            _cleanerRepository.Save();
+           await _cleanerRepository.AddCleanerAsync(newCleaner);
+             await _cleanerRepository.SaveChangesAsync();
         }
-        public void UpdateCleaner(Cleaners updatedCleaner)
+        public  async Task UpdateCleanerAsync(Cleaners updatedCleaner)
         {
-            _cleanerRepository.UpdateCleaner(updatedCleaner);
-            _cleanerRepository.Save();
+            await _cleanerRepository.UpdateCleanerAsync(updatedCleaner);
+           await _cleanerRepository.SaveChangesAsync();
         }
-        public void DeleteCleaner(int id)
+        public async Task DeleteCleanerAsync(int id)
         {
-            _cleanerRepository.DeleteCleaner(id);
-            _cleanerRepository.Save();
+            await _cleanerRepository.DeleteCleanerAsync(id);
+           await _cleanerRepository.SaveChangesAsync();
         }
 
     }

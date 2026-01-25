@@ -51,6 +51,9 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 var app = builder.Build();
 
+app.UseAuthentication(); // 1. בדיקה: מי המשתמש? (האם הטוקן תקין)
+app.UseAuthorization();  // 2. בדיקה: מה מותר לו לעשות? (לפי ה-Role)
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

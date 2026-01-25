@@ -9,15 +9,14 @@ namespace Clean.Core.Repositories
 {
     public interface ICleanerRepository
     {
-        public List<Cleaners> GetAllCleaners();
-        public Cleaners GetCleanerById(int id);
-        public void AddCleaner(Cleaners newCleaner);
-        public void UpdateCleaner(Cleaners updatedCleaner);
-        public void DeleteCleaner(int id);
-        public Cleaners GetCleanerByIDOfCleaner(int IdOfCleaner);
+        public Task<List<Cleaners>> GetAllCleanersAsync();
+        public Task<Cleaners> GetCleanerByIdAsync(int id);
+        public Task AddCleanerAsync(Cleaners newCleaner);
+        public Task UpdateCleanerAsync(Cleaners updatedCleaner);
+        public Task DeleteCleanerAsync(int id);
+        public Task<Cleaners> GetCleanerByIDOfCleanerAsync(int IdOfCleaner);
 
-        public void Save();
-
+        Task SaveChangesAsync();
 
 
     }

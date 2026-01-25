@@ -2,8 +2,10 @@
 using Clean.Core.DTO;
 using Clean.Core.Entities;
 using Clean.Core.Services;
+using Clean.Service;
 using CleanAPI.Models;
 using Microsoft.AspNetCore.Mvc;
+using static Clean.Core.Entities.User;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -14,20 +16,22 @@ namespace CleanAPI.Controllers
     public class CleanersController : ControllerBase
     {
         //private IDataContext _cleanerServise;
-        private readonly ICleanerService _cleanerServise;
+        private IUserService _userService;
+        private readonly ICleanerService _cleanerService;
         private readonly IMapper _mapper;
 
-        public CleanersController(ICleanerService cleanerService,IMapper map)
+        public CleanersController(ICleanerService cleanerService,IUserService userService,IMapper map)
         {
-            _cleanerServise = cleanerService;
+            _cleanerService = cleanerService;
+            _userService = userService;
             _mapper = map;
         }
 
         // GET: api/<CleanersController>
         [HttpGet]
-        public ActionResult Get()
+        public  async Task<ActionResult> Get()
         {
-            var cleaners= _cleanerServise.GetAllCleaners();
+            var cleaners=await _cleanerService.GetAllCleanersAsync();
             return Ok(_mapper.Map<List<CleanerDTO>>(cleaners));
         }
 
@@ -35,53 +39,69 @@ namespace CleanAPI.Controllers
         [HttpGet("{id}")]
         public ActionResult Get(int id)
         {
-            var a =_cleanerServise.GetCleanerById(id);
+            var a =_cleanerService.GetCleanerByIdAsync(id);
             if (a == null)
             {
                 return NotFound();
             }
             return Ok(_mapper.Map<CleanerDTO>(a));
 
+
+
+
         }
+
+
+
+
+       
 
         //POST api/<CleanersController>
         [HttpPost]
-        public ActionResult Post([FromBody] CleanerPostModel c)
+        public async Task<ActionResult> Post([FromBody] CleanerPostModel c)
         {
-            var cl= _cleanerServise.GetCleanerByIDOfCleaner(c.IdOfCleaner);
+            var user=new User { UserName = c.UserName,Password=c.Password,Role=Clean.Core.Entities.User.eRole.cleaner };
+            var User=await _userService.AddUserAsync(user);
+            var newCleaner = _mapper.Map<Cleaners>(c);
+            newCleaner.User = User;
+            newCleaner.UserId = User.Id;
+
+            var cl = await _cleanerService.GetCleanerByIDOfCleaner(c.IdOfCleaner);
             if(cl==null)
             {
                 return Ok(_mapper.Map<Cleaners>(c));
-
             }
+            await _cleanerService.AddCleanerAsync(cl);
             return Conflict();
         }
 
         // PUT api/<CleanersController>/5
         [HttpPut("{id}")]
-        public ActionResult Put(int id, [FromBody] CleanerPutModel cl)
+        public async Task<ActionResult> Put(int id, [FromBody] CleanerPutModel cl)
         {
-            var c = _cleanerServise.GetCleanerById(id);
+            var c = await _cleanerService.GetCleanerByIdAsync(id);
             if (c == null)
             {
-               return NotFound();
+                return NotFound();
             }
-            _mapper.Map(cl, c);
-            _cleanerServise.UpdateCleaner(c);
-            return Ok(_mapper.Map<CleanerDTO>(c));
 
+            _mapper.Map(cl, c);
+
+            await _cleanerService.UpdateCleanerAsync(c);
+
+            return Ok(_mapper.Map<CleanerDTO>(c));
         }
 
         // DELETE api/<CleanersController>/5
         [HttpDelete("{id}")]
         public ActionResult Delete(int id)
         {
-            var c = _cleanerServise.GetCleanerById(id);
+            var c = _cleanerService.GetCleanerByIdAsync(id);
             if (c == null)
             {
                 return NotFound();
             }
-            _cleanerServise.DeleteCleaner(id);
+            _cleanerService.DeleteCleanerAsync(id);
             return Ok();
         }
     }

@@ -1,5 +1,6 @@
 ﻿using Clean.Core.Entities;
 using Clean.Core.Repositories;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,43 +9,53 @@ using System.Threading.Tasks;
 
 namespace Clean.Data
 {
-    public class CleanerRepository: ICleanerRepository
+    public class CleanerRepository : ICleanerRepository
     {
         private readonly DataContext _context;
+
         public CleanerRepository(DataContext context)
         {
             _context = context;
         }
-        public List<Cleaners> GetAllCleaners()
+
+        public async Task<List<Cleaners>> GetAllCleanersAsync()
         {
-            return _context.Cleaners.ToList();
-        }
-        public Cleaners GetCleanerById(int id)
-        {
-            var s = _context.Cleaners.ToList().Find(c => c.Id == id);
-            return s;
-        }
-        public void AddCleaner(Cleaners newCleaner)
-        {
-            _context.Cleaners.Add(newCleaner);
-        }
-        public void UpdateCleaner(Cleaners updatedCleaner)
-        {
-            _context.Cleaners.Update(updatedCleaner);
-        }
-        public void DeleteCleaner(int id)
-        {
-            _context.Cleaners.Remove(GetCleanerById(id));
-        }
-        public Cleaners GetCleanerByIDOfCleaner(int IdOfCleaner) 
-        { 
-            var s = _context.Cleaners.ToList().Find(c => c.IdOfCleaner == IdOfCleaner);
-            return s;
+            return await _context.Cleaners.ToListAsync();
         }
 
-        public void Save()
+        public async Task<Cleaners> GetCleanerByIdAsync(int id)
         {
-            _context.SaveChanges();
+            return await _context.Cleaners.FirstOrDefaultAsync(c => c.Id == id);
+        }
+
+        public async Task AddCleanerAsync(Cleaners newCleaner)
+        {
+            await _context.Cleaners.AddAsync(newCleaner);
+        }
+
+        public async Task<Cleaners> GetCleanerByIDOfCleanerAsync(int IdOfCleaner)
+        {
+            return await _context.Cleaners.FirstOrDefaultAsync(c => c.IdOfCleaner == IdOfCleaner);
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateCleanerAsync(Cleaners updatedCleaner)
+        {
+            _context.Cleaners.Update(updatedCleaner);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteCleanerAsync(int id)
+        {
+            var cleaner = await GetCleanerByIdAsync(id);
+            if (cleaner != null)
+            {
+                _context.Cleaners.Remove(cleaner);
+            }
         }
     }
 }
