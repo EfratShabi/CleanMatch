@@ -46,9 +46,6 @@ namespace CleanAPI.Controllers
             }
             return Ok(_mapper.Map<CleanerDTO>(a));
 
-
-
-
         }
 
 
@@ -67,12 +64,12 @@ namespace CleanAPI.Controllers
             newCleaner.UserId = User.Id;
 
             var cl = await _cleanerService.GetCleanerByIDOfCleaner(c.IdOfCleaner);
-            if(cl==null)
+            if(cl!=null)
             {
-                return Ok(_mapper.Map<Cleaners>(c));
+                return Conflict(_mapper.Map<Cleaners>(c));
             }
-            await _cleanerService.AddCleanerAsync(cl);
-            return Conflict();
+            await _cleanerService.AddCleanerAsync(newCleaner);
+            return Ok();
         }
 
         // PUT api/<CleanersController>/5

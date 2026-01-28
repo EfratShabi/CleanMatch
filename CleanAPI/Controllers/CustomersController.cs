@@ -15,12 +15,14 @@ namespace CleanAPI.Controllers
     public class CustomersController : ControllerBase
     {
         private readonly ICustomerService _customerServise;
+        private readonly IUserService _userService;
         private readonly IMapper _mapper;
 
 
-        public CustomersController(ICustomerService customerServise, IMapper map)
+        public CustomersController(ICustomerService customerServise, IUserService userService, IMapper map)
         {
             _customerServise = customerServise;
+            _userService = userService;
             _mapper = map;
         }
 

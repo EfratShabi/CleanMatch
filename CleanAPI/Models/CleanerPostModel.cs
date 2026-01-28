@@ -4,6 +4,7 @@ namespace CleanAPI.Models
 {
     public class CleanerPostModel
     {
+
         public int IdOfCleaner { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
