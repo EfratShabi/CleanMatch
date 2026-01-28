@@ -1,5 +1,6 @@
 ﻿using Clean.Core.Entities;
 using Clean.Core.Repositories;
+using Microsoft.EntityFrameworkCore; // <--- אל תשכחי את השורה הזו! חייב אותה בשביל ToListAsync
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,44 +12,51 @@ namespace Clean.Data.Repositories
     public class CustomerRepository : ICustomerRepository
     {
         private readonly DataContext _context;
-        public CustomerRepository(DataContext context) 
+        public CustomerRepository(DataContext context)
         {
             _context = context;
         }
 
-        public List<Customers> GetAllCustomers()
+        public async Task<List<Customers>> GetAllCustomersAsync()
         {
-            return _context.Customers.ToList();
+            return await _context.Customers.ToListAsync();
         }
-        public Customers GetCustomerByIdofCustomer(int IdOfCustomer)
+
+        public async Task<Customers?> GetCustomerByIdofCustomerAsync(int IdOfCustomer)
         {
-            return _context.Customers.FirstOrDefault(customer => customer.IdOfCustomer == IdOfCustomer);
+            return await _context.Customers.FirstOrDefaultAsync(c => c.IdOfCustomer == IdOfCustomer);
         }
-        public Customers GetCustomerById(int id)
+
+        public async Task<Customers?> GetCustomerByIdAsync(int id)
         {
-            var customer = _context.Customers.ToList().Find(customer=>customer.Id == id);
-            return customer;
+            return await _context.Customers.FindAsync(id);
         }
-        public void AddCustomer(Customers newCustomer)
+
+        public async Task AddCustomerAsync(Customers newCustomer)
         {
-            _context.Customers.Add(newCustomer);
+            await _context.Customers.AddAsync(newCustomer);
         }
-        public  void UpdateCustomer(Customers updatedCustomer)
+
+        public async Task UpdateCustomerAsync(Customers updatedCustomer)
         {
+
             _context.Customers.Update(updatedCustomer);
+
+            await Task.CompletedTask;
         }
-        public void DeleteCustomer(int id)
+
+        public async Task DeleteCustomerAsync(int id)
         {
-            _context.Customers.Remove(GetCustomerById(id));
+            var customer = await GetCustomerByIdAsync(id);
+            if (customer != null)
+            {
+                _context.Customers.Remove(customer);
+            }
         }
 
-        public void Save()
+        public async Task SaveAsync()
         {
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
-
-
-
-
     }
 }

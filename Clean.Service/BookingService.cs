@@ -3,13 +3,11 @@ using Clean.Core.Repositories;
 using Clean.Core.Services;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Clean.Service
 {
-    public class BookingService:IBookingService
+    public class BookingService : IBookingService
     {
         private readonly IBookingRepository _bookingRepository;
 
@@ -18,37 +16,37 @@ namespace Clean.Service
             _bookingRepository = bookingRepository;
         }
 
-        public List<Bookings> GetBookings() 
-        { 
-            return _bookingRepository.GetBookings();
-        }
-        public Bookings GetBookingsById(int id) 
+        public async Task<List<Bookings>> GetBookingsAsync()
         {
-            return _bookingRepository.GetBookingsById(id);
+            return await _bookingRepository.GetBookingsAsync();
         }
-        public async Task AddBooking(Bookings newBooking)
+
+        public async Task<Bookings?> GetBookingsByIdAsync(int id)
+        {
+            return await _bookingRepository.GetBookingsByIdAsync(id);
+        }
+
+        public async Task AddBookingAsync(Bookings newBooking)
         {
             bool exists = await _bookingRepository.HasBookingOnDateAsync(newBooking.customerId, newBooking.Date);
             if (exists)
             {
                 throw new ArgumentException("כבר קיימת לך הזמנה לתאריך זה.");
             }
-            _bookingRepository.AddBooking(newBooking);
-            _bookingRepository.Save();
-
+            await _bookingRepository.AddBookingAsync(newBooking);
+            await _bookingRepository.SaveAsync();
         }
 
-        public void UpdateBooking(Bookings updatedBooking) 
+        public async Task UpdateBookingAsync(Bookings updatedBooking)
         {
-            _bookingRepository.UpdateBooking(updatedBooking);
-            _bookingRepository.Save();
+            await _bookingRepository.UpdateBookingAsync(updatedBooking);
+            await _bookingRepository.SaveAsync();
         }
 
-        public void DeleteBooking(int id)
+        public async Task DeleteBookingAsync(int id)
         {
-            _bookingRepository.DeleteBooking(id);
-            _bookingRepository.Save();
+            await _bookingRepository.DeleteBookingAsync(id);
+            await _bookingRepository.SaveAsync();
         }
-
     }
 }

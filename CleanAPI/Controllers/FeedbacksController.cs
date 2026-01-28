@@ -2,11 +2,10 @@
 using Clean.Core.DTO;
 using Clean.Core.Entities;
 using Clean.Core.Services;
-using Clean.Service;
 using CleanAPI.Models;
 using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using System.Collections.Generic;
+using System.Threading.Tasks; 
 
 namespace CleanAPI.Controllers
 {
@@ -14,26 +13,29 @@ namespace CleanAPI.Controllers
     [ApiController]
     public class FeedbacksController : ControllerBase
     {
-        private readonly IFeedbackService _feedbackServise;
+        private readonly IFeedbackService _feedbackService; 
         private readonly IMapper _mapper;
 
-        public FeedbacksController(IFeedbackService feedbackServise, IMapper map)
+        public FeedbacksController(IFeedbackService feedbackService, IMapper map)
         {
-            _feedbackServise = feedbackServise;
+            _feedbackService = feedbackService;
             _mapper = map;
-
         }
+
+        // GET: api/Feedbacks
         [HttpGet]
-        public ActionResult Get()
+        public async Task<ActionResult> Get()
         {
-            var feedback = _feedbackServise.GetAllFeedbacks();
-            return Ok(_mapper.Map<List<FeedbackDTO>>(feedback));
+            var feedbacks = await _feedbackService.GetAllFeedbacksAsync();
+            return Ok(_mapper.Map<List<FeedbackDTO>>(feedbacks));
         }
 
+        // GET api/Feedbacks/5
         [HttpGet("{id}")]
-        public ActionResult Get(int id)
+        public async Task<ActionResult> Get(int id)
         {
-            var s = _feedbackServise.GetAllFeedbacks().Find(s => s.Id == id);
+            var s = await _feedbackService.GetFeedbackByIdAsync(id);
+
             if (s == null)
             {
                 return NotFound();
@@ -41,34 +43,31 @@ namespace CleanAPI.Controllers
             return Ok(s);
         }
 
-        // POST api/<FeedbacksController>
+        // POST api/Feedbacks
         [HttpPost]
-        public ActionResult Post([FromBody] FeedbackPostModel f)
+        public async Task<ActionResult> Post([FromBody] FeedbackPostModel f)
         {
-            var cl = _feedbackServise.GetAllFeedbacks().Find(s => s.CleanerId == f.CleanerId);
+            // המרה
             var feedback = _mapper.Map<Feedback>(f);
-            _feedbackServise.AddFeedback(feedback);
-            return Ok(feedback);
 
+            await _feedbackService.AddFeedbackAsync(feedback);
+
+            return Ok(feedback);
         }
 
-        //// PUT api/<FeedbacksController>/5
-        [HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-            
-        //}
-
-        // DELETE api/<FeedbacksController>/5
+        // DELETE api/Feedbacks/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            var f= _feedbackServise.GetFeedbackById(id);
+            var f = await _feedbackService.GetFeedbackByIdAsync(id);
+
             if (f != null)
             {
-                _feedbackServise.DeleteFeedback(id);
+                await _feedbackService.DeleteFeedbackAsync(id);
+                return Ok();
             }
 
+            return NotFound();
         }
     }
 }

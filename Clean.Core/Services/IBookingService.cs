@@ -9,11 +9,10 @@ namespace Clean.Core.Services
 {
     public interface IBookingService
     {
-        public List<Bookings> GetBookings();
-        public Bookings GetBookingsById(int id);
-        public Task AddBooking(Bookings newBooking);
-        public void UpdateBooking(Bookings updatedBooking);
-        public void DeleteBooking(int id);
-
+        Task<List<Bookings>> GetBookingsAsync();
+        Task<Bookings?> GetBookingsByIdAsync(int id);
+        Task AddBookingAsync(Bookings newBooking);
+        Task UpdateBookingAsync(Bookings updatedBooking);
+        Task DeleteBookingAsync(int id);
     }
 }

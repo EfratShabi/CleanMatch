@@ -3,8 +3,7 @@ using Clean.Core.Entities;
 using Clean.Core.Services;
 using Clean.Service;
 using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using System.Threading.Tasks; 
 
 namespace CleanAPI.Controllers
 {
@@ -14,6 +13,7 @@ namespace CleanAPI.Controllers
     {
         private readonly IBookingService _bookingService;
         private readonly IMapper _mapper;
+
         public BookingsController(IBookingService bookingService, IMapper map)
         {
             _bookingService = bookingService;
@@ -22,16 +22,16 @@ namespace CleanAPI.Controllers
 
         // GET: api/<BookingsController>
         [HttpGet]
-        public ActionResult Get()
+        public async Task<ActionResult> Get()
         {
-            return Ok(_bookingService.GetBookings());
+            return Ok(await _bookingService.GetBookingsAsync());
         }
 
         // GET api/<BookingsController>/5
         [HttpGet("{id}")]
-        public ActionResult Get(int id)
+        public async Task<ActionResult> Get(int id)
         {
-            var b = _bookingService.GetBookings().Find(b => b.BookingCode == id);
+            var b = await _bookingService.GetBookingsByIdAsync(id);
             if (b == null)
             {
                 return NotFound();
@@ -41,47 +41,56 @@ namespace CleanAPI.Controllers
 
         // POST api/<BookingsController>
         [HttpPost]
-        public ActionResult Post([FromBody] Bookings newBooking)
+        public async Task<ActionResult> Post([FromBody] Bookings newBooking)
         {
-            var exsitBooking = _bookingService.GetBookings().Find(b => b.BookingCode == newBooking.BookingCode);
-            if (exsitBooking == null)
-            {
-                _bookingService.GetBookings().Add(newBooking);
-                return Ok(exsitBooking);
-            }
-            else
-                return Conflict(exsitBooking);
+            var existingBooking = await _bookingService.GetBookingsByIdAsync(newBooking.BookingCode);
 
+            if (existingBooking == null)
+            {
+                try
+                {
+
+                    await _bookingService.AddBookingAsync(newBooking);
+                    return Ok(newBooking);
+                }
+                catch (ArgumentException ex)
+                {
+                    return Conflict(ex.Message);
+                }
+            }
+
+            return Conflict("הזמנה עם קוד זה כבר קיימת");
         }
 
 
         [HttpPut("{id}")]
-        public ActionResult Put(int id, [FromBody] Bookings updatedBooking)
+        public async Task<ActionResult> Put(int id, [FromBody] Bookings updatedBooking)
         {
-            // עכשיו המחשב מכיר את updatedBooking כי הצהרנו עליו למעלה
-            var existingBooking = _bookingService.GetBookings().Find(b => b.BookingCode == id);
+            var existingBooking = await _bookingService.GetBookingsByIdAsync(id);
 
             if (existingBooking == null)
             {
                 return NotFound();
             }
-            _bookingService.GetBookings().Remove(existingBooking);
-            // הנה השימוש במשתנה שהצהרנו עליו בכותרת הפונקציה
-            _bookingService.GetBookings().Add(updatedBooking);
+
+            await _bookingService.UpdateBookingAsync(updatedBooking);
 
             return Ok(updatedBooking);
         }
-        // DELETE api/<BookingsController>/5
+
         [HttpDelete("{id}")]
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            var existingBooking = _bookingService.GetBookings().Find(b => b.BookingCode == id);
-            if (existingBooking==null)
+            var existingBooking = await _bookingService.GetBookingsByIdAsync(id);
+
+            if (existingBooking == null)
             {
                 return NotFound();
             }
-            _bookingService.GetBookings().Remove(existingBooking);
-            return Ok(existingBooking);
+
+            await _bookingService.DeleteBookingAsync(id);
+
+            return Ok();
         }
     }
 }

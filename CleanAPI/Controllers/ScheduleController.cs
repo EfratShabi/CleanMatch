@@ -1,8 +1,7 @@
 ﻿using Clean.Core.Entities;
 using Clean.Core.Services;
 using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using System.Threading.Tasks; // חובה
 
 namespace CleanAPI.Controllers
 {
@@ -10,24 +9,27 @@ namespace CleanAPI.Controllers
     [ApiController]
     public class ScheduleController : ControllerBase
     {
-        private IScheduleService _scheduleServise;
-        public ScheduleController(IScheduleService scheduleServise)
+        private readonly IScheduleService _scheduleService; // תיקון כתיב קטן (Service)
+
+        public ScheduleController(IScheduleService scheduleService)
         {
-            _scheduleServise = scheduleServise;
+            _scheduleService = scheduleService;
         }
 
         // GET: api/<ScheduleController>
         [HttpGet]
-        public ActionResult Get()
+        public async Task<ActionResult> Get()
         {
-            return Ok(_scheduleServise.GetAll());
+            return Ok(await _scheduleService.GetAllAsync());
         }
 
         // GET api/<ScheduleController>/5
         [HttpGet("{id}")]
-        public ActionResult Get(int id)
+        public async Task<ActionResult> Get(int id)
         {
-            var s = _scheduleServise.GetAll().Find(s => s.Id == id);
+            // שליפה ישירה ויעילה דרך הסרביס
+            var s = await _scheduleService.GetByIdAsync(id);
+
             if (s == null)
             {
                 return NotFound();
@@ -36,23 +38,41 @@ namespace CleanAPI.Controllers
         }
 
         // POST api/<ScheduleController>
-        //[HttpPost]
-        //public ActionResult Post([FromBody] Schedule newSchedule)
-        //{
-
-        //}
+        [HttpPost]
+        public async Task<ActionResult> Post([FromBody] Schedule newSchedule)
+        {
+            // הוספה אסינכרונית
+            await _scheduleService.AddScheduleAsync(newSchedule);
+            return Ok(newSchedule);
+        }
 
         // PUT api/<ScheduleController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<ActionResult> Put(int id, [FromBody] Schedule updatedSchedule)
         {
+            // בדיקה אם קיים
+            var existingSchedule = await _scheduleService.GetByIdAsync(id);
+            if (existingSchedule == null)
+            {
+                return NotFound();
+            }
 
+            await _scheduleService.UpdateScheduleAsync(updatedSchedule);
+            return Ok(updatedSchedule);
         }
 
         // DELETE api/<ScheduleController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
+            var existingSchedule = await _scheduleService.GetByIdAsync(id);
+            if (existingSchedule == null)
+            {
+                return NotFound();
+            }
+
+            await _scheduleService.DeleteScheduleAsync(id);
+            return Ok();
         }
     }
 }

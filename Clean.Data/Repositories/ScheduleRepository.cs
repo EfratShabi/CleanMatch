@@ -1,5 +1,6 @@
 ﻿using Clean.Core.Entities;
 using Clean.Core.Repositories;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,38 +9,48 @@ using System.Threading.Tasks;
 
 namespace Clean.Data.Repositories
 {
-    public class ScheduleRepository:IScheduleRepository
+    public class ScheduleRepository : IScheduleRepository
     {
         private readonly DataContext _context;
+
         public ScheduleRepository(DataContext context)
         {
             _context = context;
         }
-        public List<Schedule> GetAll()
-        {
-            return _context.Schedule.ToList();
 
-        }
-        public Schedule GetById(int id)
+        public async Task<List<Schedule>> GetAllAsync()
         {
-            var schedule = _context.Schedule.ToList().Find(schedule => schedule.Id == id);
-            return schedule;
+            return await _context.Schedule.ToListAsync();
         }
-        public void AddSchedule(Schedule newSchedule)
+
+        public async Task<Schedule?> GetByIdAsync(int id)
         {
-            _context.Schedule.Add(newSchedule);
+            return await _context.Schedule.FindAsync(id);
         }
-        public void UpdateSchedule(Schedule updatedSchedule)
+
+        public async Task AddScheduleAsync(Schedule newSchedule)
+        {
+            await _context.Schedule.AddAsync(newSchedule);
+        }
+
+        public async Task UpdateScheduleAsync(Schedule updatedSchedule)
         {
             _context.Schedule.Update(updatedSchedule);
+            await Task.CompletedTask;
         }
-        public void DeleteSchedule(int id)
+
+        public async Task DeleteScheduleAsync(int id)
         {
-            _context.Schedule.Remove(GetById(id));
+            var schedule = await GetByIdAsync(id);
+            if (schedule != null)
+            {
+                _context.Schedule.Remove(schedule);
+            }
         }
-        public void Save()
+
+        public async Task SaveAsync()
         {
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }

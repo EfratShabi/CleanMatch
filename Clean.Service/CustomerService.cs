@@ -9,48 +9,46 @@ using System.Threading.Tasks;
 
 namespace Clean.Service
 {
-    public class CustomerService:ICustomerService
+    public class CustomerService : ICustomerService
     {
         private readonly ICustomerRepository _customerRepository;
-        public CustomerService (ICustomerRepository customerRepository)
+
+        public CustomerService(ICustomerRepository customerRepository)
         {
-            _customerRepository= customerRepository;
+            _customerRepository = customerRepository;
         }
 
-        public List<Customers> GetAllCustomers()
+        public async Task<List<Customers>> GetAllCustomersAsync()
         {
-            return _customerRepository.GetAllCustomers();
-        }
-        public Customers GetCustomerByIdofCustomer(int IdOfCustomer)
-        {
-           return _customerRepository.GetCustomerByIdofCustomer(IdOfCustomer);
+            return await _customerRepository.GetAllCustomersAsync();
         }
 
-        public Customers GetCustomerById(int id)
+        public async Task<Customers?> GetCustomerByIdofCustomerAsync(int IdOfCustomer)
         {
-            return _customerRepository.GetCustomerById(id);
-        }
-        public void AddCustomer(Customers newCustomer)
-        {
-            _customerRepository.AddCustomer(newCustomer);
-            _customerRepository.Save();
-        }
-        public void UpdateCustomer(Customers updatedCustomer)
-        {
-            _customerRepository.UpdateCustomer(updatedCustomer);
-            _customerRepository.Save();
-        }
-        public void DeleteCustomer(int id)
-        {
-            _customerRepository.DeleteCustomer(id);
-            _customerRepository.Save();
+            return await _customerRepository.GetCustomerByIdofCustomerAsync(IdOfCustomer);
         }
 
+        public async Task<Customers?> GetCustomerByIdAsync(int id)
+        {
+            return await _customerRepository.GetCustomerByIdAsync(id);
+        }
 
+        public async Task AddCustomerAsync(Customers newCustomer)
+        {
+            await _customerRepository.AddCustomerAsync(newCustomer);
+            await _customerRepository.SaveAsync();
+        }
+
+        public async Task UpdateCustomerAsync(Customers updatedCustomer)
+        {
+            await _customerRepository.UpdateCustomerAsync(updatedCustomer);
+            await _customerRepository.SaveAsync();
+        }
+
+        public async Task DeleteCustomerAsync(int id)
+        {
+            await _customerRepository.DeleteCustomerAsync(id);
+            await _customerRepository.SaveAsync();
+        }
     }
 }
-
-//public void AddCustomer(Customers newCustomer);
-//public void UpdateCustomer(Customers newCustomer);
-
-//public void DeleteCustomer(int id);

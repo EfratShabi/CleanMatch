@@ -2,11 +2,10 @@
 using Clean.Core.DTO;
 using Clean.Core.Entities;
 using Clean.Core.Services;
-using Clean.Service;
 using CleanAPI.Models;
 using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace CleanAPI.Controllers
 {
@@ -14,75 +13,85 @@ namespace CleanAPI.Controllers
     [ApiController]
     public class CustomersController : ControllerBase
     {
-        private readonly ICustomerService _customerServise;
+        private readonly ICustomerService _customerService;
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
 
-
-        public CustomersController(ICustomerService customerServise, IUserService userService, IMapper map)
+        public CustomersController(ICustomerService customerService, IUserService userService, IMapper map)
         {
-            _customerServise = customerServise;
+            _customerService = customerService;
             _userService = userService;
             _mapper = map;
         }
 
-
         // GET: api/<CustomersController>
         [HttpGet]
-        public ActionResult Get()
+        public async Task<ActionResult> Get()
         {
-            var customers = _customerServise.GetAllCustomers();
+            var customers = await _customerService.GetAllCustomersAsync();
             return Ok(_mapper.Map<List<CustomerDTO>>(customers));
         }
 
         // GET api/<CustomersController>/5
         [HttpGet("{id}")]
-        public ActionResult Get(int id)
+        public async Task<ActionResult> Get(int id)
         {
-            var a = _customerServise.GetCustomerById(id);
-            if (a == null)
+            var customer = await _customerService.GetCustomerByIdAsync(id);
+            if (customer == null)
             {
                 return NotFound();
             }
-            return Ok(_mapper.Map<CustomerDTO>(a));
+            return Ok(_mapper.Map<CustomerDTO>(customer));
         }
 
         // POST api/<CustomersController>
+        // --- כאן התיקון ---
         [HttpPost]
-        public ActionResult Post([FromBody] Customers customer)
+        public async Task<ActionResult> Post([FromBody] Customers customer)
         {
-            var cl = _customerServise.GetCustomerByIdofCustomer(customer.IdOfCustomer);
+            // 1. בדיקה אם קיים
+            var cl = await _customerService.GetCustomerByIdofCustomerAsync(customer.IdOfCustomer);
+
             if (cl == null)
             {
-                return Ok(_mapper.Map<Customers>(customer));
+                // 2. הוספה לדאטה-בייס (השורה שהוספנו)
+                await _customerService.AddCustomerAsync(customer);
+
+                // 3. החזרת תשובה
+                // (הנחתי שאת רוצה להחזיר DTO, אם לא - תשני חזרה למה שהיה)
+                return Ok(_mapper.Map<CustomerDTO>(customer));
             }
+
             return Conflict();
         }
 
         // PUT api/<CustomersController>/5
         [HttpPut("{id}")]
-        public ActionResult Put(int id, [FromBody] CustomerPostModel cu)
+        public async Task<ActionResult> Put(int id, [FromBody] CustomerPostModel cu)
         {
-            var c = _customerServise.GetCustomerById(id);
+            var c = await _customerService.GetCustomerByIdAsync(id);
             if (c == null)
             {
                 return NotFound();
             }
+
             _mapper.Map(cu, c);
-            _customerServise.UpdateCustomer(c);
+
+            await _customerService.UpdateCustomerAsync(c);
+
             return Ok(_mapper.Map<CustomerDTO>(c));
         }
 
         // DELETE api/<CustomersController>/5
         [HttpDelete("{id}")]
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            var c = _customerServise.GetCustomerById(id);
+            var c = await _customerService.GetCustomerByIdAsync(id);
             if (c == null)
             {
                 return NotFound();
             }
-            _customerServise.DeleteCustomer(id);
+            await _customerService.DeleteCustomerAsync(id);
             return Ok();
         }
     }

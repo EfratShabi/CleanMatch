@@ -1,5 +1,6 @@
 ﻿using Clean.Core.Entities;
 using Clean.Core.Repositories;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,32 +16,40 @@ namespace Clean.Data.Repositories
         {
             _context = context;
         }
-        public List<Feedback> GetAllFeedbacks()
-        {
-            return _context.Feedback.ToList();
 
+        public async Task<List<Feedback>> GetAllFeedbacksAsync()
+        {
+            return await _context.Feedback.ToListAsync();
         }
 
-        public Feedback GetFeedbackById(int id)
+        public async Task<Feedback?> GetFeedbackByIdAsync(int id)
         {
-            var feedback = _context.Feedback.ToList().Find(feedback => feedback.Id == id);
-            return feedback;
+            return await _context.Feedback.FindAsync(id);
         }
-        public void AddFeedback(Feedback newFeedback)
+
+        public async Task AddFeedbackAsync(Feedback newFeedback)
         {
-            _context.Feedback.Add(newFeedback);
+            await _context.Feedback.AddAsync(newFeedback);
         }
-        public void UpdateFeedback(Feedback updatedFeedback)
+
+        public async Task UpdateFeedbackAsync(Feedback updatedFeedback)
         {
             _context.Feedback.Update(updatedFeedback);
+            await Task.CompletedTask;
         }
-        public  void DeleteFeedback(int id)
+
+        public async Task DeleteFeedbackAsync(int id)
         {
-            _context.Feedback.Remove(GetFeedbackById(id));
+            var feedback = await GetFeedbackByIdAsync(id);
+            if (feedback != null)
+            {
+                _context.Feedback.Remove(feedback);
+            }
         }
-        public void Save()
+
+        public async Task SaveAsync()
         {
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }

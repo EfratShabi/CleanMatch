@@ -1,21 +1,20 @@
 ﻿using Clean.Core.Entities;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading.Tasks; // חובה בשביל Task
 
 namespace Clean.Core.Repositories
 {
     public interface IBookingRepository
     {
         Task<bool> HasBookingOnDateAsync(int customerId, DateTime date);
-        public List<Bookings> GetBookings();
-        public Bookings GetBookingsById(int id);
+        Task<List<Bookings>> GetBookingsAsync();
+        Task<Bookings?> GetBookingsByIdAsync(int id);
+        Task AddBookingAsync(Bookings newBooking);
+        Task UpdateBookingAsync(Bookings updatedBooking);
+        Task DeleteBookingAsync(int id);
 
-        public void AddBooking(Bookings newBooking);
-        public void UpdateBooking(Bookings updatedBooking);
-        public void DeleteBooking(int id);
-        public void Save();
+        // שמירה אסינכרונית
+        Task SaveAsync();
     }
 }

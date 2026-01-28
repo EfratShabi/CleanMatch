@@ -9,10 +9,10 @@ namespace Clean.Core.Services
 {
     public interface IScheduleService
     {
-        public List<Schedule> GetAll();
-        public Schedule GetById(int id);
-        public void AddSchedule(Schedule newSchedule);
-        public void UpdateSchedule(Schedule updatedSchedule);
-        public void DeleteSchedule(int id);
+        Task<List<Schedule>> GetAllAsync();
+        Task<Schedule?> GetByIdAsync(int id);
+        Task AddScheduleAsync(Schedule newSchedule);
+        Task UpdateScheduleAsync(Schedule updatedSchedule);
+        Task DeleteScheduleAsync(int id);
     }
 }

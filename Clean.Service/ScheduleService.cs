@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Clean.Service
 {
-    public class ScheduleService:IScheduleService
+    public class ScheduleService : IScheduleService
     {
         private readonly IScheduleRepository _scheduleRepository;
 
@@ -17,28 +17,33 @@ namespace Clean.Service
         {
             _scheduleRepository = scheduleRepository;
         }
-        public List<Schedule> GetAll()
+
+        public async Task<List<Schedule>> GetAllAsync()
         {
-            return _scheduleRepository.GetAll();
+            return await _scheduleRepository.GetAllAsync();
         }
-        public Schedule GetById(int id)
+
+        public async Task<Schedule?> GetByIdAsync(int id)
         {
-            return _scheduleRepository.GetById(id);
+            return await _scheduleRepository.GetByIdAsync(id);
         }
-        public void AddSchedule(Schedule newSchedule)
+
+        public async Task AddScheduleAsync(Schedule newSchedule)
         {
-            _scheduleRepository.AddSchedule(newSchedule);
-            _scheduleRepository.Save();
+            await _scheduleRepository.AddScheduleAsync(newSchedule);
+            await _scheduleRepository.SaveAsync();
         }
-        public void UpdateSchedule(Schedule updatedSchedule)
+
+        public async Task UpdateScheduleAsync(Schedule updatedSchedule)
         {
-            _scheduleRepository.UpdateSchedule(updatedSchedule);
-            _scheduleRepository.Save();
+            await _scheduleRepository.UpdateScheduleAsync(updatedSchedule);
+            await _scheduleRepository.SaveAsync();
         }
-        public void DeleteSchedule(int id)
+
+        public async Task DeleteScheduleAsync(int id)
         {
-            _scheduleRepository.DeleteSchedule(id);
-            _scheduleRepository.Save();
+            await _scheduleRepository.DeleteScheduleAsync(id);
+            await _scheduleRepository.SaveAsync();
         }
     }
 }

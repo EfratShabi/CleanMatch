@@ -3,30 +3,23 @@ using Clean.Core.Repositories;
 using Clean.Core.Services;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.IO;
 
 namespace Clean.Service
 {
-    public class FeedbackService: IFeedbackService
+    public class FeedbackService : IFeedbackService
     {
         private readonly IFeedbackRepository _feedbackRepository;
-
         private readonly HashSet<string> _badwords;
-        
-        
-        
+
         public FeedbackService(IFeedbackRepository feedbackRepository)
         {
-            
             _feedbackRepository = feedbackRepository;
             _badwords = LoadBadWords();
- 
         }
-
-
 
         private HashSet<string> LoadBadWords()
         {
@@ -41,30 +34,33 @@ namespace Clean.Service
             return new HashSet<string>();
         }
 
-        public List<Feedback> GetAllFeedbacks()
+        public async Task<List<Feedback>> GetAllFeedbacksAsync()
         {
-            return _feedbackRepository.GetAllFeedbacks();
+            return await _feedbackRepository.GetAllFeedbacksAsync();
         }
-        public Feedback GetFeedbackById(int id)
-        {
-            return _feedbackRepository.GetFeedbackById(id);
-        }
-        public void AddFeedback(Feedback newFeedback)
-        {
-            _feedbackRepository.AddFeedback(newFeedback);
-            _feedbackRepository.Save();
-        }
-        public void UpdateFeedback(Feedback updatedFeedback)
-        {
-            _feedbackRepository.UpdateFeedback(updatedFeedback);
-            _feedbackRepository.Save();
-        }
-        public void DeleteFeedback(int id)
-        {
-            _feedbackRepository.DeleteFeedback(id);
-            _feedbackRepository.Save();
 
+        public async Task<Feedback?> GetFeedbackByIdAsync(int id)
+        {
+            return await _feedbackRepository.GetFeedbackByIdAsync(id);
         }
-       
+
+        public async Task AddFeedbackAsync(Feedback newFeedback)
+        {
+            // כאן אפשר להוסיף את הבדיקה של המילים הרעות מול _badwords אם צריך
+            await _feedbackRepository.AddFeedbackAsync(newFeedback);
+            await _feedbackRepository.SaveAsync();
+        }
+
+        public async Task UpdateFeedbackAsync(Feedback updatedFeedback)
+        {
+            await _feedbackRepository.UpdateFeedbackAsync(updatedFeedback);
+            await _feedbackRepository.SaveAsync();
+        }
+
+        public async Task DeleteFeedbackAsync(int id)
+        {
+            await _feedbackRepository.DeleteFeedbackAsync(id);
+            await _feedbackRepository.SaveAsync();
+        }
     }
 }

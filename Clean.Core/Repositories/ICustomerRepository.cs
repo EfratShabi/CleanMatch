@@ -1,22 +1,20 @@
-﻿
-using Clean.Core.Entities;
+﻿using Clean.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading.Tasks; // <--- חובה להוסיף את זה!
 
 namespace Clean.Core.Repositories
 {
     public interface ICustomerRepository
     {
-        public List<Customers> GetAllCustomers();
-        public  Customers GetCustomerById(int id);
-        public Customers GetCustomerByIdofCustomer(int IdOfCustomer);
-        public void AddCustomer(Customers newCustomer);
-        public void UpdateCustomer(Customers newCustomer);
-        public void DeleteCustomer(int id);
-        public void Save();
-
+        Task<List<Customers>> GetAllCustomersAsync();
+        Task<Customers?> GetCustomerByIdAsync(int id);
+        Task<Customers?> GetCustomerByIdofCustomerAsync(int IdOfCustomer);
+        Task AddCustomerAsync(Customers newCustomer);
+        Task UpdateCustomerAsync(Customers newCustomer);
+        Task DeleteCustomerAsync(int id);
+        Task SaveAsync();
     }
 }

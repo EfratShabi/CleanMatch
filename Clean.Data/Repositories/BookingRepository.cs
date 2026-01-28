@@ -1,6 +1,6 @@
 ﻿using Clean.Core.Entities;
 using Clean.Core.Repositories;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore; 
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,41 +18,48 @@ namespace Clean.Data.Repositories
             _context = context;
         }
 
-        public List<Bookings> GetBookings()
+        public async Task<List<Bookings>> GetBookingsAsync()
         {
-            return _context.Bookings.ToList();
-        }
-        public Bookings GetBookingsById(int id)
-        {
-            var b=_context.Bookings.ToList().Find(b => b.BookingCode == id);
-            return b;
+            return await _context.Bookings.ToListAsync();
         }
 
-        public void AddBooking(Bookings newBooking)
+        public async Task<Bookings?> GetBookingsByIdAsync(int id)
         {
-            _context.Bookings.Add(newBooking);
-            
+            // שיפור ביצועים: שליפה ישירה מהדאטה בייס במקום להביא את הכל לזיכרון
+            // הנחתי ש-BookingCode הוא המזהה הייחודי
+            return await _context.Bookings.FirstOrDefaultAsync(b => b.BookingCode == id);
         }
-        public void UpdateBooking(Bookings updatedBooking)
+
+        public async Task AddBookingAsync(Bookings newBooking)
+        {
+            await _context.Bookings.AddAsync(newBooking);
+        }
+
+        public async Task UpdateBookingAsync(Bookings updatedBooking)
         {
             _context.Bookings.Update(updatedBooking);
+            await Task.CompletedTask;
         }
 
-        public void DeleteBooking(int id)
+        public async Task DeleteBookingAsync(int id)
         {
-            _context.Bookings.Remove(GetBookingsById(id));
+            var booking = await GetBookingsByIdAsync(id);
+            if (booking != null)
+            {
+                _context.Bookings.Remove(booking);
+            }
         }
+
         public async Task<bool> HasBookingOnDateAsync(int customerId, DateTime date)
         {
-            return await _context.Bookings.AnyAsync(b=>
-            b.customerId==customerId&&b.Date.Date==date.Date
+            return await _context.Bookings.AnyAsync(b =>
+                b.customerId == customerId && b.Date.Date == date.Date
             );
         }
-        public void Save()
-        {
-            _context.SaveChanges();
-        }
 
+        public async Task SaveAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
     }
 }
-

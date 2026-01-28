@@ -9,11 +9,10 @@ namespace Clean.Core.Services
 {
     public interface IFeedbackService
     {
-        public List<Feedback> GetAllFeedbacks();
-        public Feedback GetFeedbackById(int id);
-        public void AddFeedback(Feedback newFeedback);
-        public void UpdateFeedback(Feedback updatedFeedback);
-        public void DeleteFeedback(int id);
-       
+        Task<List<Feedback>> GetAllFeedbacksAsync();
+        Task<Feedback?> GetFeedbackByIdAsync(int id);
+        Task AddFeedbackAsync(Feedback newFeedback);
+        Task UpdateFeedbackAsync(Feedback updatedFeedback);
+        Task DeleteFeedbackAsync(int id);
     }
 }
