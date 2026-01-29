@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 namespace Clean.Core
 {
     public class MappingProfile:Profile
@@ -16,6 +15,8 @@ namespace Clean.Core
             CreateMap<Cleaners, CleanerDTO>().ReverseMap();
             CreateMap<Feedback, FeedbackDTO>().ReverseMap();
             CreateMap<Customers, CustomerDTO>().ReverseMap();
+
+           
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Clean.Core.Entities;
 using Clean.Core.Repositories;
-using Microsoft.EntityFrameworkCore; // <--- אל תשכחי את השורה הזו! חייב אותה בשביל ToListAsync
+using Microsoft.EntityFrameworkCore; 
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,14 +22,14 @@ namespace Clean.Data.Repositories
             return await _context.Customers.ToListAsync();
         }
 
-        public async Task<Customers?> GetCustomerByIdofCustomerAsync(int IdOfCustomer)
-        {
-            return await _context.Customers.FirstOrDefaultAsync(c => c.IdOfCustomer == IdOfCustomer);
-        }
+        //public async Task<Customers?> GetCustomerByIdofCustomerAsync(int IdOfCustomer)
+        //{
+        //    return await _context.Customers.FirstOrDefaultAsync(c => c.IdOfCustomer == IdOfCustomer);
+        //}
 
         public async Task<Customers?> GetCustomerByIdAsync(int id)
         {
-            return await _context.Customers.FindAsync(id);
+            return await _context.Customers.FirstOrDefaultAsync(c => c.IdOfCustomer == id);
         }
 
         public async Task AddCustomerAsync(Customers newCustomer)

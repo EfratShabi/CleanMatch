@@ -3,14 +3,19 @@ using Clean.Core.DTO;
 using Clean.Core.Entities;
 using Clean.Core.Services;
 using CleanAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using static Clean.Core.Entities.User;
 
 namespace CleanAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "customer,manager")]
+
+
     public class CustomersController : ControllerBase
     {
         private readonly ICustomerService _customerService;
@@ -45,24 +50,33 @@ namespace CleanAPI.Controllers
         }
 
         // POST api/<CustomersController>
-        // --- כאן התיקון ---
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] Customers customer)
+        [AllowAnonymous] 
+        public async Task<ActionResult> Post([FromBody] CustomerPostModel customerModel)
         {
-            // 1. בדיקה אם קיים
-            var cl = await _customerService.GetCustomerByIdofCustomerAsync(customer.IdOfCustomer);
+            var existingCustomer = await _customerService.GetCustomerByIdAsync(customerModel.IdOfCustomer);
 
-            if (cl == null)
+            if (existingCustomer != null)
             {
-                // 2. הוספה לדאטה-בייס (השורה שהוספנו)
-                await _customerService.AddCustomerAsync(customer);
-
-                // 3. החזרת תשובה
-                // (הנחתי שאת רוצה להחזיר DTO, אם לא - תשני חזרה למה שהיה)
-                return Ok(_mapper.Map<CustomerDTO>(customer));
+                return Conflict();
             }
 
-            return Conflict();
+            var user = new User
+            {
+                UserName = customerModel.UserName,
+                Password = customerModel.Password,
+                Role = eRole.customer 
+            };
+            var addedUser = await _userService.AddUserAsync(user);
+
+            var newCustomer = _mapper.Map<Customers>(customerModel);
+
+            newCustomer.User = addedUser;
+            newCustomer.UserId = addedUser.Id;
+
+            await _customerService.AddCustomerAsync(newCustomer);
+
+            return Ok(_mapper.Map<CustomerDTO>(newCustomer));
         }
 
         // PUT api/<CustomersController>/5

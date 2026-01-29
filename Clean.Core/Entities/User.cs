@@ -16,7 +16,7 @@ namespace Clean.Core.Entities
 
         public enum eRole
         {
-            cleaner,customer
+            cleaner,customer,manager
         }
 
     }

@@ -23,10 +23,10 @@ namespace Clean.Service
             return await _customerRepository.GetAllCustomersAsync();
         }
 
-        public async Task<Customers?> GetCustomerByIdofCustomerAsync(int IdOfCustomer)
-        {
-            return await _customerRepository.GetCustomerByIdofCustomerAsync(IdOfCustomer);
-        }
+        //public async Task<Customers?> GetCustomerByIdofCustomerAsync(int IdOfCustomer)
+        //{
+        //    return await _customerRepository.GetCustomerByIdofCustomerAsync(IdOfCustomer);
+        //}
 
         public async Task<Customers?> GetCustomerByIdAsync(int id)
         {
@@ -48,6 +48,10 @@ namespace Clean.Service
         public async Task DeleteCustomerAsync(int id)
         {
             await _customerRepository.DeleteCustomerAsync(id);
+            await _customerRepository.SaveAsync();
+        }
+        public async Task SaveAsync()
+        {
             await _customerRepository.SaveAsync();
         }
     }

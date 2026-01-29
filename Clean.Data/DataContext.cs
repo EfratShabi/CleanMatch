@@ -1,6 +1,7 @@
 ﻿
 using Clean.Core.Entities;
 using Microsoft.EntityFrameworkCore;
+using static Clean.Core.Entities.User;
 
 namespace Clean.Data
 {
@@ -33,6 +34,15 @@ namespace Clean.Data
                 .WithMany()
                 .HasForeignKey(c => c.UserId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+
+            modelBuilder.Entity<User>(b =>
+            {
+                b.Property(e => e.Role)
+                    .HasConversion(
+                        v => v.ToString(), 
+                        v => Enum.Parse<eRole>(v)); 
+            });
         }
 
     }

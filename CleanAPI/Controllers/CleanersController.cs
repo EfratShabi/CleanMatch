@@ -4,6 +4,7 @@ using Clean.Core.Entities;
 using Clean.Core.Services;
 using Clean.Service;
 using CleanAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static Clean.Core.Entities.User;
 
@@ -13,6 +14,9 @@ namespace CleanAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "cleaner,manager")]
+
+
     public class CleanersController : ControllerBase
     {
         //private IDataContext _cleanerServise;
@@ -29,6 +33,7 @@ namespace CleanAPI.Controllers
 
         // GET: api/<CleanersController>
         [HttpGet]
+        [AllowAnonymous]
         public  async Task<ActionResult> Get()
         {
             var cleaners=await _cleanerService.GetAllCleanersAsync();
