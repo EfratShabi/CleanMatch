@@ -26,11 +26,16 @@ namespace Clean.Core.Entities
 
         public List<Availability> ArrAvailability { get; set; }
 
-       
+       public double Latitude { get; set; }//קו רוחב
+
+         public double Longitude { get; set; }//קו אורך
+
+
+
         //public int ScheduleId { get; set; }
         //public Schedule Schedule { get; set; }
 
-        
+
 
 
 
