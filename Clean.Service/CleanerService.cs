@@ -12,9 +12,13 @@ namespace Clean.Service
     public class CleanerService: ICleanerService
     {
         private readonly ICleanerRepository _cleanerRepository;
-        public CleanerService(ICleanerRepository cleanerRepository)
+        private readonly ILocationService _locationService;
+
+        public CleanerService(ICleanerRepository cleanerRepository, ILocationService locationService)
         {
             _cleanerRepository = cleanerRepository;
+            _locationService = locationService;
+
         }
         public  async Task<List<Cleaners>> GetAllCleanersAsync()
         {
@@ -31,7 +35,9 @@ namespace Clean.Service
         public async Task AddCleanerAsync(Cleaners newCleaner)
         {
            await _cleanerRepository.AddCleanerAsync(newCleaner);
-             await _cleanerRepository.SaveChangesAsync();
+           await _cleanerRepository.SaveChangesAsync();
+            
+
         }
         public  async Task UpdateCleanerAsync(Cleaners updatedCleaner)
         {

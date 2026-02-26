@@ -87,6 +87,7 @@ builder.Services.AddAuthentication(options =>
 
 // 6. הגדרת AutoMapper לסריקה של כל הפרופילים (גם ב-Core וגם ב-API)
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddScoped<ILocationService, LocationService>();
 
 var app = builder.Build();
 
