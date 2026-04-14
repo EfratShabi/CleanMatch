@@ -88,6 +88,15 @@ builder.Services.AddAuthentication(options =>
 // 6. הגדרת AutoMapper לסריקה של כל הפרופילים (גם ב-Core וגם ב-API)
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<ILocationService, LocationService>();
+var policy = "policy";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: policy, policy =>
+    {
+        policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+    });
+});
+
 
 var app = builder.Build();
 
@@ -102,6 +111,7 @@ app.UseHttpsRedirection();
 
 // חשוב: קודם אימות (מי את) ואז הרשאה (מה מותר לך)
 app.UseAuthentication();
+app.UseCors(policy);
 app.UseAuthorization();
 
 app.UseShabbat();
