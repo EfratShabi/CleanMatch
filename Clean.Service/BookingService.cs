@@ -20,7 +20,10 @@ namespace Clean.Service
         {
             return await _bookingRepository.GetBookingsAsync();
         }
-
+        public async Task<List<Bookings>> GetBookingByIDOfCleaners(int idOfCleaners)
+        {
+            return await _bookingRepository.GetBookingByIDOfCleaners(idOfCleaners);
+        }
         public async Task<Bookings?> GetBookingsByIdAsync(int id)
         {
             return await _bookingRepository.GetBookingsByIdAsync(id);

@@ -38,6 +38,16 @@ namespace CleanAPI.Controllers
             }
             return Ok(b);
         }
+        [HttpGet("by-cleaner/{cleanerId}")]
+        public async Task<ActionResult> GetByCleaners(int cleanerId)
+        {
+            var b = await _bookingService.GetBookingByIDOfCleaners(cleanerId);
+            if (b == null)
+            {
+                return NotFound();
+            }
+            return Ok(b);
+        }
 
         // POST api/<BookingsController>
         [HttpPost]

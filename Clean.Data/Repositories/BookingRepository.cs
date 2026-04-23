@@ -25,9 +25,12 @@ namespace Clean.Data.Repositories
 
         public async Task<Bookings?> GetBookingsByIdAsync(int id)
         {
-            // שיפור ביצועים: שליפה ישירה מהדאטה בייס במקום להביא את הכל לזיכרון
-            // הנחתי ש-BookingCode הוא המזהה הייחודי
+
             return await _context.Bookings.FirstOrDefaultAsync(b => b.BookingCode == id);
+        }
+        public async Task<List<Bookings>> GetBookingByIDOfCleaners(int idOfCleaners)
+        {
+            return await _context.Bookings.Where(b => b.cleanerId == idOfCleaners).ToListAsync();
         }
 
         public async Task AddBookingAsync(Bookings newBooking)
