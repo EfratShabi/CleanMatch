@@ -11,7 +11,8 @@ namespace CleanAPI.Models
 
         public TimeOnly EndWork { get; set; }
 
-        public int customerId { get; set; }
+        public int CustomersId { get; set; }
+        public int CleanersId { get; set; } 
 
     }
 }

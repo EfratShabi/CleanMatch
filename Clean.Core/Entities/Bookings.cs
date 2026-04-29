@@ -14,10 +14,10 @@ namespace Clean.Core.Entities
 
         public TimeOnly EndWork { get; set; }
 
-        public int customerId { get; set; }
+        public int CustomersId { get; set; }
         public Customers Customers { get; set; }
 
-        public int cleanerId { get; set; }
+        public int CleanersId { get; set; }
         public Cleaners Cleaners { get; set; }
 
 

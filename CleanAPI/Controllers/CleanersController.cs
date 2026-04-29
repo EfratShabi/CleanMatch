@@ -60,6 +60,7 @@ namespace CleanAPI.Controllers
 
         //POST api/<CleanersController>
         [HttpPost]
+        [AllowAnonymous]
         public async Task<ActionResult> Post([FromBody] CleanerPostModel c)
         {
             var user=new User { UserName = c.UserName,Password=c.Password,Role=Clean.Core.Entities.User.eRole.cleaner };

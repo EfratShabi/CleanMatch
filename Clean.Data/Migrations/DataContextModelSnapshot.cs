@@ -33,6 +33,9 @@ namespace Clean.Data.Migrations
                     b.Property<int>("CleanerId")
                         .HasColumnType("int");
 
+                    b.Property<int>("DayOfWeek")
+                        .HasColumnType("int");
+
                     b.Property<TimeSpan>("EndTime")
                         .HasColumnType("time");
 
@@ -43,7 +46,7 @@ namespace Clean.Data.Migrations
 
                     b.HasIndex("CleanerId");
 
-                    b.ToTable("Availability");
+                    b.ToTable("Availabilities");
                 });
 
             modelBuilder.Entity("Clean.Core.Entities.Bookings", b =>
@@ -236,32 +239,6 @@ namespace Clean.Data.Migrations
                     b.ToTable("Feedback");
                 });
 
-            modelBuilder.Entity("Clean.Core.Entities.Schedule", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CleanersId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("EndWork")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StartWork")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CleanersId");
-
-                    b.ToTable("Schedule");
-                });
-
             modelBuilder.Entity("Clean.Core.Entities.User", b =>
                 {
                     b.Property<int>("Id")
@@ -343,17 +320,6 @@ namespace Clean.Data.Migrations
                 {
                     b.HasOne("Clean.Core.Entities.Cleaners", "Cleaners")
                         .WithMany("ArrFidback")
-                        .HasForeignKey("CleanersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Cleaners");
-                });
-
-            modelBuilder.Entity("Clean.Core.Entities.Schedule", b =>
-                {
-                    b.HasOne("Clean.Core.Entities.Cleaners", "Cleaners")
-                        .WithMany()
                         .HasForeignKey("CleanersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

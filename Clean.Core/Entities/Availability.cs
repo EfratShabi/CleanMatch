@@ -11,7 +11,7 @@ namespace Clean.Core.Entities
         public int Id { get; set; }
         public int CleanerId { get; set; }
         public Cleaners Cleaner { get; set; }
-        int DayOfWeek { get; set; }
+        public int DayOfWeek { get; set; }
         public TimeSpan StartTime { get; set; }
         public TimeSpan EndTime { get; set; }
 

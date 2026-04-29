@@ -31,7 +31,7 @@ namespace Clean.Service
 
         public async Task AddBookingAsync(Bookings newBooking)
         {
-            bool exists = await _bookingRepository.HasBookingOnDateAsync(newBooking.customerId, newBooking.Date);
+            bool exists = await _bookingRepository.HasBookingOnDateAsync(newBooking.CustomersId, newBooking.Date);
             if (exists)
             {
                 throw new ArgumentException("כבר קיימת לך הזמנה לתאריך זה.");

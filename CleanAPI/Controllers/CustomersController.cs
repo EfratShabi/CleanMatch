@@ -31,6 +31,7 @@ namespace CleanAPI.Controllers
 
         // GET: api/<CustomersController>
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult> Get()
         {
             var customers = await _customerService.GetAllCustomersAsync();

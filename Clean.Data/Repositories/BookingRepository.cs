@@ -30,7 +30,7 @@ namespace Clean.Data.Repositories
         }
         public async Task<List<Bookings>> GetBookingByIDOfCleaners(int idOfCleaners)
         {
-            return await _context.Bookings.Where(b => b.cleanerId == idOfCleaners).ToListAsync();
+            return await _context.Bookings.Where(b => b.CleanersId == idOfCleaners).ToListAsync();
         }
 
         public async Task AddBookingAsync(Bookings newBooking)
@@ -56,7 +56,7 @@ namespace Clean.Data.Repositories
         public async Task<bool> HasBookingOnDateAsync(int customerId, DateTime date)
         {
             return await _context.Bookings.AnyAsync(b =>
-                b.customerId == customerId && b.Date.Date == date.Date
+                b.CustomersId == customerId && b.Date.Date == date.Date
             );
         }
 

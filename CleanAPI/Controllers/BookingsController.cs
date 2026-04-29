@@ -2,6 +2,7 @@
 using Clean.Core.Entities;
 using Clean.Core.Services;
 using Clean.Service;
+using CleanAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks; 
 
@@ -51,25 +52,21 @@ namespace CleanAPI.Controllers
 
         // POST api/<BookingsController>
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] Bookings newBooking)
+        public async Task<ActionResult> Post([FromBody] BookingPostModel bookingModel) // מקבלת את המודל הקצר
         {
-            var existingBooking = await _bookingService.GetBookingsByIdAsync(newBooking.BookingCode);
+            // 1. המרה מהמודל הקצר לישות המלאה של הדאטה בייס בעזרת המאפר
+            var newBooking = _mapper.Map<Bookings>(bookingModel);
 
-            if (existingBooking == null)
+            try
             {
-                try
-                {
-
-                    await _bookingService.AddBookingAsync(newBooking);
-                    return Ok(newBooking);
-                }
-                catch (ArgumentException ex)
-                {
-                    return Conflict(ex.Message);
-                }
+                // 2. שליחה לשירות (הסרוויס)
+                await _bookingService.AddBookingAsync(newBooking);
+                return Ok(newBooking);
             }
-
-            return Conflict("הזמנה עם קוד זה כבר קיימת");
+            catch (ArgumentException ex)
+            {
+                return Conflict(ex.Message);
+            }
         }
 
 

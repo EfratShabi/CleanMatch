@@ -11,6 +11,9 @@ namespace CleanAPI
         {
             CreateMap<CustomerPostModel, Customers>().ReverseMap();
             CreateMap<CleanerPostModel, Cleaners>().ReverseMap();
+            CreateMap<BookingPostModel, Bookings>().ReverseMap();
+             CreateMap<FeedbackPostModel, Feedback>().ReverseMap();
+
         }
 
     }

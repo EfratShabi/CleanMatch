@@ -11,12 +11,12 @@ namespace Clean.Data
         public DbSet<Cleaners> Cleaners { get; set; }
         public DbSet<Customers> Customers { get; set; }
         public DbSet<Bookings> Bookings { get; set; }
-        public DbSet<Schedule> Schedule { get; set; }
         public DbSet<Feedback> Feedback { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Availability> Availabilities { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=Clean_DB");
+            optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=Clean_DB;");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -43,6 +43,8 @@ namespace Clean.Data
                         v => v.ToString(), 
                         v => Enum.Parse<eRole>(v)); 
             });
+
+
         }
 
     }
