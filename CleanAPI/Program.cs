@@ -1,4 +1,4 @@
-using Clean.Core.Repositories;
+ο»Ώusing Clean.Core.Repositories;
 using Clean.Core.Services;
 using Clean.Data;
 using Clean.Data.Repositories;
@@ -20,7 +20,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 
 builder.Services.AddEndpointsApiExplorer();
 
-// 2. δβγψϊ Swagger ςν ΰτωψεϊ μδζπϊ Token
+// 2. Χ”Χ’Χ“Χ¨Χª Swagger ΧΆΧ ΧΧ¤Χ©Χ¨Χ•Χª ΧΧ”Χ–Χ Χª Token
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -48,10 +48,10 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-// 3. δβγψϊ αριρ δπϊεπιν (Database)
+// 3. Χ”Χ’Χ“Χ¨Χª Χ‘Χ΅Χ™Χ΅ Χ”Χ ΧªΧ•Χ Χ™Χ (Database)
 builder.Services.AddDbContext<DataContext>();
 
-// 4. δβγψϊ δζψχϊ ϊμειεϊ (Dependency Injection) μωιψεϊιν ωμ ΰτμιχφιιϊ δπιχιεο
+// 4. Χ”Χ’Χ“Χ¨Χª Χ”Χ–Χ¨Χ§Χª ΧªΧΧ•Χ™Χ•Χª (Dependency Injection) ΧΧ©Χ™Χ¨Χ•ΧªΧ™Χ Χ©Χ ΧΧ¤ΧΧ™Χ§Χ¦Χ™Χ™Χª Χ”Χ Χ™Χ§Χ™Χ•Χ
 builder.Services.AddScoped<ICleanerRepository, CleanerRepository>();
 builder.Services.AddScoped<ICleanerService, CleanerService>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
@@ -63,7 +63,7 @@ builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 
-// 5. δβγψϊ ΰιξεϊ (Authentication) - ζδ δϊιχεο μωβιΰϊ δ-500 ωχιαμϊ
+// 5. Χ”Χ’Χ“Χ¨Χª ΧΧ™ΧΧ•Χª (Authentication) - Χ–Χ” Χ”ΧªΧ™Χ§Χ•Χ ΧΧ©Χ’Χ™ΧΧª Χ”-500 Χ©Χ§Χ™Χ‘ΧΧª
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -83,7 +83,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// 6. δβγψϊ AutoMapper μρψιχδ ωμ λμ δτψετιμιν (βν α-Core εβν α-API)
+// 6. Χ”Χ’Χ“Χ¨Χª AutoMapper ΧΧ΅Χ¨Χ™Χ§Χ” Χ©Χ Χ›Χ Χ”Χ¤Χ¨Χ•Χ¤Χ™ΧΧ™Χ (Χ’Χ Χ‘-Core Χ•Χ’Χ Χ‘-API)
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<ILocationService, LocationService>();
 var policy = "policy";
@@ -98,7 +98,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// 7. δβγψϊ δ-Middleware αργψ δπλεο
+// 7. Χ”Χ’Χ“Χ¨Χª Χ”-Middleware Χ‘Χ΅Χ“Χ¨ Χ”Χ Χ›Χ•Χ
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -107,7 +107,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// ηωεα: χεγν ΰιξεϊ (ξι ΰϊ) εΰζ δψωΰδ (ξδ ξεϊψ μκ)
+// Χ—Χ©Χ•Χ‘: Χ§Χ•Χ“Χ ΧΧ™ΧΧ•Χª (ΧΧ™ ΧΧª) Χ•ΧΧ– Χ”Χ¨Χ©ΧΧ” (ΧΧ” ΧΧ•ΧªΧ¨ ΧΧ)
 app.UseAuthentication();
 app.UseCors(policy);
 app.UseAuthorization();

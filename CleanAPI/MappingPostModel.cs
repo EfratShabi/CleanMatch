@@ -10,7 +10,9 @@ namespace CleanAPI
         public MappingPostModel()
         {
             CreateMap<CustomerPostModel, Customers>().ReverseMap();
+            CreateMap<CustomerPutModel, Customers>();
             CreateMap<CleanerPostModel, Cleaners>().ReverseMap();
+            CreateMap<CleanerPutModel, Cleaners>();
             CreateMap<BookingPostModel, Bookings>().ReverseMap();
              CreateMap<FeedbackPostModel, Feedback>().ReverseMap();
 

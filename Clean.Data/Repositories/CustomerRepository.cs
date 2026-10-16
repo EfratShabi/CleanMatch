@@ -22,14 +22,14 @@ namespace Clean.Data.Repositories
             return await _context.Customers.ToListAsync();
         }
 
-        //public async Task<Customers?> GetCustomerByIdofCustomerAsync(int IdOfCustomer)
-        //{
-        //    return await _context.Customers.FirstOrDefaultAsync(c => c.IdOfCustomer == IdOfCustomer);
-        //}
+        public async Task<Customers?> GetCustomerByIdOfCustomerAsync(int IdOfCustomer)
+        {
+            return await _context.Customers.FirstOrDefaultAsync(c => c.IdOfCustomer == IdOfCustomer);
+        }
 
         public async Task<Customers?> GetCustomerByIdAsync(int id)
         {
-            return await _context.Customers.FirstOrDefaultAsync(c => c.IdOfCustomer == id);
+            return await _context.Customers.FirstOrDefaultAsync(c => c.Id == id);
         }
 
         public async Task AddCustomerAsync(Customers newCustomer)

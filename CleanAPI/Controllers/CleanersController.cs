@@ -42,9 +42,9 @@ namespace CleanAPI.Controllers
 
         //GET api/<CleanersController>/5
         [HttpGet("{id}")]
-        public ActionResult Get(int id)
+        public async Task<ActionResult> Get(int id)
         {
-            var a =_cleanerService.GetCleanerByIdAsync(id);
+            var a = await _cleanerService.GetCleanerByIdAsync(id);
             if (a == null)
             {
                 return NotFound();
@@ -63,17 +63,18 @@ namespace CleanAPI.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> Post([FromBody] CleanerPostModel c)
         {
+            var cl = await _cleanerService.GetCleanerByIDOfCleaner(c.IdOfCleaner);
+            if(cl!=null)
+            {
+                return Conflict();
+            }
+
             var user=new User { UserName = c.UserName,Password=c.Password,Role=Clean.Core.Entities.User.eRole.cleaner };
             var User=await _userService.AddUserAsync(user);
             var newCleaner = _mapper.Map<Cleaners>(c);
             newCleaner.User = User;
             newCleaner.UserId = User.Id;
 
-            var cl = await _cleanerService.GetCleanerByIDOfCleaner(c.IdOfCleaner);
-            if(cl!=null)
-            {
-                return Conflict(_mapper.Map<Cleaners>(c));
-            }
             await _cleanerService.AddCleanerAsync(newCleaner);
             return Ok();
         }
@@ -97,14 +98,14 @@ namespace CleanAPI.Controllers
 
         // DELETE api/<CleanersController>/5
         [HttpDelete("{id}")]
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            var c = _cleanerService.GetCleanerByIdAsync(id);
+            var c = await _cleanerService.GetCleanerByIdAsync(id);
             if (c == null)
             {
                 return NotFound();
             }
-            _cleanerService.DeleteCleanerAsync(id);
+            await _cleanerService.DeleteCleanerAsync(id);
             return Ok();
         }
     }

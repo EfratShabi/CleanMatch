@@ -20,12 +20,18 @@ namespace Clean.Data
 
         public async Task<List<Cleaners>> GetAllCleanersAsync()
         {
-            return await _context.Cleaners.ToListAsync();
+            return await _context.Cleaners
+                .Include(c => c.ArrFidback)
+                .Include(c => c.ArrAvailability)
+                .ToListAsync();
         }
 
         public async Task<Cleaners> GetCleanerByIdAsync(int id)
         {
-            return await _context.Cleaners.FirstOrDefaultAsync(c => c.Id == id);
+            return await _context.Cleaners
+                .Include(c => c.ArrFidback)
+                .Include(c => c.ArrAvailability)
+                .FirstOrDefaultAsync(c => c.Id == id);
         }
 
         public async Task AddCleanerAsync(Cleaners newCleaner)

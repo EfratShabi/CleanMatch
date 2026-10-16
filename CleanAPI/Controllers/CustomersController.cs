@@ -55,7 +55,7 @@ namespace CleanAPI.Controllers
         [AllowAnonymous] 
         public async Task<ActionResult> Post([FromBody] CustomerPostModel customerModel)
         {
-            var existingCustomer = await _customerService.GetCustomerByIdAsync(customerModel.IdOfCustomer);
+            var existingCustomer = await _customerService.GetCustomerByIdOfCustomerAsync(customerModel.IdOfCustomer);
 
             if (existingCustomer != null)
             {
@@ -82,7 +82,7 @@ namespace CleanAPI.Controllers
 
         // PUT api/<CustomersController>/5
         [HttpPut("{id}")]
-        public async Task<ActionResult> Put(int id, [FromBody] CustomerPostModel cu)
+        public async Task<ActionResult> Put(int id, [FromBody] CustomerPutModel cu)
         {
             var c = await _customerService.GetCustomerByIdAsync(id);
             if (c == null)

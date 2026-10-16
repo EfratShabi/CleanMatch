@@ -30,7 +30,7 @@ namespace Clean.Service
         }
         public  async Task<Cleaners> GetCleanerByIDOfCleaner(int IdOfCleaner)
         {
-            return await _cleanerRepository.GetCleanerByIdAsync(IdOfCleaner);
+            return await _cleanerRepository.GetCleanerByIDOfCleanerAsync(IdOfCleaner);
         }
         public async Task AddCleanerAsync(Cleaners newCleaner)
         {

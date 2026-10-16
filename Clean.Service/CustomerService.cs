@@ -23,10 +23,10 @@ namespace Clean.Service
             return await _customerRepository.GetAllCustomersAsync();
         }
 
-        //public async Task<Customers?> GetCustomerByIdofCustomerAsync(int IdOfCustomer)
-        //{
-        //    return await _customerRepository.GetCustomerByIdofCustomerAsync(IdOfCustomer);
-        //}
+        public async Task<Customers?> GetCustomerByIdOfCustomerAsync(int IdOfCustomer)
+        {
+            return await _customerRepository.GetCustomerByIdOfCustomerAsync(IdOfCustomer);
+        }
 
         public async Task<Customers?> GetCustomerByIdAsync(int id)
         {
