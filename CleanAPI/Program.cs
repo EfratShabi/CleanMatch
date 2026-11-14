@@ -63,6 +63,15 @@ builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 
+// The JWT key is a secret: it lives in User Secrets (dev) or an environment variable (production), never in Git.
+// Fail fast with a clear message instead of crashing later with a NullReferenceException.
+var jwtKey = builder.Configuration["Jwt:Key"];
+if (string.IsNullOrWhiteSpace(jwtKey))
+{
+    throw new InvalidOperationException(
+        "JWT:Key is not configured. Run: dotnet user-secrets set \"JWT:Key\" \"<long random string>\" --project CleanAPI");
+}
+
 // 5. הגדרת אימות (Authentication) - זה התיקון לשגיאת ה-500 שקיבלת
 builder.Services.AddAuthentication(options =>
 {
@@ -79,7 +88,7 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true,
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
     };
 });
 

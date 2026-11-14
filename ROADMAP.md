@@ -25,7 +25,8 @@ Legend: `[ ]` to do · `[x]` done
 - [x] Hash passwords (BCrypt) – on signup and login
 - [ ] Add a `UserId` claim to the token, and extend its lifetime (6 minutes → e.g. 60)
 - [ ] `GET /api/auth/me` endpoint – returns the logged-in user, role, and cleaner/customer Id
-- [ ] Move the JWT key and connection string to User Secrets and rotate the key
+- [x] Move the JWT key to User Secrets and rotate the key
+- [ ] Move the connection string from `DataContext.OnConfiguring` to configuration
 - [ ] Authorization on every endpoint: customers list not public, a cleaner edits only herself, a customer sees only their own bookings, `manager` sees everything
 - [ ] Global error handling (middleware) – consistent error responses
 - [ ] `ShabatMiddleware`: use Israel time, return 503 with a clear message, don't block CORS `OPTIONS` requests
