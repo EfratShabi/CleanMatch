@@ -9,7 +9,7 @@ namespace Clean.Core.Services
 {
     public interface IUserService
     {
-        Task<User> GetByUserNameAsync(string UserName, string Password);
+        Task<User?> GetByUserNameAsync(string UserName, string Password);
         Task<User> AddUserAsync(User user);
     }
 }
