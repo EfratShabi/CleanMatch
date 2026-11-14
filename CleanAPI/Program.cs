@@ -108,8 +108,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 // חשוב: קודם אימות (מי את) ואז הרשאה (מה מותר לך)
-app.UseAuthentication();
 app.UseCors(policy);
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseShabbat();
