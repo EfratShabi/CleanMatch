@@ -22,7 +22,7 @@ Legend: `[ ]` to do · `[x]` done
 - [x] Move `UseCors` before `UseAuthentication`
 
 ## Stage 1 – Security
-- [ ] Hash passwords (BCrypt) – on signup and login
+- [x] Hash passwords (BCrypt) – on signup and login
 - [ ] Add a `UserId` claim to the token, and extend its lifetime (6 minutes → e.g. 60)
 - [ ] `GET /api/auth/me` endpoint – returns the logged-in user, role, and cleaner/customer Id
 - [ ] Move the JWT key and connection string to User Secrets and rotate the key

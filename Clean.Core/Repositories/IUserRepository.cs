@@ -9,7 +9,7 @@ namespace Clean.Core.Repositories
 {
     public interface IUserRepository
     {
-        public Task<User> GetByUserNameAsync(string UserName, string Password);
+        public Task<User?> GetByUserNameAsync(string UserName);
         public Task<User> AddUserAsync(User user);
 
     }

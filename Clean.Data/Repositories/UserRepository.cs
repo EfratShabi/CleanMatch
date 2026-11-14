@@ -18,9 +18,9 @@ namespace Clean.Data.Repositories
             _context = context;
         }
 
-        public async Task<User> GetByUserNameAsync(string userName, string Password)
+        public async Task<User?> GetByUserNameAsync(string userName)
         {
-            return await _context.Users.FirstOrDefaultAsync(u => u.UserName == userName && u.Password == Password);
+            return await _context.Users.FirstOrDefaultAsync(u => u.UserName == userName);
         }
 
         public async Task<User> AddUserAsync(User user)
