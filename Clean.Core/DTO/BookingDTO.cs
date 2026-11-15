@@ -10,5 +10,9 @@ namespace Clean.Core.DTO
         public TimeOnly EndWork { get; set; }
         public int CustomersId { get; set; }
         public int CleanersId { get; set; }
+        public string Status { get; set; }
+        public DateTime? CancelledAt { get; set; }
+        public string? CancelledBy { get; set; }
+        public bool IsCompleted { get; set; }
     }
 }

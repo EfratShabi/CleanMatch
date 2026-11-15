@@ -79,6 +79,12 @@ namespace Clean.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BookingCode"));
 
+                    b.Property<DateTime?>("CancelledAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CancelledBy")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("CleanersId")
                         .HasColumnType("int");
 
@@ -93,6 +99,12 @@ namespace Clean.Data.Migrations
 
                     b.Property<TimeOnly>("StartWork")
                         .HasColumnType("time");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("Confirmed");
 
                     b.Property<double>("TotalPrice")
                         .HasColumnType("float");

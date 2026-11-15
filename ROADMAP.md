@@ -31,8 +31,8 @@ Legend: `[ ]` to do · `[x]` done
   - [x] Customers controller (list = manager only; get/put/delete = self or manager)
   - [x] Cleaners controller (list + signup public; get = any logged-in user; put/delete = herself or manager)
   - [x] Bookings controller (customer id taken from the token; no PUT – cancel and rebook; either side may cancel)
-  - [ ] Later: let a cleaner see a customer who has a booking with her
-  - [ ] Later (Stage 2): replace booking deletion with a `Cancelled` status
+  - [x] A cleaner can see a customer while she has an active (confirmed, not yet finished) booking with them
+  - [x] Booking deletion replaced with a `Cancelled` status (`POST api/bookings/{id}/cancel`)
   - [x] Feedbacks controller (get = any logged-in user; post = customer; delete = manager only, since a feedback has no author yet)
 - [ ] `CleanerDTO` returns entities (`ArrFidback` is `List<Feedback>`, `ArrAvailability` is `List<Availability>`) – switch to DTOs
 - [ ] **Bug:** creating a feedback fails (FK error). `Feedback.CleanerId` doesn't match the navigation name `Cleaners`, so EF created a second column `CleanersId` as the real FK. Fix needs a migration – ask first; fold into the Stage 2 review redesign
@@ -56,9 +56,9 @@ Legend: `[ ]` to do · `[x]` done
 - [x] Check that the customer is within the cleaner's distance range (`UpToKm`)
 - [x] Compute `TotalPrice` = hours × `PricePerHour`
 - [ ] Known limitation: two customers booking the same slot at the exact same moment can both pass the overlap check (check and save are separate steps). Real fix: a transaction or DB-level lock
-- [ ] Booking status: `Pending` / `Confirmed` / `Completed` / `Cancelled`
+- [x] Booking status: `Confirmed` / `Cancelled` stored; `Completed` is derived (a confirmed booking whose time has passed). Cancelling records who and when
 - [ ] Cancellation policy (decision still open): either side may always cancel; record who cancelled and when; late cancellations (fewer than N days before the date, N not decided) are flagged and later affect the cleaner's ranking
-- [ ] "My bookings" for customers and cleaners
+- [x] "My bookings" for customers and cleaners
 
 ### Rating
 - [ ] Review with a 1–5 rating, linked to a completed booking (one review per booking)

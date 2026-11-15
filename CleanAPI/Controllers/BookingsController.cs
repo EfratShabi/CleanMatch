@@ -2,10 +2,10 @@
 using Clean.Core.DTO;
 using Clean.Core.Entities;
 using Clean.Core.Services;
+using Clean.Service;
 using CleanAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace CleanAPI.Controllers
 {
@@ -18,15 +18,24 @@ namespace CleanAPI.Controllers
         private readonly ICustomerService _customerService;
         private readonly ICleanerService _cleanerService;
         private readonly IMapper _mapper;
+        private readonly TimeProvider _timeProvider;
 
         public BookingsController(IBookingService bookingService, ICustomerService customerService,
-            ICleanerService cleanerService, IMapper map)
+            ICleanerService cleanerService, IMapper map, TimeProvider timeProvider)
         {
             _bookingService = bookingService;
             _customerService = customerService;
             _cleanerService = cleanerService;
             _mapper = map;
+            _timeProvider = timeProvider;
         }
+
+        // The "now" item lets AutoMapper compute IsCompleted (a booking that already ended).
+        private BookingDTO ToDto(Bookings booking) =>
+            _mapper.Map<BookingDTO>(booking, opt => opt.Items["now"] = IsraelTime.Now(_timeProvider));
+
+        private List<BookingDTO> ToDtos(IEnumerable<Bookings> bookings) =>
+            _mapper.Map<List<BookingDTO>>(bookings, opt => opt.Items["now"] = IsraelTime.Now(_timeProvider));
 
         // A booking points to PROFILES (CustomersId / CleanersId), while the token holds the USER id.
         // So we translate: token user -> customer/cleaner profile -> compare with the booking.
@@ -44,16 +53,18 @@ namespace CleanAPI.Controllers
             return await _cleanerService.GetCleanerByUserIdAsync(userId.Value);
         }
 
-        // Allowed: a manager, the customer of the booking, or the cleaner of the booking.
-        private async Task<bool> IsParticipantOrManagerAsync(Bookings booking)
+        // In which role is the logged-in user connected to this booking? null = not connected at all.
+        private async Task<CancelledByRole?> GetRoleInBookingAsync(Bookings booking)
         {
-            if (User.IsManager()) return true;
+            if (User.IsManager()) return CancelledByRole.Manager;
 
             var customer = await GetMyCustomerAsync();
-            if (customer != null && customer.Id == booking.CustomersId) return true;
+            if (customer != null && customer.Id == booking.CustomersId) return CancelledByRole.Customer;
 
             var cleaner = await GetMyCleanerAsync();
-            return cleaner != null && cleaner.Id == booking.CleanersId;
+            if (cleaner != null && cleaner.Id == booking.CleanersId) return CancelledByRole.Cleaner;
+
+            return null;
         }
 
         // GET: api/<BookingsController>
@@ -61,7 +72,27 @@ namespace CleanAPI.Controllers
         [Authorize(Roles = "manager")]
         public async Task<ActionResult> Get()
         {
-            return Ok(_mapper.Map<List<BookingDTO>>(await _bookingService.GetBookingsAsync()));
+            return Ok(ToDtos(await _bookingService.GetBookingsAsync()));
+        }
+
+        // The logged-in customer's or cleaner's own bookings, newest first, cancelled ones included.
+        [HttpGet("mine")]
+        [Authorize(Roles = "customer,cleaner")]
+        public async Task<ActionResult> Mine()
+        {
+            var customer = await GetMyCustomerAsync();
+            if (customer != null)
+            {
+                return Ok(ToDtos(await _bookingService.GetByCustomerAsync(customer.Id)));
+            }
+
+            var cleaner = await GetMyCleanerAsync();
+            if (cleaner != null)
+            {
+                return Ok(ToDtos(await _bookingService.GetBookingByIDOfCleaners(cleaner.Id)));
+            }
+
+            return Unauthorized();
         }
 
         // GET api/<BookingsController>/5
@@ -73,11 +104,11 @@ namespace CleanAPI.Controllers
             {
                 return NotFound();
             }
-            if (!await IsParticipantOrManagerAsync(b))
+            if (await GetRoleInBookingAsync(b) == null)
             {
                 return Forbid();
             }
-            return Ok(_mapper.Map<BookingDTO>(b));
+            return Ok(ToDto(b));
         }
 
         // A cleaner may list her own bookings; a manager may list anyone's.
@@ -93,7 +124,7 @@ namespace CleanAPI.Controllers
                 }
             }
             var bookings = await _bookingService.GetBookingByIDOfCleaners(cleanerId);
-            return Ok(_mapper.Map<List<BookingDTO>>(bookings));
+            return Ok(ToDtos(bookings));
         }
 
         // POST api/<BookingsController>
@@ -114,7 +145,7 @@ namespace CleanAPI.Controllers
             try
             {
                 await _bookingService.AddBookingAsync(newBooking);
-                return Ok(_mapper.Map<BookingDTO>(newBooking));
+                return Ok(ToDto(newBooking));
             }
             catch (ArgumentException ex)
             {
@@ -126,27 +157,33 @@ namespace CleanAPI.Controllers
             }
         }
 
-        // There is no PUT on purpose: to change a booking, cancel it (DELETE) and book again.
+        // There is no PUT and no DELETE on purpose: a booking is cancelled (status Cancelled, kept for history) and a new one made.
 
-        // DELETE api/<BookingsController>/5
         // Either side (the customer or the cleaner of the booking) may cancel, and so may a manager.
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(int id)
+        [HttpPost("{id}/cancel")]
+        public async Task<ActionResult> Cancel(int id)
         {
-            var existingBooking = await _bookingService.GetBookingsByIdAsync(id);
-
-            if (existingBooking == null)
+            var booking = await _bookingService.GetBookingsByIdAsync(id);
+            if (booking == null)
             {
                 return NotFound();
             }
-            if (!await IsParticipantOrManagerAsync(existingBooking))
+
+            var role = await GetRoleInBookingAsync(booking);
+            if (role == null)
             {
                 return Forbid();
             }
 
-            await _bookingService.DeleteBookingAsync(id);
-
-            return Ok();
+            try
+            {
+                await _bookingService.CancelAsync(booking, role.Value);
+                return Ok(ToDto(booking));
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Problem(ex.Message, statusCode: StatusCodes.Status409Conflict);
+            }
         }
     }
 }

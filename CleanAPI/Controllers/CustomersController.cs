@@ -13,19 +13,24 @@ namespace CleanAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "customer,manager")]
-
-
+    // Roles are written per method: a method-level [Authorize(Roles)] ADDS to the class-level one (AND),
+    // so a class-level "customer,manager" would lock cleaners out of the one endpoint they may use.
+    [Authorize]
     public class CustomersController : ControllerBase
     {
         private readonly ICustomerService _customerService;
         private readonly IUserService _userService;
+        private readonly ICleanerService _cleanerService;
+        private readonly IBookingService _bookingService;
         private readonly IMapper _mapper;
 
-        public CustomersController(ICustomerService customerService, IUserService userService, IMapper map)
+        public CustomersController(ICustomerService customerService, IUserService userService,
+            ICleanerService cleanerService, IBookingService bookingService, IMapper map)
         {
             _customerService = customerService;
             _userService = userService;
+            _cleanerService = cleanerService;
+            _bookingService = bookingService;
             _mapper = map;
         }
 
@@ -33,6 +38,16 @@ namespace CleanAPI.Controllers
         // Customers.UserId is compared with the UserId inside the token.
         private bool CanAccess(Customers customer) =>
             User.IsManager() || customer.UserId == User.GetUserId();
+
+        // A cleaner may see a customer only while she has an active (confirmed, not yet finished) booking with them.
+        private async Task<bool> CleanerHasActiveBookingWithAsync(Customers customer)
+        {
+            var userId = User.GetUserId();
+            if (userId == null || !User.IsInRole("cleaner")) return false;
+
+            var cleaner = await _cleanerService.GetCleanerByUserIdAsync(userId.Value);
+            return cleaner != null && await _bookingService.CleanerCanSeeCustomerAsync(cleaner.Id, customer.Id);
+        }
 
         // GET: api/<CustomersController>
         // The full customers list contains personal details, so only a manager may see it.
@@ -54,7 +69,7 @@ namespace CleanAPI.Controllers
             {
                 return NotFound();
             }
-            if (!CanAccess(customer))
+            if (!CanAccess(customer) && !await CleanerHasActiveBookingWithAsync(customer))
             {
                 return Forbid();
             }
@@ -101,6 +116,7 @@ namespace CleanAPI.Controllers
 
         // PUT api/<CustomersController>/5
         [HttpPut("{id}")]
+        [Authorize(Roles = "customer,manager")]
         public async Task<ActionResult> Put(int id, [FromBody] CustomerPutModel cu)
         {
             var c = await _customerService.GetCustomerByIdAsync(id);
@@ -135,6 +151,7 @@ namespace CleanAPI.Controllers
 
         // DELETE api/<CustomersController>/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "customer,manager")]
         public async Task<ActionResult> Delete(int id)
         {
             var c = await _customerService.GetCustomerByIdAsync(id);
