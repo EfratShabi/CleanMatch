@@ -38,7 +38,7 @@ Legend: `[ ]` to do · `[x]` done
 - [ ] **Bug:** creating a feedback fails (FK error). `Feedback.CleanerId` doesn't match the navigation name `Cleaners`, so EF created a second column `CleanersId` as the real FK. Fix needs a migration – ask first; fold into the Stage 2 review redesign
 - [ ] Hide cleaners' phone number and street from the public cleaners list (`CleanerDTO` change) – show them only to logged-in users
 - [x] Global error handling (middleware) – consistent error responses
-- [ ] `ShabatMiddleware`: use Israel time, return 503 with a clear message, don't block CORS `OPTIONS` requests
+- [x] `ShabatMiddleware`: use Israel time, return 503 with a clear message, don't block CORS `OPTIONS` requests
 
 ## Stage 2 – The matching engine (the core of the project)
 ### Availability

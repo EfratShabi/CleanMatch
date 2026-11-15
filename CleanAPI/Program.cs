@@ -19,6 +19,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 });
 
 builder.Services.AddProblemDetails();   // lets ASP.NET write a JSON body for errors that have none (401/403/404)
+builder.Services.AddSingleton(TimeProvider.System);   // the real clock; ShabatMiddleware asks it for the time (tests pass a fake one)
 
 builder.Services.AddEndpointsApiExplorer();
 
