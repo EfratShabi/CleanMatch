@@ -23,7 +23,7 @@ Legend: `[ ]` to do · `[x]` done
 
 ## Stage 1 – Security
 - [x] Hash passwords (BCrypt) – on signup and login
-- [ ] Add a `UserId` claim to the token, and extend its lifetime (6 minutes → e.g. 60)
+- [x] Add a `UserId` claim to the token, and extend its lifetime (6 minutes → e.g. 60)
 - [ ] `GET /api/auth/me` endpoint – returns the logged-in user, role, and cleaner/customer Id
 - [x] Move the JWT key to User Secrets and rotate the key
 - [ ] Move the connection string from `DataContext.OnConfiguring` to configuration
