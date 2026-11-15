@@ -14,9 +14,10 @@ namespace CleanAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "cleaner,manager")]
-
-
+    // Every endpoint requires a logged-in user by default; the public ones (list, signup) opt out with [AllowAnonymous].
+    // Note: a method-level [Authorize] ADDS to the class-level one (AND), so a role restriction written here
+    // would block customers from the endpoints they need. That is why roles are written per method instead.
+    [Authorize]
     public class CleanersController : ControllerBase
     {
         //private IDataContext _cleanerServise;
@@ -30,6 +31,11 @@ namespace CleanAPI.Controllers
             _userService = userService;
             _mapper = map;
         }
+
+        // A cleaner may only touch her own profile; a manager may touch anyone's.
+        // Cleaners.UserId is compared with the UserId inside the token.
+        private bool CanAccess(Cleaners cleaner) =>
+            User.IsManager() || cleaner.UserId == User.GetUserId();
 
         // GET: api/<CleanersController>
         [HttpGet]
@@ -81,12 +87,17 @@ namespace CleanAPI.Controllers
 
         // PUT api/<CleanersController>/5
         [HttpPut("{id}")]
+        [Authorize(Roles = "cleaner,manager")]
         public async Task<ActionResult> Put(int id, [FromBody] CleanerPutModel cl)
         {
             var c = await _cleanerService.GetCleanerByIdAsync(id);
             if (c == null)
             {
                 return NotFound();
+            }
+            if (!CanAccess(c))
+            {
+                return Forbid();
             }
 
             _mapper.Map(cl, c);
@@ -98,12 +109,17 @@ namespace CleanAPI.Controllers
 
         // DELETE api/<CleanersController>/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "cleaner,manager")]
         public async Task<ActionResult> Delete(int id)
         {
             var c = await _cleanerService.GetCleanerByIdAsync(id);
             if (c == null)
             {
                 return NotFound();
+            }
+            if (!CanAccess(c))
+            {
+                return Forbid();
             }
             await _cleanerService.DeleteCleanerAsync(id);
             return Ok();
