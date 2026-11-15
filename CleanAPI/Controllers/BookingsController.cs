@@ -118,7 +118,11 @@ namespace CleanAPI.Controllers
             }
             catch (ArgumentException ex)
             {
-                return Conflict(ex.Message);
+                return Problem(ex.Message, statusCode: StatusCodes.Status400BadRequest);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Problem(ex.Message, statusCode: StatusCodes.Status409Conflict);
             }
         }
 

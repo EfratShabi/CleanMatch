@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Clean.Service;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CleanAPI.middlewares
 {
@@ -6,14 +7,12 @@ namespace CleanAPI.middlewares
     {
         private readonly RequestDelegate _next;
         private readonly TimeProvider _timeProvider;
-        private readonly TimeZoneInfo _israelTime;
 
         // TimeProvider = "what time is it now?", injected from outside so the tests can give it a fake time.
         public ShabatMiddleware(RequestDelegate next, TimeProvider timeProvider)
         {
             _next = next;
             _timeProvider = timeProvider;
-            _israelTime = FindIsraelTimeZone();
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -27,7 +26,7 @@ namespace CleanAPI.middlewares
             }
 
             // Israel time, wherever the server happens to run (a cloud server is usually on UTC).
-            var now = TimeZoneInfo.ConvertTime(_timeProvider.GetUtcNow(), _israelTime);
+            var now = IsraelTime.Now(_timeProvider);
             bool isShabbat = (now.DayOfWeek == DayOfWeek.Friday && now.Hour >= 14)
                              || now.DayOfWeek == DayOfWeek.Saturday;
 
@@ -45,13 +44,6 @@ namespace CleanAPI.middlewares
             }
 
             await _next(context);
-        }
-
-        // The time zone's name differs between operating systems.
-        private static TimeZoneInfo FindIsraelTimeZone()
-        {
-            try { return TimeZoneInfo.FindSystemTimeZoneById("Asia/Jerusalem"); }                  // Linux / Docker / newer Windows
-            catch (TimeZoneNotFoundException) { return TimeZoneInfo.FindSystemTimeZoneById("Israel Standard Time"); }   // Windows
         }
     }
 }
