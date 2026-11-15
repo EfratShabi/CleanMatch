@@ -8,6 +8,11 @@ namespace CleanAPI
             {
                 return builder.UseMiddleware<ShabatMiddleware>();
             }
+
+            public static IApplicationBuilder UseErrorHandling(this IApplicationBuilder builder)
+            {
+                return builder.UseMiddleware<ErrorHandlingMiddleware>();
+            }
       
     }
 }
