@@ -29,9 +29,10 @@ Legend: `[ ]` to do · `[x]` done
 - [ ] Move the connection string from `DataContext.OnConfiguring` to configuration
 - [ ] Authorization on every endpoint: customers list not public, a cleaner edits only herself, a customer sees only their own bookings, `manager` sees everything
   - [x] Customers controller (list = manager only; get/put/delete = self or manager)
-  - [ ] Cleaners controller
+  - [x] Cleaners controller (list + signup public; get = any logged-in user; put/delete = herself or manager)
   - [ ] Bookings controller (take `CustomersId` from the token; later: let a cleaner see a customer who has a booking with her)
   - [ ] Feedbacks controller
+- [ ] Hide cleaners' phone number and street from the public cleaners list (`CleanerDTO` change) – show them only to logged-in users
 - [ ] Global error handling (middleware) – consistent error responses
 - [ ] `ShabatMiddleware`: use Israel time, return 503 with a clear message, don't block CORS `OPTIONS` requests
 
