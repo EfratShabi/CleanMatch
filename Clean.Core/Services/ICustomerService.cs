@@ -17,6 +17,8 @@ namespace Clean.Core.Services
 
         Task<Customers?> GetCustomerByUserIdAsync(int userId);
 
+        Task ApplyLocationAsync(Customers customer);
+
         Task AddCustomerAsync(Customers newCustomer);
 
         Task UpdateCustomerAsync(Customers newCustomer);

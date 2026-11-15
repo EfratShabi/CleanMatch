@@ -73,15 +73,23 @@ namespace CleanAPI.Controllers
                 return Conflict();
             }
 
+            var newCustomer = _mapper.Map<Customers>(customerModel);
+            try
+            {
+                await _customerService.ApplyLocationAsync(newCustomer);
+            }
+            catch (ArgumentException ex)
+            {
+                return Problem(ex.Message, statusCode: StatusCodes.Status400BadRequest);
+            }
+
             var user = new User
             {
                 UserName = customerModel.UserName,
                 Password = customerModel.Password,
-                Role = eRole.customer 
+                Role = eRole.customer
             };
             var addedUser = await _userService.AddUserAsync(user);
-
-            var newCustomer = _mapper.Map<Customers>(customerModel);
 
             newCustomer.User = addedUser;
             newCustomer.UserId = addedUser.Id;
@@ -105,7 +113,20 @@ namespace CleanAPI.Controllers
                 return Forbid();
             }
 
+            var addressChanged = c.City != cu.City || c.Street != cu.Street || c.Mikud != cu.Mikud;
             _mapper.Map(cu, c);
+
+            if (addressChanged)
+            {
+                try
+                {
+                    await _customerService.ApplyLocationAsync(c);
+                }
+                catch (ArgumentException ex)
+                {
+                    return Problem(ex.Message, statusCode: StatusCodes.Status400BadRequest);
+                }
+            }
 
             await _customerService.UpdateCustomerAsync(c);
 

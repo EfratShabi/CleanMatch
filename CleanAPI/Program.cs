@@ -99,7 +99,12 @@ builder.Services.AddAuthentication(options =>
 
 // 6. הגדרת AutoMapper לסריקה של כל הפרופילים (גם ב-Core וגם ב-API)
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddScoped<ILocationService, LocationService>();
+builder.Services.AddHttpClient<ILocationService, LocationService>(client =>
+{
+    client.BaseAddress = new Uri("https://nominatim.openstreetmap.org/");
+    client.DefaultRequestHeaders.UserAgent.ParseAdd("CleanMatch/1.0");
+    client.Timeout = TimeSpan.FromSeconds(10);
+});
 var policy = "policy";
 builder.Services.AddCors(options =>
 {

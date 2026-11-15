@@ -47,8 +47,8 @@ Legend: `[ ]` to do · `[x]` done
 - [ ] Remove the duplicate `availability` (bool) field from `Cleaners`
 
 ### Location
-- [ ] On signup / address update – compute `Latitude`/`Longitude` via `LocationService` and store them
-- [ ] `LocationService`: use `IHttpClientFactory`, parse numbers with `CultureInfo.InvariantCulture`
+- [x] On signup / address update – compute `Latitude`/`Longitude` via `LocationService` and store them (city + street, then zip; unknown address = 400)
+- [x] `LocationService`: use `IHttpClientFactory`, parse numbers with `CultureInfo.InvariantCulture`
 
 ### Bookings
 - [ ] Check that the requested hours fall within the cleaner's availability
