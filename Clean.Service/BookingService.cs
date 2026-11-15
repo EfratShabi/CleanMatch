@@ -108,6 +108,13 @@ namespace Clean.Service
             return _bookingRepository.GetBookingsOfCustomerAsync(customerId);
         }
 
+        public async Task<HashSet<int>> GetCleanerIdsWithActiveBookingAsync(int customerId)
+        {
+            var now = IsraelTime.Now(_timeProvider);
+            var confirmed = await _bookingRepository.GetConfirmedBookingsOfCustomerFromAsync(customerId, now.Date);
+            return confirmed.Where(b => !b.HasEnded(now)).Select(b => b.CleanersId).ToHashSet();
+        }
+
         public async Task<bool> CleanerCanSeeCustomerAsync(int cleanerId, int customerId)
         {
             var now = IsraelTime.Now(_timeProvider);

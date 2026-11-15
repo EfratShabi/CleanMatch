@@ -12,5 +12,6 @@ namespace Clean.Core.Services
         Task UpdateBookingAsync(Bookings updatedBooking);
         Task CancelAsync(Bookings booking, CancelledByRole by);
         Task<bool> CleanerCanSeeCustomerAsync(int cleanerId, int customerId);
+        Task<HashSet<int>> GetCleanerIdsWithActiveBookingAsync(int customerId);
     }
 }
