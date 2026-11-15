@@ -29,9 +29,16 @@ namespace CleanAPI.Controllers
             _mapper = map;
         }
 
+        // A customer may only touch their own profile; a manager may touch anyone's.
+        // Customers.UserId is compared with the UserId inside the token.
+        private bool CanAccess(Customers customer) =>
+            User.IsManager() || customer.UserId == User.GetUserId();
+
         // GET: api/<CustomersController>
+        // The full customers list contains personal details, so only a manager may see it.
+        // (Planned for later: a cleaner may see a customer who has a booking with her.)
         [HttpGet]
-        [AllowAnonymous]
+        [Authorize(Roles = "manager")]
         public async Task<ActionResult> Get()
         {
             var customers = await _customerService.GetAllCustomersAsync();
@@ -46,6 +53,10 @@ namespace CleanAPI.Controllers
             if (customer == null)
             {
                 return NotFound();
+            }
+            if (!CanAccess(customer))
+            {
+                return Forbid();
             }
             return Ok(_mapper.Map<CustomerDTO>(customer));
         }
@@ -89,6 +100,10 @@ namespace CleanAPI.Controllers
             {
                 return NotFound();
             }
+            if (!CanAccess(c))
+            {
+                return Forbid();
+            }
 
             _mapper.Map(cu, c);
 
@@ -105,6 +120,10 @@ namespace CleanAPI.Controllers
             if (c == null)
             {
                 return NotFound();
+            }
+            if (!CanAccess(c))
+            {
+                return Forbid();
             }
             await _customerService.DeleteCustomerAsync(id);
             return Ok();

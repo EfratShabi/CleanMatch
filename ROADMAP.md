@@ -28,6 +28,10 @@ Legend: `[ ]` to do · `[x]` done
 - [x] Move the JWT key to User Secrets and rotate the key
 - [ ] Move the connection string from `DataContext.OnConfiguring` to configuration
 - [ ] Authorization on every endpoint: customers list not public, a cleaner edits only herself, a customer sees only their own bookings, `manager` sees everything
+  - [x] Customers controller (list = manager only; get/put/delete = self or manager)
+  - [ ] Cleaners controller
+  - [ ] Bookings controller (take `CustomersId` from the token; later: let a cleaner see a customer who has a booking with her)
+  - [ ] Feedbacks controller
 - [ ] Global error handling (middleware) – consistent error responses
 - [ ] `ShabatMiddleware`: use Israel time, return 503 with a clear message, don't block CORS `OPTIONS` requests
 
