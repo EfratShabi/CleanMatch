@@ -1,11 +1,6 @@
 ﻿using Clean.Core.Entities;
 using Clean.Core.Repositories;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Clean.Data.Repositories
 {
@@ -19,12 +14,25 @@ namespace Clean.Data.Repositories
 
         public async Task<List<Feedback>> GetAllFeedbacksAsync()
         {
-            return await _context.Feedback.ToListAsync();
+            return await _context.Feedback.OrderByDescending(f => f.CreatedAt).ToListAsync();
+        }
+
+        public async Task<List<Feedback>> GetFeedbacksByCleanerAsync(int cleanerId)
+        {
+            return await _context.Feedback
+                .Where(f => f.CleanerId == cleanerId)
+                .OrderByDescending(f => f.CreatedAt)
+                .ToListAsync();
         }
 
         public async Task<Feedback?> GetFeedbackByIdAsync(int id)
         {
             return await _context.Feedback.FindAsync(id);
+        }
+
+        public async Task<bool> ExistsForBookingAsync(int bookingCode)
+        {
+            return await _context.Feedback.AnyAsync(f => f.BookingCode == bookingCode);
         }
 
         public async Task AddFeedbackAsync(Feedback newFeedback)

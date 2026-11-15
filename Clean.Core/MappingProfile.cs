@@ -12,8 +12,13 @@ namespace Clean.Core
     {
         public MappingProfile()
         {
-            CreateMap<Cleaners, CleanerDTO>().ReverseMap();
-            CreateMap<Feedback, FeedbackDTO>().ReverseMap();
+            CreateMap<Cleaners, CleanerDTO>()
+                .ForMember(d => d.ReviewCount, o => o.MapFrom(s => s.ArrFidback == null ? 0 : s.ArrFidback.Count))
+                .ForMember(d => d.AverageRating, o => o.MapFrom(s =>
+                    s.ArrFidback == null || s.ArrFidback.Count == 0
+                        ? (double?)null
+                        : Math.Round(s.ArrFidback.Average(f => f.Rating), 1)));
+            CreateMap<Feedback, FeedbackDTO>();
             CreateMap<Customers, CustomerDTO>().ReverseMap();
             CreateMap<Bookings, BookingDTO>()
                 .ForMember(d => d.IsCompleted, o => o.MapFrom((src, dest, member, ctx) =>

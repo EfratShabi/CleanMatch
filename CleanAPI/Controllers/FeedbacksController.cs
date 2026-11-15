@@ -5,8 +5,6 @@ using Clean.Core.Services;
 using CleanAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks; 
 
 namespace CleanAPI.Controllers
 {
@@ -15,20 +13,28 @@ namespace CleanAPI.Controllers
     [Authorize] // everything requires a logged-in user; POST and DELETE narrow it further by role below
     public class FeedbacksController : ControllerBase
     {
-        private readonly IFeedbackService _feedbackService; 
+        private readonly IFeedbackService _feedbackService;
+        private readonly ICustomerService _customerService;
+        private readonly IBookingService _bookingService;
         private readonly IMapper _mapper;
 
-        public FeedbacksController(IFeedbackService feedbackService, IMapper map)
+        public FeedbacksController(IFeedbackService feedbackService, ICustomerService customerService,
+            IBookingService bookingService, IMapper map)
         {
             _feedbackService = feedbackService;
+            _customerService = customerService;
+            _bookingService = bookingService;
             _mapper = map;
         }
 
-        // GET: api/Feedbacks
+        // GET: api/Feedbacks            all reviews, newest first
+        // GET: api/Feedbacks?cleanerId=5   only this cleaner's reviews
         [HttpGet]
-        public async Task<ActionResult> Get()
+        public async Task<ActionResult> Get([FromQuery] int? cleanerId)
         {
-            var feedbacks = await _feedbackService.GetAllFeedbacksAsync();
+            var feedbacks = cleanerId == null
+                ? await _feedbackService.GetAllFeedbacksAsync()
+                : await _feedbackService.GetFeedbacksByCleanerAsync(cleanerId.Value);
             return Ok(_mapper.Map<List<FeedbackDTO>>(feedbacks));
         }
 
@@ -46,21 +52,48 @@ namespace CleanAPI.Controllers
         }
 
         // POST api/Feedbacks
-        // Only a customer may write a review. (Linking it to a completed booking comes in Stage 2.)
+        // Only the customer of a finished booking may review it (one review per booking).
+        // The cleaner is taken from the booking, not from the request.
         [HttpPost]
         [Authorize(Roles = "customer")]
         public async Task<ActionResult> Post([FromBody] FeedbackPostModel f)
         {
-            // המרה
+            var userId = User.GetUserId();
+            var customer = userId == null ? null : await _customerService.GetCustomerByUserIdAsync(userId.Value);
+            if (customer == null)
+            {
+                return Unauthorized();
+            }
+
+            var booking = await _bookingService.GetBookingsByIdAsync(f.BookingCode);
+            if (booking == null)
+            {
+                return Problem("ההזמנה לא נמצאה.", statusCode: StatusCodes.Status404NotFound);
+            }
+            if (booking.CustomersId != customer.Id)
+            {
+                return Forbid();
+            }
+
             var feedback = _mapper.Map<Feedback>(f);
 
-            await _feedbackService.AddFeedbackAsync(feedback);
-
-            return Ok(_mapper.Map<FeedbackDTO>(feedback));
+            try
+            {
+                await _feedbackService.AddFeedbackAsync(feedback, booking);
+                return Ok(_mapper.Map<FeedbackDTO>(feedback));
+            }
+            catch (ArgumentException ex)
+            {
+                return Problem(ex.Message, statusCode: StatusCodes.Status400BadRequest);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Problem(ex.Message, statusCode: StatusCodes.Status409Conflict);
+            }
         }
 
         // DELETE api/Feedbacks/5
-        // Manager only: a feedback does not record who wrote it yet, so we can't tell the author apart.
+        // Manager only for now.
         [HttpDelete("{id}")]
         [Authorize(Roles = "manager")]
         public async Task<ActionResult> Delete(int id)

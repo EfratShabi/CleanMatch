@@ -247,19 +247,27 @@ namespace Clean.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("BookingCode")
+                        .HasColumnType("int");
+
                     b.Property<int>("CleanerId")
                         .HasColumnType("int");
 
-                    b.Property<int>("CleanersId")
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Rating")
                         .HasColumnType("int");
 
                     b.Property<string>("TextOfFeedback")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CleanersId");
+                    b.HasIndex("BookingCode")
+                        .IsUnique();
+
+                    b.HasIndex("CleanerId");
 
                     b.ToTable("Feedback");
                 });
@@ -354,13 +362,21 @@ namespace Clean.Data.Migrations
 
             modelBuilder.Entity("Clean.Core.Entities.Feedback", b =>
                 {
-                    b.HasOne("Clean.Core.Entities.Cleaners", "Cleaners")
+                    b.HasOne("Clean.Core.Entities.Bookings", "Booking")
+                        .WithMany()
+                        .HasForeignKey("BookingCode")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Clean.Core.Entities.Cleaners", "Cleaner")
                         .WithMany("ArrFidback")
-                        .HasForeignKey("CleanersId")
+                        .HasForeignKey("CleanerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Cleaners");
+                    b.Navigation("Booking");
+
+                    b.Navigation("Cleaner");
                 });
 
             modelBuilder.Entity("Clean.Core.Entities.Cleaners", b =>
