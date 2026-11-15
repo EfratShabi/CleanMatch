@@ -16,6 +16,7 @@ namespace Clean.Core.Services
         public Task DeleteCleanerAsync(int id);
 
         public Task<Cleaners> GetCleanerByIDOfCleaner(int IdOfCleaner);
+        public Task<Cleaners?> GetCleanerByUserIdAsync(int userId);
 
 
     }

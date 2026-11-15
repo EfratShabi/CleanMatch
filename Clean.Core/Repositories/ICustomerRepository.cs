@@ -12,6 +12,7 @@ namespace Clean.Core.Repositories
         Task<List<Customers>> GetAllCustomersAsync();
         Task<Customers?> GetCustomerByIdAsync(int id);
         Task<Customers?> GetCustomerByIdOfCustomerAsync(int IdOfCustomer);
+        Task<Customers?> GetCustomerByUserIdAsync(int userId);
         Task AddCustomerAsync(Customers newCustomer);
         Task UpdateCustomerAsync(Customers newCustomer);
         Task DeleteCustomerAsync(int id);

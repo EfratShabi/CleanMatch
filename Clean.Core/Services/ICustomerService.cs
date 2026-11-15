@@ -15,6 +15,8 @@ namespace Clean.Core.Services
 
         Task<Customers?> GetCustomerByIdOfCustomerAsync(int IdOfCustomer);
 
+        Task<Customers?> GetCustomerByUserIdAsync(int userId);
+
         Task AddCustomerAsync(Customers newCustomer);
 
         Task UpdateCustomerAsync(Customers newCustomer);

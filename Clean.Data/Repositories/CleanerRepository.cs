@@ -44,6 +44,11 @@ namespace Clean.Data
             return await _context.Cleaners.FirstOrDefaultAsync(c => c.IdOfCleaner == IdOfCleaner);
         }
 
+        public async Task<Cleaners?> GetCleanerByUserIdAsync(int userId)
+        {
+            return await _context.Cleaners.FirstOrDefaultAsync(c => c.UserId == userId);
+        }
+
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();
