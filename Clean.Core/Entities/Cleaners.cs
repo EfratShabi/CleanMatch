@@ -17,7 +17,6 @@ namespace Clean.Core.Entities
         public string Street { get; set; }
         public string DescriptionOnMe { get; set; }
         public bool BornIsrael { get; set; }
-        public bool availability { get; set; }
         public bool HebrewSpeaker { get; set; }
         public  string Mikud { get; set; }
         public int PricePerHour { get; set; }

@@ -26,6 +26,23 @@ namespace Clean.Service
             }
         }
 
+        public const int MaxBlockRangeDays = 90;
+
+        public static List<DateOnly> ExpandRange(DateOnly from, DateOnly to)
+        {
+            if (from > to)
+                throw new ArgumentException("תאריך ההתחלה חייב להיות לפני תאריך הסיום.");
+
+            var days = to.DayNumber - from.DayNumber + 1;
+            if (days > MaxBlockRangeDays)
+                throw new ArgumentException($"אפשר לחסום עד {MaxBlockRangeDays} ימים בבקשה אחת.");
+
+            return Enumerable.Range(0, days).Select(from.AddDays).ToList();
+        }
+
+        public static bool IsBlocked(DateTime date, IEnumerable<BlockedDate> blocked) =>
+            blocked.Any(b => b.Date == DateOnly.FromDateTime(date));
+
         public static bool Fits(Bookings booking, IEnumerable<Availability> slots)
         {
             var day = (int)booking.Date.DayOfWeek;

@@ -43,8 +43,8 @@ Legend: `[ ]` to do · `[x]` done
 ## Stage 2 – The matching engine (the core of the project)
 ### Availability
 - [x] Repository + Service + Controller for `Availability` (fixed hours per weekday; several ranges per day; replace-the-week update rejected with 409 if it would push an existing future booking outside the new hours)
-- [ ] Blocking specific dates (vacation / sick days)
-- [ ] Remove the duplicate `availability` (bool) field from `Cleaners`
+- [x] Blocking specific dates (vacation / sick days) – date ranges, rejected with 409 if a booking exists on one of the days
+- [x] Remove the duplicate `availability` (bool) field from `Cleaners`
 
 ### Location
 - [x] On signup / address update – compute `Latitude`/`Longitude` via `LocationService` and store them (city + street, then zip; unknown address = 400)
@@ -56,6 +56,7 @@ Legend: `[ ]` to do · `[x]` done
 - [ ] Check that the customer is within the cleaner's distance range (`UpToKm`)
 - [ ] Compute `TotalPrice` = hours × `PricePerHour`
 - [ ] Booking status: `Pending` / `Confirmed` / `Completed` / `Cancelled`
+- [ ] Cancellation policy (decision still open): either side may always cancel; record who cancelled and when; late cancellations (fewer than N days before the date, N not decided) are flagged and later affect the cleaner's ranking
 - [ ] "My bookings" for customers and cleaners
 
 ### Rating

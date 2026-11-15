@@ -17,6 +17,7 @@ namespace Clean.Core
             CreateMap<Customers, CustomerDTO>().ReverseMap();
             CreateMap<Bookings, BookingDTO>();
             CreateMap<Availability, AvailabilityDTO>();
+            CreateMap<BlockedDate, BlockedDateDTO>();
 
            
         }
