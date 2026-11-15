@@ -26,7 +26,7 @@ Legend: `[ ]` to do · `[x]` done
 - [x] Add a `UserId` claim to the token, and extend its lifetime (6 minutes → e.g. 60)
 - [x] `GET /api/auth/me` endpoint – returns the logged-in user, role, and cleaner/customer Id
 - [x] Move the JWT key to User Secrets and rotate the key
-- [ ] Move the connection string from `DataContext.OnConfiguring` to configuration
+- [x] Move the connection string from `DataContext.OnConfiguring` to User Secrets (`ConnectionStrings:Default`)
 - [x] Authorization on every endpoint: customers list not public, a cleaner edits only herself, a customer sees only their own bookings, `manager` sees everything
   - [x] Customers controller (list = manager only; get/put/delete = self or manager)
   - [x] Cleaners controller (list + signup public; get = any logged-in user; put/delete = herself or manager)

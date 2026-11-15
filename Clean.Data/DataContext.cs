@@ -15,9 +15,8 @@ namespace Clean.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Availability> Availabilities { get; set; }
         public DbSet<BlockedDate> BlockedDates { get; set; }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
-            optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=Clean_DB;");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
