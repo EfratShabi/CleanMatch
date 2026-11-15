@@ -59,23 +59,18 @@ namespace Clean.Service
             var day = DateOnly.FromDateTime(newBooking.Date);
             var isBlocked = (await _blockedDateRepository.GetDatesInRangeAsync(cleaner.Id, day, day)).Any();
             var weeklySlots = await _availabilityRepository.GetByCleanerIdAsync(cleaner.Id);
-            if (isBlocked || !AvailabilityRules.Fits(newBooking, weeklySlots))
-            {
-                throw new InvalidOperationException(NotAvailableMessage);
-            }
-
             var sameDay = await _bookingRepository.GetUpcomingBookingsOfCleanerAsync(cleaner.Id, newBooking.Date.Date);
-            if (sameDay.Any(other => BookingRules.Conflicts(newBooking, other)))
-            {
-                throw new InvalidOperationException(NotAvailableMessage);
-            }
 
-            if (!HasLocation(customer.Latitude, customer.Longitude)
-                || !HasLocation(cleaner.Latitude, cleaner.Longitude)
-                || _locationService.CalculateDistance(customer.Latitude, customer.Longitude,
-                       cleaner.Latitude, cleaner.Longitude) > cleaner.UpToKm)
+            double? distance = HasLocation(customer.Latitude, customer.Longitude) && HasLocation(cleaner.Latitude, cleaner.Longitude)
+                ? _locationService.CalculateDistance(customer.Latitude, customer.Longitude, cleaner.Latitude, cleaner.Longitude)
+                : null;
+
+            switch (BookingRules.FindBlocker(newBooking, weeklySlots, isBlocked, sameDay, distance, cleaner.UpToKm))
             {
-                throw new InvalidOperationException("הכתובת שלך מחוץ לטווח העבודה של המנקה.");
+                case BookingBlocker.NotAvailable:
+                    throw new InvalidOperationException(NotAvailableMessage);
+                case BookingBlocker.OutOfRange:
+                    throw new InvalidOperationException("הכתובת שלך מחוץ לטווח העבודה של המנקה.");
             }
 
             newBooking.TotalPrice = BookingRules.CalculatePrice(newBooking, cleaner.PricePerHour);

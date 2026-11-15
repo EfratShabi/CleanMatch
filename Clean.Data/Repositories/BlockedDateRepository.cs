@@ -29,6 +29,15 @@ namespace Clean.Data.Repositories
                 .ToListAsync();
         }
 
+        public async Task<HashSet<int>> GetCleanerIdsBlockedOnAsync(DateOnly date)
+        {
+            var ids = await _context.BlockedDates
+                .Where(b => b.Date == date)
+                .Select(b => b.CleanerId)
+                .ToListAsync();
+            return ids.ToHashSet();
+        }
+
         public async Task AddRangeAsync(IEnumerable<BlockedDate> dates)
         {
             await _context.BlockedDates.AddRangeAsync(dates);

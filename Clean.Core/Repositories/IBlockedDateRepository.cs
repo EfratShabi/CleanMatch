@@ -6,6 +6,7 @@ namespace Clean.Core.Repositories
     {
         Task<List<BlockedDate>> GetFromDateAsync(int cleanerId, DateOnly from);
         Task<List<DateOnly>> GetDatesInRangeAsync(int cleanerId, DateOnly from, DateOnly to);
+        Task<HashSet<int>> GetCleanerIdsBlockedOnAsync(DateOnly date);
         Task AddRangeAsync(IEnumerable<BlockedDate> dates);
         Task RemoveRangeAsync(int cleanerId, DateOnly from, DateOnly to);
         Task SaveAsync();
