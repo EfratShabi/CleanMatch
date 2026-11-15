@@ -27,7 +27,7 @@ Legend: `[ ]` to do · `[x]` done
 - [x] `GET /api/auth/me` endpoint – returns the logged-in user, role, and cleaner/customer Id
 - [x] Move the JWT key to User Secrets and rotate the key
 - [ ] Move the connection string from `DataContext.OnConfiguring` to configuration
-- [ ] Authorization on every endpoint: customers list not public, a cleaner edits only herself, a customer sees only their own bookings, `manager` sees everything
+- [x] Authorization on every endpoint: customers list not public, a cleaner edits only herself, a customer sees only their own bookings, `manager` sees everything
   - [x] Customers controller (list = manager only; get/put/delete = self or manager)
   - [x] Cleaners controller (list + signup public; get = any logged-in user; put/delete = herself or manager)
   - [x] Bookings controller (customer id taken from the token; no PUT – cancel and rebook; either side may cancel)
@@ -37,7 +37,7 @@ Legend: `[ ]` to do · `[x]` done
 - [ ] `CleanerDTO` returns entities (`ArrFidback` is `List<Feedback>`, `ArrAvailability` is `List<Availability>`) – switch to DTOs
 - [ ] **Bug:** creating a feedback fails (FK error). `Feedback.CleanerId` doesn't match the navigation name `Cleaners`, so EF created a second column `CleanersId` as the real FK. Fix needs a migration – ask first; fold into the Stage 2 review redesign
 - [ ] Hide cleaners' phone number and street from the public cleaners list (`CleanerDTO` change) – show them only to logged-in users
-- [ ] Global error handling (middleware) – consistent error responses
+- [x] Global error handling (middleware) – consistent error responses
 - [ ] `ShabatMiddleware`: use Israel time, return 503 with a clear message, don't block CORS `OPTIONS` requests
 
 ## Stage 2 – The matching engine (the core of the project)

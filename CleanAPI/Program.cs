@@ -18,6 +18,8 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.WriteIndented = true;
 });
 
+builder.Services.AddProblemDetails();   // lets ASP.NET write a JSON body for errors that have none (401/403/404)
+
 builder.Services.AddEndpointsApiExplorer();
 
 // 2. הגדרת Swagger עם אפשרות להזנת Token
@@ -118,6 +120,8 @@ app.UseHttpsRedirection();
 
 // חשוב: קודם אימות (מי את) ואז הרשאה (מה מותר לך)
 app.UseCors(policy);
+app.UseErrorHandling();     // catches exceptions from everything below it; placed after CORS so error answers keep the CORS headers
+app.UseStatusCodePages();   // a bare 401/403/404 gets a JSON body too
 app.UseAuthentication();
 app.UseAuthorization();
 
