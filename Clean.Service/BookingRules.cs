@@ -2,6 +2,13 @@ using Clean.Core.Entities;
 
 namespace Clean.Service
 {
+    public enum BookingBlocker
+    {
+        None,
+        NotAvailable,
+        OutOfRange
+    }
+
     public static class BookingRules
     {
         public static readonly TimeSpan MinDuration = TimeSpan.FromMinutes(45);
@@ -26,6 +33,26 @@ namespace Clean.Service
 
             return a.StartWork.ToTimeSpan() < b.EndWork.ToTimeSpan() + BreakBetweenBookings
                 && b.StartWork.ToTimeSpan() < a.EndWork.ToTimeSpan() + BreakBetweenBookings;
+        }
+
+        // Shared by booking and search, so a cleaner shown in the search results is one the booking will accept.
+        // distanceKm is null when the customer's or the cleaner's address has no verified location.
+        public static BookingBlocker FindBlocker(Bookings requested, IEnumerable<Availability> weeklySlots,
+            bool isDateBlocked, IEnumerable<Bookings> sameDayBookings, double? distanceKm, int upToKm)
+        {
+            if (isDateBlocked
+                || !AvailabilityRules.Fits(requested, weeklySlots)
+                || sameDayBookings.Any(other => Conflicts(requested, other)))
+            {
+                return BookingBlocker.NotAvailable;
+            }
+
+            if (distanceKm == null || distanceKm > upToKm)
+            {
+                return BookingBlocker.OutOfRange;
+            }
+
+            return BookingBlocker.None;
         }
 
         public static double CalculatePrice(Bookings booking, int pricePerHour) =>

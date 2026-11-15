@@ -66,9 +66,9 @@ Legend: `[ ]` to do · `[x]` done
 - [x] Average rating and review count per cleaner
 
 ### Search and matching
-- [ ] `GET /api/cleaners/search?date&start&hours&maxPrice` – cleaners **available** at the requested time, within distance range
-- [ ] Sort by a match score combining distance and rating (and explain the formula in the README)
-- [ ] Unit tests for the availability, overlap and scoring logic
+- [x] `GET /api/cleaners/search?date&start&hours&maxPrice` – cleaners **available** at the requested time, within distance range (`maxPrice` is per hour; customers only)
+- [x] Sort by a match score combining distance and rating (and explain the formula in the README)
+- [x] Unit tests for the availability, overlap and scoring logic
 
 ### Cleanup
 - [ ] Delete `Cleaners.Core/Data/Service` and `IDataContext`

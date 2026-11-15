@@ -46,6 +46,15 @@ namespace Clean.Data.Repositories
                 .ToListAsync();
         }
 
+        public async Task<List<Bookings>> GetActiveBookingsOnDateAsync(DateTime date)
+        {
+            var dayStart = date.Date;
+            var dayEnd = dayStart.AddDays(1);
+            return await _context.Bookings
+                .Where(b => b.Date >= dayStart && b.Date < dayEnd && b.Status != BookingStatus.Cancelled)
+                .ToListAsync();
+        }
+
         public async Task<List<Bookings>> GetConfirmedBookingsBetweenAsync(int cleanerId, int customerId, DateTime fromDate)
         {
             return await _context.Bookings
