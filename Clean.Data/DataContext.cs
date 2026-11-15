@@ -14,6 +14,7 @@ namespace Clean.Data
         public DbSet<Feedback> Feedback { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Availability> Availabilities { get; set; }
+        public DbSet<BlockedDate> BlockedDates { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=Clean_DB;");
@@ -35,6 +36,10 @@ namespace Clean.Data
                 .HasForeignKey(c => c.UserId)
                 .OnDelete(DeleteBehavior.NoAction);
 
+
+            modelBuilder.Entity<BlockedDate>()
+                .HasIndex(b => new { b.CleanerId, b.Date })
+                .IsUnique();
 
             modelBuilder.Entity<User>(b =>
             {

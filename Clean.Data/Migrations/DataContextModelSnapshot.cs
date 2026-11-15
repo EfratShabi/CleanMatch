@@ -49,6 +49,28 @@ namespace Clean.Data.Migrations
                     b.ToTable("Availabilities");
                 });
 
+            modelBuilder.Entity("Clean.Core.Entities.BlockedDate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CleanerId")
+                        .HasColumnType("int");
+
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("date");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CleanerId", "Date")
+                        .IsUnique();
+
+                    b.ToTable("BlockedDates");
+                });
+
             modelBuilder.Entity("Clean.Core.Entities.Bookings", b =>
                 {
                     b.Property<int>("BookingCode")
@@ -74,12 +96,6 @@ namespace Clean.Data.Migrations
 
                     b.Property<double>("TotalPrice")
                         .HasColumnType("float");
-
-                    b.Property<int>("cleanerId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("customerId")
-                        .HasColumnType("int");
 
                     b.HasKey("BookingCode");
 
@@ -149,9 +165,6 @@ namespace Clean.Data.Migrations
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
-
-                    b.Property<bool>("availability")
-                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -268,6 +281,17 @@ namespace Clean.Data.Migrations
                 {
                     b.HasOne("Clean.Core.Entities.Cleaners", "Cleaner")
                         .WithMany("ArrAvailability")
+                        .HasForeignKey("CleanerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cleaner");
+                });
+
+            modelBuilder.Entity("Clean.Core.Entities.BlockedDate", b =>
+                {
+                    b.HasOne("Clean.Core.Entities.Cleaners", "Cleaner")
+                        .WithMany()
                         .HasForeignKey("CleanerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
