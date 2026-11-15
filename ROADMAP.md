@@ -51,10 +51,11 @@ Legend: `[ ]` to do · `[x]` done
 - [x] `LocationService`: use `IHttpClientFactory`, parse numbers with `CultureInfo.InvariantCulture`
 
 ### Bookings
-- [ ] Check that the requested hours fall within the cleaner's availability
-- [ ] Check for overlap with the cleaner's other bookings
-- [ ] Check that the customer is within the cleaner's distance range (`UpToKm`)
-- [ ] Compute `TotalPrice` = hours × `PricePerHour`
+- [x] Check that the requested hours fall within the cleaner's availability (and the date is not blocked)
+- [x] Check for overlap with the cleaner's other bookings (30-minute break required between bookings; minimum booking 45 minutes)
+- [x] Check that the customer is within the cleaner's distance range (`UpToKm`)
+- [x] Compute `TotalPrice` = hours × `PricePerHour`
+- [ ] Known limitation: two customers booking the same slot at the exact same moment can both pass the overlap check (check and save are separate steps). Real fix: a transaction or DB-level lock
 - [ ] Booking status: `Pending` / `Confirmed` / `Completed` / `Cancelled`
 - [ ] Cancellation policy (decision still open): either side may always cancel; record who cancelled and when; late cancellations (fewer than N days before the date, N not decided) are flagged and later affect the cleaner's ranking
 - [ ] "My bookings" for customers and cleaners
