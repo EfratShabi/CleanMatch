@@ -55,6 +55,13 @@ namespace Clean.Data.Repositories
                 .ToListAsync();
         }
 
+        public async Task<List<Bookings>> GetConfirmedBookingsOfCustomerFromAsync(int customerId, DateTime fromDate)
+        {
+            return await _context.Bookings
+                .Where(b => b.CustomersId == customerId && b.Date >= fromDate && b.Status == BookingStatus.Confirmed)
+                .ToListAsync();
+        }
+
         public async Task<List<Bookings>> GetConfirmedBookingsBetweenAsync(int cleanerId, int customerId, DateTime fromDate)
         {
             return await _context.Bookings

@@ -36,7 +36,7 @@ Legend: `[ ]` to do · `[x]` done
   - [x] Feedbacks controller (get = any logged-in user; post = customer; delete = manager only, since a feedback has no author yet)
 - [x] `CleanerDTO` no longer returns entities (reviews became `AverageRating` + `ReviewCount`, availability became `AvailabilityDTO`)
 - [x] **Bug fixed:** creating a feedback failed (FK error). The navigation was renamed to `Cleaner` so it matches `CleanerId`, and the stray `CleanersId` column was removed by a migration
-- [ ] Hide cleaners' phone number and street from the public cleaners list (`CleanerDTO` change) – show them only to logged-in users
+- [x] Hide cleaners' phone number and street (`CleanerDTO` returns them as null) – shown only to the cleaner herself, a manager, and a customer with an active booking with her
 - [x] Global error handling (middleware) – consistent error responses
 - [x] `ShabatMiddleware`: use Israel time, return 503 with a clear message, don't block CORS `OPTIONS` requests
 

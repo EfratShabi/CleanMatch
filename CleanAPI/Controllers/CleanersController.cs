@@ -23,12 +23,17 @@ namespace CleanAPI.Controllers
         //private IDataContext _cleanerServise;
         private IUserService _userService;
         private readonly ICleanerService _cleanerService;
+        private readonly ICustomerService _customerService;
+        private readonly IBookingService _bookingService;
         private readonly IMapper _mapper;
 
-        public CleanersController(ICleanerService cleanerService,IUserService userService,IMapper map)
+        public CleanersController(ICleanerService cleanerService, IUserService userService,
+            ICustomerService customerService, IBookingService bookingService, IMapper map)
         {
             _cleanerService = cleanerService;
             _userService = userService;
+            _customerService = customerService;
+            _bookingService = bookingService;
             _mapper = map;
         }
 
@@ -37,13 +42,46 @@ namespace CleanAPI.Controllers
         private bool CanAccess(Cleaners cleaner) =>
             User.IsManager() || cleaner.UserId == User.GetUserId();
 
+        // Phone and street are shown only to: a manager, the cleaner herself, and a customer
+        // who has an active (confirmed, not yet finished) booking with that cleaner.
+        // Computed once per request; for a customer it costs a single query, however long the list is.
+        private async Task<Func<Cleaners, bool>> GetContactVisibilityAsync()
+        {
+            if (User.IsManager()) return _ => true;
+
+            var userId = User.GetUserId();
+            var cleanerIdsWithBooking = new HashSet<int>();
+            if (userId != null && User.IsInRole("customer"))
+            {
+                var customer = await _customerService.GetCustomerByUserIdAsync(userId.Value);
+                if (customer != null)
+                {
+                    cleanerIdsWithBooking = await _bookingService.GetCleanerIdsWithActiveBookingAsync(customer.Id);
+                }
+            }
+
+            return cleaner => (userId != null && cleaner.UserId == userId) || cleanerIdsWithBooking.Contains(cleaner.Id);
+        }
+
+        private CleanerDTO ToDto(Cleaners cleaner, Func<Cleaners, bool> canSeeContact)
+        {
+            var dto = _mapper.Map<CleanerDTO>(cleaner);
+            if (!canSeeContact(cleaner))
+            {
+                dto.PhonNumber = null;
+                dto.Street = null;
+            }
+            return dto;
+        }
+
         // GET: api/<CleanersController>
         [HttpGet]
         [AllowAnonymous]
         public  async Task<ActionResult> Get()
         {
             var cleaners=await _cleanerService.GetAllCleanersAsync();
-            return Ok(_mapper.Map<List<CleanerDTO>>(cleaners));
+            var canSeeContact = await GetContactVisibilityAsync();
+            return Ok(cleaners.Select(c => ToDto(c, canSeeContact)).ToList());
         }
 
         //GET api/<CleanersController>/5
@@ -55,7 +93,7 @@ namespace CleanAPI.Controllers
             {
                 return NotFound();
             }
-            return Ok(_mapper.Map<CleanerDTO>(a));
+            return Ok(ToDto(a, await GetContactVisibilityAsync()));
 
         }
 
@@ -126,7 +164,7 @@ namespace CleanAPI.Controllers
 
             await _cleanerService.UpdateCleanerAsync(c);
 
-            return Ok(_mapper.Map<CleanerDTO>(c));
+            return Ok(ToDto(c, await GetContactVisibilityAsync()));
         }
 
         // DELETE api/<CleanersController>/5
