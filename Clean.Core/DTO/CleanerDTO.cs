@@ -22,9 +22,10 @@ namespace Clean.Core.DTO
         public bool HebrewSpeaker { get; set; }
         public int PricePerHour { get; set; }
         public int UpToKm { get; set; }
-        public List<Feedback> ArrFidback { get; set; }
+        public double? AverageRating { get; set; }
+        public int ReviewCount { get; set; }
 
-        public List<Availability> ArrAvailability { get; set; }
+        public List<AvailabilityDTO> ArrAvailability { get; set; }
 
         //public Schedule Schedule { get; set; }
     }

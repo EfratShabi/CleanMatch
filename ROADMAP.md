@@ -34,8 +34,8 @@ Legend: `[ ]` to do · `[x]` done
   - [x] A cleaner can see a customer while she has an active (confirmed, not yet finished) booking with them
   - [x] Booking deletion replaced with a `Cancelled` status (`POST api/bookings/{id}/cancel`)
   - [x] Feedbacks controller (get = any logged-in user; post = customer; delete = manager only, since a feedback has no author yet)
-- [ ] `CleanerDTO` returns entities (`ArrFidback` is `List<Feedback>`, `ArrAvailability` is `List<Availability>`) – switch to DTOs
-- [ ] **Bug:** creating a feedback fails (FK error). `Feedback.CleanerId` doesn't match the navigation name `Cleaners`, so EF created a second column `CleanersId` as the real FK. Fix needs a migration – ask first; fold into the Stage 2 review redesign
+- [x] `CleanerDTO` no longer returns entities (reviews became `AverageRating` + `ReviewCount`, availability became `AvailabilityDTO`)
+- [x] **Bug fixed:** creating a feedback failed (FK error). The navigation was renamed to `Cleaner` so it matches `CleanerId`, and the stray `CleanersId` column was removed by a migration
 - [ ] Hide cleaners' phone number and street from the public cleaners list (`CleanerDTO` change) – show them only to logged-in users
 - [x] Global error handling (middleware) – consistent error responses
 - [x] `ShabatMiddleware`: use Israel time, return 503 with a clear message, don't block CORS `OPTIONS` requests
@@ -61,9 +61,9 @@ Legend: `[ ]` to do · `[x]` done
 - [x] "My bookings" for customers and cleaners
 
 ### Rating
-- [ ] Review with a 1–5 rating, linked to a completed booking (one review per booking)
-- [ ] Enable the `BadWords` filter
-- [ ] Average rating and review count per cleaner
+- [x] Review with a 1–5 rating, linked to a completed booking (one review per booking)
+- [x] Enable the `BadWords` filter (also fixed: the file is now loaded from the app folder, not the current directory)
+- [x] Average rating and review count per cleaner
 
 ### Search and matching
 - [ ] `GET /api/cleaners/search?date&start&hours&maxPrice` – cleaners **available** at the requested time, within distance range

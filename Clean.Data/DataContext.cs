@@ -47,6 +47,14 @@ namespace Clean.Data
                     v => v.HasValue ? DateTime.SpecifyKind(v.Value, DateTimeKind.Utc) : v);
             });
 
+            modelBuilder.Entity<Feedback>(f =>
+            {
+                f.HasIndex(x => x.BookingCode).IsUnique();
+                // NoAction: SQL Server rejects two cascade paths (cleaner -> feedback, and cleaner -> booking -> feedback).
+                f.HasOne(x => x.Booking).WithMany().HasForeignKey(x => x.BookingCode).OnDelete(DeleteBehavior.NoAction);
+                f.Property(x => x.CreatedAt).HasConversion(v => v, v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
+            });
+
             modelBuilder.Entity<BlockedDate>()
                 .HasIndex(b => new { b.CleanerId, b.Date })
                 .IsUnique();
