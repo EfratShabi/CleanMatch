@@ -30,7 +30,9 @@ Legend: `[ ]` to do · `[x]` done
 - [ ] Authorization on every endpoint: customers list not public, a cleaner edits only herself, a customer sees only their own bookings, `manager` sees everything
   - [x] Customers controller (list = manager only; get/put/delete = self or manager)
   - [x] Cleaners controller (list + signup public; get = any logged-in user; put/delete = herself or manager)
-  - [ ] Bookings controller (take `CustomersId` from the token; later: let a cleaner see a customer who has a booking with her)
+  - [x] Bookings controller (customer id taken from the token; no PUT – cancel and rebook; either side may cancel)
+  - [ ] Later: let a cleaner see a customer who has a booking with her
+  - [ ] Later (Stage 2): replace booking deletion with a `Cancelled` status
   - [ ] Feedbacks controller
 - [ ] Hide cleaners' phone number and street from the public cleaners list (`CleanerDTO` change) – show them only to logged-in users
 - [ ] Global error handling (middleware) – consistent error responses

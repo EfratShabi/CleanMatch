@@ -15,6 +15,7 @@ namespace Clean.Core
             CreateMap<Cleaners, CleanerDTO>().ReverseMap();
             CreateMap<Feedback, FeedbackDTO>().ReverseMap();
             CreateMap<Customers, CustomerDTO>().ReverseMap();
+            CreateMap<Bookings, BookingDTO>();
 
            
         }
