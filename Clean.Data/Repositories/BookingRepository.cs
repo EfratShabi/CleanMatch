@@ -33,6 +33,11 @@ namespace Clean.Data.Repositories
             return await _context.Bookings.Where(b => b.CleanersId == idOfCleaners).ToListAsync();
         }
 
+        public async Task<List<Bookings>> GetUpcomingBookingsOfCleanerAsync(int cleanerId, DateTime fromDate)
+        {
+            return await _context.Bookings.Where(b => b.CleanersId == cleanerId && b.Date >= fromDate).ToListAsync();
+        }
+
         public async Task AddBookingAsync(Bookings newBooking)
         {
             await _context.Bookings.AddAsync(newBooking);

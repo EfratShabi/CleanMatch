@@ -15,6 +15,7 @@ namespace CleanAPI
             CreateMap<CleanerPutModel, Cleaners>();
             CreateMap<BookingPostModel, Bookings>().ReverseMap();
              CreateMap<FeedbackPostModel, Feedback>().ReverseMap();
+            CreateMap<AvailabilitySlotModel, Availability>();
 
         }
 

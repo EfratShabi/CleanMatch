@@ -11,6 +11,7 @@ namespace Clean.Core.Repositories
         Task<List<Bookings>> GetBookingsAsync();
         Task<Bookings?> GetBookingsByIdAsync(int id);
         Task<List<Bookings>> GetBookingByIDOfCleaners(int idOfCleaners);
+        Task<List<Bookings>> GetUpcomingBookingsOfCleanerAsync(int cleanerId, DateTime fromDate);
 
         Task AddBookingAsync(Bookings newBooking);
         Task UpdateBookingAsync(Bookings updatedBooking);

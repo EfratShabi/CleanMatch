@@ -42,7 +42,7 @@ Legend: `[ ]` to do · `[x]` done
 
 ## Stage 2 – The matching engine (the core of the project)
 ### Availability
-- [ ] Repository + Service + Controller for `Availability` (fixed hours per weekday)
+- [x] Repository + Service + Controller for `Availability` (fixed hours per weekday; several ranges per day; replace-the-week update rejected with 409 if it would push an existing future booking outside the new hours)
 - [ ] Blocking specific dates (vacation / sick days)
 - [ ] Remove the duplicate `availability` (bool) field from `Cleaners`
 

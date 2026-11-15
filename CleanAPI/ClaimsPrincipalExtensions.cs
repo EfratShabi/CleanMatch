@@ -14,5 +14,8 @@ namespace CleanAPI
         }
 
         public static bool IsManager(this ClaimsPrincipal user) => user.IsInRole("manager");
+
+        public static bool IsManagerOrOwner(this ClaimsPrincipal user, int ownerUserId) =>
+            user.IsManager() || user.GetUserId() == ownerUserId;
     }
 }
