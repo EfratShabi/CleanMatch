@@ -1,52 +1,66 @@
 ﻿using Clean.Core.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Microsoft.Extensions.Logging;
+using System.Globalization;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Clean.Service
 {
     public class LocationService : ILocationService
     {
         private readonly HttpClient _httpClient;
-        public LocationService() 
+        private readonly ILogger<LocationService> _logger;
+
+        public LocationService(HttpClient httpClient, ILogger<LocationService> logger)
         {
-            _httpClient = new HttpClient();
-            _httpClient.DefaultRequestHeaders.Add("User-Agent", "CleanAppProject");
+            _httpClient = httpClient;
+            _logger = logger;
         }
 
-
-        public async Task<(double lat, double lon)?> GetCoordinatesFromZipAsync(string zipCode)
+        public async Task<(double lat, double lon)?> GetCoordinatesAsync(string city, string street, string zipCode)
         {
-            try
+            if (!string.IsNullOrWhiteSpace(city) && !string.IsNullOrWhiteSpace(street))
             {
-                var url = $"https://nominatim.openstreetmap.org/search?postalcode={zipCode}&country=Israel&format=json";
-                var response = await _httpClient.GetAsync(url);
-
-                if (!response.IsSuccessStatusCode) return null;
-
-                var content = await response.Content.ReadAsStringAsync();
-                var json = JsonDocument.Parse(content);
-                var root = json.RootElement;
-
-                if (root.GetArrayLength() > 0)
-                {
-                    var firstResult = root[0];
-                    double lat = double.Parse(firstResult.GetProperty("lat").GetString());
-                    double lon = double.Parse(firstResult.GetProperty("lon").GetString());
-                    return (lat, lon);
-                }
+                var byStreet = await SearchAsync($"city={Uri.EscapeDataString(city)}&street={Uri.EscapeDataString(street)}");
+                if (byStreet != null) return byStreet;
             }
-            catch { /* לוג שגיאה במקרה של בעיית תקשורת */ }
+
+            if (!string.IsNullOrWhiteSpace(zipCode))
+            {
+                return await SearchAsync($"postalcode={Uri.EscapeDataString(zipCode)}");
+            }
 
             return null;
         }
 
+        private async Task<(double lat, double lon)?> SearchAsync(string query)
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync($"search?{query}&country=Israel&format=json&limit=1");
+                if (!response.IsSuccessStatusCode)
+                {
+                    _logger.LogWarning("Geocoding returned {Status}", (int)response.StatusCode);
+                    return null;
+                }
+
+                using var json = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+                var root = json.RootElement;
+                if (root.GetArrayLength() == 0) return null;
+
+                var first = root[0];
+                return (double.Parse(first.GetProperty("lat").GetString()!, CultureInfo.InvariantCulture),
+                        double.Parse(first.GetProperty("lon").GetString()!, CultureInfo.InvariantCulture));
+            }
+            catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or JsonException or FormatException or InvalidOperationException)
+            {
+                _logger.LogWarning(ex, "Geocoding request failed");
+                return null;
+            }
+        }
+
         public double CalculateDistance(double lat1, double lon1, double lat2, double lon2)
         {
-            double R = 6371; // רדיוס כדור הארץ
+            double R = 6371;
             double dLat = ToRadians(lat2 - lat1);
             double dLon = ToRadians(lon2 - lon1);
             double a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
@@ -59,4 +73,3 @@ namespace Clean.Service
         private double ToRadians(double angle) => Math.PI * angle / 180.0;
     }
 }
-

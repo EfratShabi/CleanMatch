@@ -36,6 +36,16 @@ namespace Clean.Service
         {
             return await _cleanerRepository.GetCleanerByUserIdAsync(userId);
         }
+        public async Task ApplyLocationAsync(Cleaners cleaner)
+        {
+            var location = await _locationService.GetCoordinatesAsync(cleaner.City, cleaner.Street, cleaner.Mikud);
+            if (location == null)
+            {
+                throw new ArgumentException("לא הצלחנו לאתר את הכתובת. בדקי עיר, רחוב ומיקוד ונסי שוב.");
+            }
+            cleaner.Latitude = location.Value.lat;
+            cleaner.Longitude = location.Value.lon;
+        }
         public async Task AddCleanerAsync(Cleaners newCleaner)
         {
            await _cleanerRepository.AddCleanerAsync(newCleaner);

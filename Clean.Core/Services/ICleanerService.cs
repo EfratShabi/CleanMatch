@@ -17,6 +17,7 @@ namespace Clean.Core.Services
 
         public Task<Cleaners> GetCleanerByIDOfCleaner(int IdOfCleaner);
         public Task<Cleaners?> GetCleanerByUserIdAsync(int userId);
+        public Task ApplyLocationAsync(Cleaners cleaner);
 
 
     }

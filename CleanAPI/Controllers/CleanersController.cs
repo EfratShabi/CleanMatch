@@ -75,9 +75,18 @@ namespace CleanAPI.Controllers
                 return Conflict();
             }
 
+            var newCleaner = _mapper.Map<Cleaners>(c);
+            try
+            {
+                await _cleanerService.ApplyLocationAsync(newCleaner);
+            }
+            catch (ArgumentException ex)
+            {
+                return Problem(ex.Message, statusCode: StatusCodes.Status400BadRequest);
+            }
+
             var user=new User { UserName = c.UserName,Password=c.Password,Role=Clean.Core.Entities.User.eRole.cleaner };
             var User=await _userService.AddUserAsync(user);
-            var newCleaner = _mapper.Map<Cleaners>(c);
             newCleaner.User = User;
             newCleaner.UserId = User.Id;
 
@@ -100,7 +109,20 @@ namespace CleanAPI.Controllers
                 return Forbid();
             }
 
+            var addressChanged = c.City != cl.City || c.Street != cl.Street || c.Mikud != cl.Mikud;
             _mapper.Map(cl, c);
+
+            if (addressChanged)
+            {
+                try
+                {
+                    await _cleanerService.ApplyLocationAsync(c);
+                }
+                catch (ArgumentException ex)
+                {
+                    return Problem(ex.Message, statusCode: StatusCodes.Status400BadRequest);
+                }
+            }
 
             await _cleanerService.UpdateCleanerAsync(c);
 

@@ -12,10 +12,23 @@ namespace Clean.Service
     public class CustomerService : ICustomerService
     {
         private readonly ICustomerRepository _customerRepository;
+        private readonly ILocationService _locationService;
 
-        public CustomerService(ICustomerRepository customerRepository)
+        public CustomerService(ICustomerRepository customerRepository, ILocationService locationService)
         {
             _customerRepository = customerRepository;
+            _locationService = locationService;
+        }
+
+        public async Task ApplyLocationAsync(Customers customer)
+        {
+            var location = await _locationService.GetCoordinatesAsync(customer.City, customer.Street, customer.Mikud);
+            if (location == null)
+            {
+                throw new ArgumentException("לא הצלחנו לאתר את הכתובת. בדקי עיר, רחוב ומיקוד ונסי שוב.");
+            }
+            customer.Latitude = location.Value.lat;
+            customer.Longitude = location.Value.lon;
         }
 
         public async Task<List<Customers>> GetAllCustomersAsync()
