@@ -33,7 +33,9 @@ Legend: `[ ]` to do · `[x]` done
   - [x] Bookings controller (customer id taken from the token; no PUT – cancel and rebook; either side may cancel)
   - [ ] Later: let a cleaner see a customer who has a booking with her
   - [ ] Later (Stage 2): replace booking deletion with a `Cancelled` status
-  - [ ] Feedbacks controller
+  - [x] Feedbacks controller (get = any logged-in user; post = customer; delete = manager only, since a feedback has no author yet)
+- [ ] `CleanerDTO` returns entities (`ArrFidback` is `List<Feedback>`, `ArrAvailability` is `List<Availability>`) – switch to DTOs
+- [ ] **Bug:** creating a feedback fails (FK error). `Feedback.CleanerId` doesn't match the navigation name `Cleaners`, so EF created a second column `CleanersId` as the real FK. Fix needs a migration – ask first; fold into the Stage 2 review redesign
 - [ ] Hide cleaners' phone number and street from the public cleaners list (`CleanerDTO` change) – show them only to logged-in users
 - [ ] Global error handling (middleware) – consistent error responses
 - [ ] `ShabatMiddleware`: use Israel time, return 503 with a clear message, don't block CORS `OPTIONS` requests
