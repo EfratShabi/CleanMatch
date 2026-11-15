@@ -11,8 +11,8 @@ namespace CleanAPI.Models
 
         public TimeOnly EndWork { get; set; }
 
-        public int CustomersId { get; set; }
-        public int CleanersId { get; set; } 
+        // CustomersId is NOT here on purpose: the customer is taken from the login token, not from the request body.
+        public int CleanersId { get; set; }
 
     }
 }
