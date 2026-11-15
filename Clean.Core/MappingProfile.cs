@@ -15,7 +15,11 @@ namespace Clean.Core
             CreateMap<Cleaners, CleanerDTO>().ReverseMap();
             CreateMap<Feedback, FeedbackDTO>().ReverseMap();
             CreateMap<Customers, CustomerDTO>().ReverseMap();
-            CreateMap<Bookings, BookingDTO>();
+            CreateMap<Bookings, BookingDTO>()
+                .ForMember(d => d.IsCompleted, o => o.MapFrom((src, dest, member, ctx) =>
+                    src.Status == BookingStatus.Confirmed
+                    && ctx.Items.TryGetValue("now", out var now)
+                    && src.HasEnded((DateTime)now)));
             CreateMap<Availability, AvailabilityDTO>();
             CreateMap<BlockedDate, BlockedDateDTO>();
 

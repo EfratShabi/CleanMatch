@@ -90,10 +90,34 @@ namespace Clean.Service
             await _bookingRepository.SaveAsync();
         }
 
-        public async Task DeleteBookingAsync(int id)
+        public async Task CancelAsync(Bookings booking, CancelledByRole by)
         {
-            await _bookingRepository.DeleteBookingAsync(id);
+            if (booking.Status == BookingStatus.Cancelled)
+            {
+                throw new InvalidOperationException("ההזמנה כבר בוטלה.");
+            }
+            if (booking.HasEnded(IsraelTime.Now(_timeProvider)))
+            {
+                throw new InvalidOperationException("אי אפשר לבטל הזמנה שכבר הסתיימה.");
+            }
+
+            booking.Status = BookingStatus.Cancelled;
+            booking.CancelledAt = _timeProvider.GetUtcNow().UtcDateTime;
+            booking.CancelledBy = by;
+            await _bookingRepository.UpdateBookingAsync(booking);
             await _bookingRepository.SaveAsync();
+        }
+
+        public Task<List<Bookings>> GetByCustomerAsync(int customerId)
+        {
+            return _bookingRepository.GetBookingsOfCustomerAsync(customerId);
+        }
+
+        public async Task<bool> CleanerCanSeeCustomerAsync(int cleanerId, int customerId)
+        {
+            var now = IsraelTime.Now(_timeProvider);
+            var confirmed = await _bookingRepository.GetConfirmedBookingsBetweenAsync(cleanerId, customerId, now.Date);
+            return confirmed.Any(b => !b.HasEnded(now));
         }
 
         private static bool HasLocation(double latitude, double longitude) => latitude != 0 || longitude != 0;

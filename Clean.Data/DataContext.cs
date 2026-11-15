@@ -37,6 +37,16 @@ namespace Clean.Data
                 .OnDelete(DeleteBehavior.NoAction);
 
 
+            modelBuilder.Entity<Bookings>(b =>
+            {
+                b.Property(x => x.Status).HasConversion<string>().HasDefaultValue(BookingStatus.Confirmed);
+                b.Property(x => x.CancelledBy).HasConversion<string>();
+                // SQL Server returns datetime2 without a time zone; mark it as UTC so the API serializes it with a "Z".
+                b.Property(x => x.CancelledAt).HasConversion(
+                    v => v,
+                    v => v.HasValue ? DateTime.SpecifyKind(v.Value, DateTimeKind.Utc) : v);
+            });
+
             modelBuilder.Entity<BlockedDate>()
                 .HasIndex(b => new { b.CleanerId, b.Date })
                 .IsUnique();

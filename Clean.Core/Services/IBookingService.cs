@@ -1,9 +1,4 @@
 ﻿using Clean.Core.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Clean.Core.Services
 {
@@ -12,9 +7,10 @@ namespace Clean.Core.Services
         Task<List<Bookings>> GetBookingsAsync();
         Task<Bookings?> GetBookingsByIdAsync(int id);
         Task<List<Bookings>> GetBookingByIDOfCleaners(int idOfCleaners);
+        Task<List<Bookings>> GetByCustomerAsync(int customerId);
         Task AddBookingAsync(Bookings newBooking);
         Task UpdateBookingAsync(Bookings updatedBooking);
-        Task DeleteBookingAsync(int id);
-
+        Task CancelAsync(Bookings booking, CancelledByRole by);
+        Task<bool> CleanerCanSeeCustomerAsync(int cleanerId, int customerId);
     }
 }

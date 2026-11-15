@@ -20,6 +20,11 @@ namespace Clean.Core.Entities
         public int CleanersId { get; set; }
         public Cleaners Cleaners { get; set; }
 
+        public BookingStatus Status { get; set; } = BookingStatus.Confirmed;
+        public DateTime? CancelledAt { get; set; }
+        public CancelledByRole? CancelledBy { get; set; }
+
+        public bool HasEnded(DateTime israelNow) => Date.Date + EndWork.ToTimeSpan() <= israelNow;
 
 
 

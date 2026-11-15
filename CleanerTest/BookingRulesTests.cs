@@ -90,6 +90,29 @@ namespace CleanerTest
             Assert.True(BookingRules.Conflicts(Booking("22:30", "23:50"), Booking("23:55", "23:59")));
         }
 
+        [Theory]
+        [InlineData("2026-11-15T10:59:00", false)]
+        [InlineData("2026-11-15T11:00:00", true)]
+        [InlineData("2026-11-15T11:01:00", true)]
+        [InlineData("2026-11-14T23:00:00", false)]
+        [InlineData("2026-11-16T00:00:00", true)]
+        public void HasEnded_compares_the_end_of_the_booking_with_now(string now, bool expected)
+        {
+            var booking = Booking("09:00", "11:00", "2026-11-15");
+
+            Assert.Equal(expected, booking.HasEnded(DateTime.Parse(now)));
+        }
+
+        [Fact]
+        public void A_new_booking_is_confirmed_and_not_cancelled()
+        {
+            var booking = new Bookings();
+
+            Assert.Equal(BookingStatus.Confirmed, booking.Status);
+            Assert.Null(booking.CancelledAt);
+            Assert.Null(booking.CancelledBy);
+        }
+
         [Fact]
         public void CalculatePrice_is_hours_times_hourly_price()
         {
