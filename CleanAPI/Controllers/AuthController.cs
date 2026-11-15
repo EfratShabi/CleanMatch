@@ -28,6 +28,7 @@ namespace CleanAPI.Controllers
             {
                 var claims = new List<Claim>()
             {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.UserName),
                 new Claim(ClaimTypes.Role, user.Role.ToString())
             };
@@ -37,7 +38,7 @@ namespace CleanAPI.Controllers
                     issuer: _configuration["JWT:Issuer"],
                     audience: _configuration["JWT:Audience"],
                     claims: claims,
-                    expires: DateTime.Now.AddMinutes(6),
+                    expires: DateTime.UtcNow.AddMinutes(60),
                     signingCredentials: signinCredentials
                 );
                 var tokenString = new JwtSecurityTokenHandler().WriteToken(tokeOptions);
