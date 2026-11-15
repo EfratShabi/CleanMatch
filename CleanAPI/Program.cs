@@ -5,6 +5,7 @@ using Clean.Data.Repositories;
 using Clean.Service;
 using CleanAPI;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
@@ -52,7 +53,14 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 // 3. הגדרת בסיס הנתונים (Database)
-builder.Services.AddDbContext<DataContext>();
+// Like the JWT key, the connection string is a secret: User Secrets (dev) or an environment variable (production).
+var connectionString = builder.Configuration.GetConnectionString("Default");
+if (string.IsNullOrWhiteSpace(connectionString))
+{
+    throw new InvalidOperationException(
+        "ConnectionStrings:Default is not configured. Run: dotnet user-secrets set \"ConnectionStrings:Default\" \"<connection string>\" --project CleanAPI");
+}
+builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(connectionString));
 
 // 4. הגדרת הזרקת תלויות (Dependency Injection) לשירותים של אפליקציית הניקיון
 builder.Services.AddScoped<ICleanerRepository, CleanerRepository>();

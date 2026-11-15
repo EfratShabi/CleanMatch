@@ -5,6 +5,21 @@ A platform that matches customers with cleaners in their area, based on **distan
 The backend is an ASP.NET Core 8 Web API (layered architecture, EF Core on SQL Server, role-based JWT).
 See `ROADMAP.md` for the full plan and what is done.
 
+## Setup
+
+Secrets are never stored in Git. After cloning, set them once with User Secrets:
+
+```
+dotnet user-secrets set "JWT:Key" "<a long random string>" --project CleanAPI
+dotnet user-secrets set "ConnectionStrings:Default" "Server=(localdb)\MSSQLLocalDB;Database=Clean_DB;" --project CleanAPI
+dotnet ef database update --project Clean.Data --startup-project CleanAPI
+dotnet run --project CleanAPI
+```
+
+Swagger: http://localhost:5184/swagger
+
+In production, set the same keys as environment variables (`JWT__Key`, `ConnectionStrings__Default`).
+
 ## How the cleaner search works
 
 `GET /api/cleaners/search?date=2026-11-23&start=09:00&hours=2&maxPrice=80` (logged-in customers only)
