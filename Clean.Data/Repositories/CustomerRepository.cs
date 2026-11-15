@@ -27,6 +27,11 @@ namespace Clean.Data.Repositories
             return await _context.Customers.FirstOrDefaultAsync(c => c.IdOfCustomer == IdOfCustomer);
         }
 
+        public async Task<Customers?> GetCustomerByUserIdAsync(int userId)
+        {
+            return await _context.Customers.FirstOrDefaultAsync(c => c.UserId == userId);
+        }
+
         public async Task<Customers?> GetCustomerByIdAsync(int id)
         {
             return await _context.Customers.FirstOrDefaultAsync(c => c.Id == id);

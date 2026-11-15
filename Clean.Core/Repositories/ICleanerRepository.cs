@@ -15,6 +15,7 @@ namespace Clean.Core.Repositories
         public Task UpdateCleanerAsync(Cleaners updatedCleaner);
         public Task DeleteCleanerAsync(int id);
         public Task<Cleaners> GetCleanerByIDOfCleanerAsync(int IdOfCleaner);
+        public Task<Cleaners?> GetCleanerByUserIdAsync(int userId);
 
         Task SaveChangesAsync();
 

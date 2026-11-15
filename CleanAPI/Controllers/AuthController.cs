@@ -1,5 +1,7 @@
-﻿using Clean.Core.Services;
+﻿using Clean.Core.DTO;
+using Clean.Core.Services;
 using CleanAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -15,10 +17,15 @@ namespace CleanAPI.Controllers
     {
         private readonly IUserService _userService;
         private readonly IConfiguration _configuration;
-        public AuthController(IUserService userService, IConfiguration configuration)
+        private readonly ICleanerService _cleanerService;
+        private readonly ICustomerService _customerService;
+        public AuthController(IUserService userService, IConfiguration configuration,
+            ICleanerService cleanerService, ICustomerService customerService)
         {
             _userService = userService;
             _configuration = configuration;
+            _cleanerService = cleanerService;
+            _customerService = customerService;
         }
         [HttpPost("login")] 
         public async Task<IActionResult> Login([FromBody] LoginModel loginModel)
@@ -45,6 +52,46 @@ namespace CleanAPI.Controllers
                 return Ok(new { Token = tokenString });
             }
             return Unauthorized();
+        }
+
+        // "Who am I?" - any logged-in user may call it; it only ever returns the user of the token,
+        // so there is no way to ask about someone else.
+        [Authorize]
+        [HttpGet("me")]
+        public async Task<ActionResult<MeDTO>> Me()
+        {
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var role = User.FindFirstValue(ClaimTypes.Role);
+            if (!int.TryParse(userIdClaim, out var userId) || role == null)
+            {
+                return Unauthorized();
+            }
+
+            int? cleanerId = null;
+            int? customerId = null;
+
+            if (role == "cleaner")
+            {
+                var cleaner = await _cleanerService.GetCleanerByUserIdAsync(userId);
+                if (cleaner == null) return Unauthorized(); // valid token but the profile no longer exists
+                cleanerId = cleaner.Id;
+            }
+            else if (role == "customer")
+            {
+                var customer = await _customerService.GetCustomerByUserIdAsync(userId);
+                if (customer == null) return Unauthorized();
+                customerId = customer.Id;
+            }
+            // manager: no profile, both ids stay null
+
+            return Ok(new MeDTO
+            {
+                UserId = userId,
+                UserName = User.FindFirstValue(ClaimTypes.Name) ?? string.Empty,
+                Role = role,
+                CleanerId = cleanerId,
+                CustomerId = customerId
+            });
         }
 
     }
