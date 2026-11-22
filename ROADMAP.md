@@ -86,6 +86,7 @@ Legend: `[ ]` to do · `[x]` done
 - [ ] Mobile layout, loading and error states
 
 ## Stage 4 – LLM agent + MCP server
+- [x] Provider-neutral LLM client: `ILlmClient` in `Clean.Core/Llm`, `GeminiClient` (REST, free tier) in `Clean.Service` with retry/backoff and temporary vs permanent errors; verified against the real API
 - [ ] MCP server in C# (NuGet: `ModelContextProtocol`) built on the existing Services
 - [ ] Tools: `search_cleaners`, `get_cleaner_profile`, `get_availability`, `create_booking_draft`
 - [ ] The agent: free-text request → parameters → tool calls → suggestions

@@ -1,4 +1,5 @@
-﻿using Clean.Core.Repositories;
+﻿using Clean.Core.Llm;
+using Clean.Core.Repositories;
 using Clean.Core.Services;
 using Clean.Data;
 using Clean.Data.Repositories;
@@ -115,6 +116,15 @@ builder.Services.AddHttpClient<ILocationService, LocationService>(client =>
     client.BaseAddress = new Uri("https://nominatim.openstreetmap.org/");
     client.DefaultRequestHeaders.UserAgent.ParseAdd("CleanMatch/1.0");
     client.Timeout = TimeSpan.FromSeconds(10);
+});
+builder.Services.AddSingleton(new GeminiSettings(
+    builder.Configuration["Gemini:ApiKey"] ?? "",
+    builder.Configuration["Gemini:Model"] ?? "gemini-3.1-flash-lite",
+    TimeSpan.FromSeconds(2)));
+builder.Services.AddHttpClient<ILlmClient, GeminiClient>(client =>
+{
+    client.BaseAddress = new Uri("https://generativelanguage.googleapis.com/v1beta/");
+    client.Timeout = TimeSpan.FromSeconds(30);
 });
 var policy = "policy";
 builder.Services.AddCors(options =>
