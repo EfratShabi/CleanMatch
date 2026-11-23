@@ -87,6 +87,9 @@ Legend: `[ ]` to do · `[x]` done
 
 ## Stage 4 – LLM agent + MCP server
 - [x] Provider-neutral LLM client: `ILlmClient` in `Clean.Core/Llm`, `GeminiClient` (REST, free tier) in `Clean.Service` with retry/backoff and temporary vs permanent errors; verified against the real API
+- [x] Free text → search parameters: `SearchIntentPrompt` (today's date, anti-injection rule), `SearchIntentParser` (never trusts model JSON), `SearchIntentService`, and `SearchIntent.NextMissingField` (ask one missing detail at a time); verified against the real model on 7 sentences
+- [ ] Natural-language search endpoint (Controller): `ArgumentException` → 400, `LlmException` → 503, unreadable answer → "didn't understand", missing detail → question, complete → search results; show the enum as a name instead of a number
+- [ ] Decisions before going live: paid Gemini tier (free tier may use the content), sanity limit on `Hours`
 - [ ] MCP server in C# (NuGet: `ModelContextProtocol`) built on the existing Services
 - [ ] Tools: `search_cleaners`, `get_cleaner_profile`, `get_availability`, `create_booking_draft`
 - [ ] The agent: free-text request → parameters → tool calls → suggestions
