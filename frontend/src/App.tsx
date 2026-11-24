@@ -1,5 +1,6 @@
 import { Route, Routes } from 'react-router-dom'
 import { RequireAuth } from '@/auth/RequireAuth'
+import CleanerProfilePage from '@/pages/CleanerProfilePage'
 import HomePage from '@/pages/HomePage'
 import SearchPage from '@/pages/SearchPage'
 import LoginPage from '@/pages/LoginPage'
@@ -14,6 +15,14 @@ export default function App() {
         element={
           <RequireAuth roles={['customer']}>
             <SearchPage />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/cleaners/:id"
+        element={
+          <RequireAuth>
+            <CleanerProfilePage />
           </RequireAuth>
         }
       />
