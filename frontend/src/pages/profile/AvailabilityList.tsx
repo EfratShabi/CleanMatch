@@ -1,9 +1,7 @@
+import { hhmm } from '@/lib/time'
 import type { AvailabilitySlot } from '@/types/api'
 
 const DAY_NAMES = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת']
-
-// "08:00:00" -> "08:00"
-const hhmm = (time: string) => time.slice(0, 5)
 
 export function AvailabilityList({ slots }: { slots: AvailabilitySlot[] }) {
   if (slots.length === 0) {
