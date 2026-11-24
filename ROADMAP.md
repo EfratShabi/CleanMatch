@@ -80,7 +80,8 @@ Legend: `[ ]` to do · `[x]` done
 ### Cleanup
 - [x] Delete `Cleaners.Core/Data/Service` and `IDataContext`
 - [x] Move the Models to a proper namespace (`Clean.Core.Models`)
-- [ ] **Bug:** deleting a customer or cleaner leaves the `User` row behind (the login still works). Delete the user too
+- [x] **Bug fixed:** deleting a customer or cleaner left the `User` row behind (the login still worked). The profile and its user are now removed in one save (verify by hand: delete, then try to log in)
+- [ ] Decision still open: deleting a cleaner or customer who already has bookings or reviews may fail on foreign keys. Decide what happens to booking history (block the delete, or anonymize)
 
 ## Stage 3 – Frontend (React + TypeScript)
 - [ ] Setup: Vite, TypeScript, Tailwind, shadcn/ui, React Router, React Query, RTL

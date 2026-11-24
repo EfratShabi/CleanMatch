@@ -62,10 +62,11 @@ namespace Clean.Data
 
         public async Task DeleteCleanerAsync(int id)
         {
-            var cleaner = await GetCleanerByIdAsync(id);
+            var cleaner = await _context.Cleaners.Include(c => c.User).FirstOrDefaultAsync(c => c.Id == id);
             if (cleaner != null)
             {
                 _context.Cleaners.Remove(cleaner);
+                _context.Users.Remove(cleaner.User);
             }
         }
     }
