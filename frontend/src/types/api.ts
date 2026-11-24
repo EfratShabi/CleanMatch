@@ -59,6 +59,41 @@ export type CleanerSearchResult = {
   matchScore: number
 }
 
+// GET /api/cleaners/{id}
+export type AvailabilitySlot = {
+  id: number
+  dayOfWeek: number // 0 = Sunday
+  startTime: string // HH:mm:ss
+  endTime: string
+}
+
+export type CleanerProfile = {
+  id: number
+  firstName: string
+  lastName: string
+  phonNumber: string | null // hidden unless there is an active booking with her
+  city: string
+  street: string | null
+  descriptionOnMe: string
+  bornIsrael: boolean
+  hebrewSpeaker: boolean
+  pricePerHour: number
+  upToKm: number
+  averageRating: number | null
+  reviewCount: number
+  arrAvailability: AvailabilitySlot[]
+}
+
+// GET /api/feedbacks?cleanerId={id}
+export type Feedback = {
+  id: number
+  bookingCode: number
+  cleanerId: number
+  rating: number
+  textOfFeedback: string | null
+  createdAt: string
+}
+
 // GET /api/auth/me
 export type Me = {
   userId: number

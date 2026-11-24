@@ -64,7 +64,7 @@ export default function SearchPage() {
         <section className="space-y-3">
           <h2 className="font-medium">נמצאו {data.length} מנקות</h2>
           {data.map((cleaner) => (
-            <CleanerCard key={cleaner.id} cleaner={cleaner} />
+            <CleanerCard key={cleaner.id} cleaner={cleaner} search={submitted!} />
           ))}
         </section>
       )}

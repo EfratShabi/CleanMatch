@@ -88,7 +88,7 @@ Legend: `[ ]` to do · `[x]` done
 - [x] API layer + token storage + redirect to login when the token expires (`lib/api.ts`, `lib/token.ts`, `auth/*`)
 - [x] Signup and login (customer / cleaner)
 - [x] Home page + cleaner search (date, time, duration, price) – the free-text chat search joins in Stage 4
-- [ ] Cleaner profile: details, rating, reviews, availability
+- [x] Cleaner profile: details, rating, reviews, availability
 - [ ] Booking flow and confirmation
 - [ ] "My bookings" (customer) + writing a review
 - [ ] Cleaner dashboard: managing availability and bookings
