@@ -52,10 +52,11 @@ namespace Clean.Data.Repositories
 
         public async Task DeleteCustomerAsync(int id)
         {
-            var customer = await GetCustomerByIdAsync(id);
+            var customer = await _context.Customers.Include(c => c.User).FirstOrDefaultAsync(c => c.Id == id);
             if (customer != null)
             {
                 _context.Customers.Remove(customer);
+                _context.Users.Remove(customer.User);
             }
         }
 
