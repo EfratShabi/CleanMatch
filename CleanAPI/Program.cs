@@ -78,6 +78,7 @@ builder.Services.AddScoped<IBlockedDateRepository, BlockedDateRepository>();
 builder.Services.AddScoped<IBlockedDateService, BlockedDateService>();
 builder.Services.AddScoped<ICleanerSearchService, CleanerSearchService>();
 builder.Services.AddScoped<ISearchIntentService, SearchIntentService>();
+builder.Services.AddScoped<ISearchConversationService, SearchConversationService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 

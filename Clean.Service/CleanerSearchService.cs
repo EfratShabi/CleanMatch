@@ -7,6 +7,9 @@ namespace Clean.Service
 {
     public class CleanerSearchService : ICleanerSearchService
     {
+        // Stops absurd values before TimeSpan.FromHours overflows; the same-day rule decides the realistic cases.
+        private const double MaxHours = 24;
+
         private readonly ICleanerRepository _cleanerRepository;
         private readonly IBlockedDateRepository _blockedDateRepository;
         private readonly IBookingRepository _bookingRepository;
@@ -25,6 +28,11 @@ namespace Clean.Service
 
         public async Task<List<CleanerMatch>> SearchAsync(Customers customer, DateOnly date, TimeOnly start, double hours, int? maxPricePerHour)
         {
+            if (hours > MaxHours)
+            {
+                throw new ArgumentException("משך ההזמנה ארוך מדי.");
+            }
+
             var end = start.ToTimeSpan() + TimeSpan.FromHours(hours);
             if (end >= TimeSpan.FromDays(1))
             {

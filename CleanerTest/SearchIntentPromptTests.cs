@@ -1,3 +1,4 @@
+using Clean.Core.Models;
 using Clean.Service;
 
 namespace CleanerTest
@@ -29,6 +30,21 @@ namespace CleanerTest
         public void Build_contains_the_part_of_day_table(string expected)
         {
             Assert.Contains(expected, SearchIntentPrompt.Build(new DateOnly(2026, 11, 23)));
+        }
+
+        [Theory]
+        [InlineData(SearchField.Date, "was just asked for: Date.")]
+        [InlineData(SearchField.Start, "was just asked for: Start.")]
+        [InlineData(SearchField.Hours, "was just asked for: Hours.")]
+        public void Build_tells_the_model_which_question_is_pending(SearchField asked, string expected)
+        {
+            Assert.Contains(expected, SearchIntentPrompt.Build(new DateOnly(2026, 11, 23), asked));
+        }
+
+        [Fact]
+        public void Build_adds_nothing_about_a_question_when_none_is_pending()
+        {
+            Assert.DoesNotContain("was just asked", SearchIntentPrompt.Build(new DateOnly(2026, 11, 23)));
         }
 
         [Fact]
