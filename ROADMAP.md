@@ -85,8 +85,8 @@ Legend: `[ ]` to do · `[x]` done
 
 ## Stage 3 – Frontend (React + TypeScript)
 - [x] Setup: Vite, TypeScript, Tailwind, shadcn/ui, React Router, React Query, RTL (in `frontend/`)
-- [ ] API layer + token storage + redirect to login when the token expires
-- [ ] Signup and login (customer / cleaner)
+- [x] API layer + token storage + redirect to login when the token expires (`lib/api.ts`, `lib/token.ts`, `auth/*`)
+- [x] Signup and login (customer / cleaner)
 - [ ] Home page + cleaner search (date, time, duration, price)
 - [ ] Cleaner profile: details, rating, reviews, availability
 - [ ] Booking flow and confirmation
