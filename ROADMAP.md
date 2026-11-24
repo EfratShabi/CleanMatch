@@ -89,7 +89,7 @@ Legend: `[ ]` to do · `[x]` done
 - [x] Signup and login (customer / cleaner)
 - [x] Home page + cleaner search (date, time, duration, price) – the free-text chat search joins in Stage 4
 - [x] Cleaner profile: details, rating, reviews, availability
-- [ ] Booking flow and confirmation
+- [x] Booking flow and confirmation
 - [ ] "My bookings" (customer) + writing a review
 - [ ] Cleaner dashboard: managing availability and bookings
 - [ ] Mobile layout, loading and error states

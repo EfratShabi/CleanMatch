@@ -94,6 +94,28 @@ export type Feedback = {
   createdAt: string
 }
 
+// POST /api/bookings (the customer is taken from the token, not sent)
+export type BookingCreate = {
+  date: string // yyyy-MM-ddT00:00:00
+  startWork: string // HH:mm:ss
+  endWork: string // HH:mm:ss
+  cleanersId: number
+}
+
+export type Booking = {
+  bookingCode: number
+  totalPrice: number
+  date: string
+  startWork: string
+  endWork: string
+  customersId: number
+  cleanersId: number
+  status: string
+  cancelledAt: string | null
+  cancelledBy: string | null
+  isCompleted: boolean
+}
+
 // GET /api/auth/me
 export type Me = {
   userId: number

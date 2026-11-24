@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ApiError } from '@/lib/api'
 import { getErrorMessage } from '@/lib/errors'
 import { AvailabilityList } from '@/pages/profile/AvailabilityList'
+import { BookingPanel } from '@/pages/profile/BookingPanel'
 import { ReviewList } from '@/pages/profile/ReviewList'
 
 export default function CleanerProfilePage() {
@@ -61,6 +62,8 @@ export default function CleanerProfilePage() {
           {cleaner.descriptionOnMe && <p className="pt-2">{cleaner.descriptionOnMe}</p>}
         </CardContent>
       </Card>
+
+      <BookingPanel cleaner={cleaner} />
 
       <Card>
         <CardHeader>
