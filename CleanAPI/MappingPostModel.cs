@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Clean.Core.Entities;
-using CleanAPI.Models;
+using Clean.Core.Models;
 
 
 namespace CleanAPI

@@ -79,7 +79,7 @@ Legend: `[ ]` to do · `[x]` done
 
 ### Cleanup
 - [x] Delete `Cleaners.Core/Data/Service` and `IDataContext`
-- [ ] Move the Models to a proper namespace (`Clean.Core.Models`)
+- [x] Move the Models to a proper namespace (`Clean.Core.Models`)
 - [ ] **Bug:** deleting a customer or cleaner leaves the `User` row behind (the login still works). Delete the user too
 
 ## Stage 3 – Frontend (React + TypeScript)

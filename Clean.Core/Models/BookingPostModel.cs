@@ -1,6 +1,6 @@
 ﻿using Clean.Core.Entities;
 
-namespace CleanAPI.Models
+namespace Clean.Core.Models
 {
     public class BookingPostModel
     {
