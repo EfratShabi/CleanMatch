@@ -84,7 +84,7 @@ Legend: `[ ]` to do · `[x]` done
 - [ ] Decision still open: deleting a cleaner or customer who already has bookings or reviews may fail on foreign keys. Decide what happens to booking history (block the delete, or anonymize)
 
 ## Stage 3 – Frontend (React + TypeScript)
-- [ ] Setup: Vite, TypeScript, Tailwind, shadcn/ui, React Router, React Query, RTL
+- [x] Setup: Vite, TypeScript, Tailwind, shadcn/ui, React Router, React Query, RTL (in `frontend/`)
 - [ ] API layer + token storage + redirect to login when the token expires
 - [ ] Signup and login (customer / cleaner)
 - [ ] Home page + cleaner search (date, time, duration, price)
