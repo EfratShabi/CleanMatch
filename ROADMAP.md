@@ -78,7 +78,7 @@ Legend: `[ ]` to do · `[x]` done
 - [x] Unit tests for the availability, overlap and scoring logic
 
 ### Cleanup
-- [ ] Delete `Cleaners.Core/Data/Service` and `IDataContext`
+- [x] Delete `Cleaners.Core/Data/Service` and `IDataContext`
 - [ ] Move the Models to a proper namespace (`Clean.Core.Models`)
 - [ ] **Bug:** deleting a customer or cleaner leaves the `User` row behind (the login still works). Delete the user too
 
