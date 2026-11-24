@@ -20,7 +20,6 @@ namespace CleanAPI.Controllers
     [Authorize]
     public class CleanersController : ControllerBase
     {
-        //private IDataContext _cleanerServise;
         private IUserService _userService;
         private readonly ICleanerService _cleanerService;
         private readonly ICustomerService _customerService;
