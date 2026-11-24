@@ -1,7 +1,7 @@
 using AutoMapper;
 using Clean.Core.DTO;
 using Clean.Core.Services;
-using CleanAPI.Models;
+using Clean.Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

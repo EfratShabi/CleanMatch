@@ -1,4 +1,4 @@
-﻿namespace CleanAPI.Models
+﻿namespace Clean.Core.Models
 {
     public class LoginModel
     {
