@@ -7,5 +7,11 @@ namespace Clean.Core.Models
             Start is null ? SearchField.Start :
             Hours is null ? SearchField.Hours :
             null;
+
+        public SearchIntent MergeWith(SearchIntent newer) => new(
+            newer.Date ?? Date,
+            newer.Start ?? Start,
+            newer.Hours ?? Hours,
+            newer.MaxPrice ?? MaxPrice);
     }
 }

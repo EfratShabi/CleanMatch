@@ -32,6 +32,32 @@ namespace CleanerTest
         }
 
         [Fact]
+        public void MergeWith_fills_in_what_the_new_answer_provides_and_keeps_the_rest()
+        {
+            var known = new SearchIntent(SomeDate, null, null, 80);
+            var newer = new SearchIntent(null, SomeStart, 3, null);
+
+            Assert.Equal(new SearchIntent(SomeDate, SomeStart, 3, 80), known.MergeWith(newer));
+        }
+
+        [Fact]
+        public void MergeWith_lets_the_newer_value_win()
+        {
+            var known = new SearchIntent(SomeDate, SomeStart, 3, 80);
+            var newer = new SearchIntent(new DateOnly(2026, 11, 25), null, 2, null);
+
+            Assert.Equal(new SearchIntent(new DateOnly(2026, 11, 25), SomeStart, 2, 80), known.MergeWith(newer));
+        }
+
+        [Fact]
+        public void MergeWith_two_empty_intents_stays_empty()
+        {
+            var empty = new SearchIntent(null, null, null, null);
+
+            Assert.Equal(empty, empty.MergeWith(empty));
+        }
+
+        [Fact]
         public void NextMissingField_returns_the_first_missing_one_in_order()
         {
             Assert.Equal(SearchField.Start, new SearchIntent(SomeDate, null, null, 80).NextMissingField);

@@ -5,6 +5,13 @@ A layered ASP.NET Core API with role-based JWT authentication, a React + TypeScr
 
 Legend: `[ ]` to do · `[x]` done
 
+## Work order from here
+1. Natural-language search endpoint + sanity limit on `Hours` (Stage 4)
+2. Backend cleanup (Stage 2 – Cleanup)
+3. Frontend (Stage 3) – before the agent, so there is something to show even if time runs out
+4. MCP server + agent + chat window (Stage 4)
+5. Polish and deployment (Stage 5) – Docker and cloud are the first to drop if time is short
+
 ---
 
 ## Stage 0 – Foundations and bug fixes
@@ -73,6 +80,7 @@ Legend: `[ ]` to do · `[x]` done
 ### Cleanup
 - [ ] Delete `Cleaners.Core/Data/Service` and `IDataContext`
 - [ ] Move the Models to a proper namespace (`Clean.Core.Models`)
+- [ ] **Bug:** deleting a customer or cleaner leaves the `User` row behind (the login still works). Delete the user too
 
 ## Stage 3 – Frontend (React + TypeScript)
 - [ ] Setup: Vite, TypeScript, Tailwind, shadcn/ui, React Router, React Query, RTL
@@ -88,8 +96,10 @@ Legend: `[ ]` to do · `[x]` done
 ## Stage 4 – LLM agent + MCP server
 - [x] Provider-neutral LLM client: `ILlmClient` in `Clean.Core/Llm`, `GeminiClient` (REST, free tier) in `Clean.Service` with retry/backoff and temporary vs permanent errors; verified against the real API
 - [x] Free text → search parameters: `SearchIntentPrompt` (today's date, anti-injection rule), `SearchIntentParser` (never trusts model JSON), `SearchIntentService`, and `SearchIntent.NextMissingField` (ask one missing detail at a time); verified against the real model on 7 sentences
-- [ ] Natural-language search endpoint (Controller): `ArgumentException` → 400, `LlmException` → 503, unreadable answer → "didn't understand", missing detail → question, complete → search results; show the enum as a name instead of a number
-- [ ] Decisions before going live: paid Gemini tier (free tier may use the content), sanity limit on `Hours`
+- [x] Natural-language search endpoint `POST api/cleaners/search/chat` (customers only): the browser keeps the conversation (`Known` + `Asked`), `SearchConversationService` returns NotUnderstood / NeedsMore / Results; `ArgumentException` → 400, `InvalidOperationException` → 409, temporary `LlmException` → 503, permanent → 502; enums shown as names; verified end to end against the real model
+- [x] Sanity limit on `Hours` in `CleanerSearchService` (huge values used to overflow into a 500)
+- [ ] Decision before going live: paid Gemini tier (free tier may use the content)
+- [ ] Make signup return the created cleaner (`POST /api/cleaners` returns an empty body, customers return the object)
 - [ ] MCP server in C# (NuGet: `ModelContextProtocol`) built on the existing Services
 - [ ] Tools: `search_cleaners`, `get_cleaner_profile`, `get_availability`, `create_booking_draft`
 - [ ] The agent: free-text request → parameters → tool calls → suggestions

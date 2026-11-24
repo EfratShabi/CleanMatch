@@ -17,7 +17,7 @@ namespace Clean.Service
             _timeProvider = timeProvider;
         }
 
-        public async Task<SearchIntent?> InterpretAsync(string customerText, CancellationToken ct = default)
+        public async Task<SearchIntent?> InterpretAsync(string customerText, SearchField? asked = null, CancellationToken ct = default)
         {
             if (string.IsNullOrWhiteSpace(customerText))
             {
@@ -30,7 +30,7 @@ namespace Clean.Service
             }
 
             var today = DateOnly.FromDateTime(IsraelTime.Now(_timeProvider));
-            var message = SearchIntentPrompt.Build(today) + "\n\nCustomer request:\n" + customerText;
+            var message = SearchIntentPrompt.Build(today, asked) + "\n\nCustomer request:\n" + customerText;
 
             var reply = await _llm.SendAsync(new[] { new LlmMessage("user", message) }, ct);
 

@@ -59,6 +59,19 @@ namespace CleanerTest
         }
 
         [Fact]
+        public async Task InterpretAsync_tells_the_model_which_question_was_asked()
+        {
+            var llm = new FakeLlm(() => Reply("""{"hours":3}"""));
+
+            var intent = await CreateService(llm).InterpretAsync("3", SearchField.Hours);
+
+            Assert.Equal(3, intent!.Hours);
+            var sent = Assert.Single(Assert.Single(llm.Conversations));
+            Assert.Contains("was just asked for: Hours.", sent.Text);
+            Assert.EndsWith("Customer request:\n3", sent.Text);
+        }
+
+        [Fact]
         public async Task InterpretAsync_returns_an_empty_intent_when_the_customer_gave_nothing_usable()
         {
             var llm = new FakeLlm(() => Reply("""{"date":null,"start":null,"hours":null,"maxPrice":null}"""));
