@@ -35,6 +35,30 @@ export type CleanerSignup = {
   upToKm: number
 }
 
+// GET /api/cleaners/search
+export type SearchParams = {
+  date: string // yyyy-MM-dd
+  start: string // HH:mm
+  hours: number
+  maxPrice: number | null
+}
+
+export type CleanerSearchResult = {
+  id: number
+  firstName: string
+  lastName: string
+  city: string
+  descriptionOnMe: string
+  bornIsrael: boolean
+  hebrewSpeaker: boolean
+  pricePerHour: number
+  totalPrice: number
+  averageRating: number | null
+  reviewCount: number
+  distanceKm: number
+  matchScore: number
+}
+
 // GET /api/auth/me
 export type Me = {
   userId: number

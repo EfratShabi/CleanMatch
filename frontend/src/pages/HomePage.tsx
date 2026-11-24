@@ -17,6 +17,9 @@ export default function HomePage() {
           {isLoading ? null : user ? (
             <div className="space-y-3">
               <p>שלום, {user.userName} ({user.role})</p>
+              {user.role === 'customer' && (
+                <Link to="/search" className={buttonVariants()}>חיפוש מנקה</Link>
+              )}
               <Button variant="outline" onClick={logout}>התנתקי</Button>
             </div>
           ) : (

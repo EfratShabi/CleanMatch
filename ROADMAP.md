@@ -87,7 +87,7 @@ Legend: `[ ]` to do · `[x]` done
 - [x] Setup: Vite, TypeScript, Tailwind, shadcn/ui, React Router, React Query, RTL (in `frontend/`)
 - [x] API layer + token storage + redirect to login when the token expires (`lib/api.ts`, `lib/token.ts`, `auth/*`)
 - [x] Signup and login (customer / cleaner)
-- [ ] Home page + cleaner search (date, time, duration, price)
+- [x] Home page + cleaner search (date, time, duration, price) – the free-text chat search joins in Stage 4
 - [ ] Cleaner profile: details, rating, reviews, availability
 - [ ] Booking flow and confirmation
 - [ ] "My bookings" (customer) + writing a review
