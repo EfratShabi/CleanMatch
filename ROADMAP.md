@@ -101,7 +101,8 @@ Legend: `[ ]` to do · `[x]` done
 - [x] Sanity limit on `Hours` in `CleanerSearchService` (huge values used to overflow into a 500)
 - [ ] Decision before going live: paid Gemini tier (free tier may use the content)
 - [ ] Make signup return the created cleaner (`POST /api/cleaners` returns an empty body, customers return the object)
-- [ ] `ILlmClient` supports tools (neutral `LlmTool` / `LlmToolCall` / tool messages, Gemini `functionCall` mapping); unit-tested, still to be verified against the real API
+- [x] `ILlmClient` supports tools (neutral `LlmTool` / `LlmToolCall` / tool messages, Gemini `functionCall` mapping); unit-tested and verified against the real API with a toy tool (request, result, final answer). Gemini's thought signature is always sent back unchanged; whether it is mandatory was not established (the second experiment timed out)
+- [ ] Revisit the 12 second HttpClient timeout once the agent runs (tool conversations may need longer)
 - [ ] MCP server in C# (NuGet: `ModelContextProtocol`) built on the existing Services
 - [ ] Tools: `search_cleaners`, `get_cleaner_profile`, `get_availability`, `create_booking_draft`
 - [ ] The agent: free-text request → parameters → tool calls → suggestions
