@@ -17,13 +17,14 @@ namespace Clean.Service
             _settings = settings;
         }
 
-        public async Task<LlmReply> SendAsync(IReadOnlyList<LlmMessage> conversation, CancellationToken ct = default)
+        public async Task<LlmReply> SendAsync(
+            IReadOnlyList<LlmMessage> conversation, IReadOnlyList<LlmTool>? tools = null, CancellationToken ct = default)
         {
             for (var attempt = 1; ; attempt++)
             {
                 try
                 {
-                    return await SendOnceAsync(conversation, ct);
+                    return await SendOnceAsync(conversation, tools, ct);
                 }
                 catch (LlmException error) when (error.IsTemporary && attempt < MaxAttempts)
                 {
@@ -33,14 +34,15 @@ namespace Clean.Service
             }
         }
 
-        private async Task<LlmReply> SendOnceAsync(IReadOnlyList<LlmMessage> conversation, CancellationToken ct)
+        private async Task<LlmReply> SendOnceAsync(
+            IReadOnlyList<LlmMessage> conversation, IReadOnlyList<LlmTool>? tools, CancellationToken ct)
         {
             if (string.IsNullOrWhiteSpace(_settings.ApiKey))
             {
                 throw new LlmException("Gemini API key is not configured.", isTemporary: false);
             }
 
-            var body = GeminiJson.BuildRequest(conversation);
+            var body = GeminiJson.BuildRequest(conversation, tools);
 
             using var request = new HttpRequestMessage(HttpMethod.Post, $"models/{_settings.Model}:generateContent")
             {

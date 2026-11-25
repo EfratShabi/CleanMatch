@@ -116,6 +116,31 @@ export type Booking = {
   isCompleted: boolean
 }
 
+// POST /api/cleaners/search/chat
+export type SearchField = 'Date' | 'Start' | 'Hours'
+
+export type SearchIntent = {
+  date: string | null // yyyy-MM-dd
+  start: string | null // HH:mm:ss
+  hours: number | null
+  maxPrice: number | null
+}
+
+export type ChatRequest = {
+  text: string
+  known: SearchIntent | null
+  asked: SearchField | null
+}
+
+export type ChatStatus = 'NotUnderstood' | 'NeedsMore' | 'Results'
+
+export type ChatReply = {
+  status: ChatStatus
+  intent: SearchIntent
+  nextField: SearchField | null
+  results: CleanerSearchResult[] | null
+}
+
 // GET /api/auth/me
 export type Me = {
   userId: number

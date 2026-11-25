@@ -18,7 +18,10 @@ export default function HomePage() {
             <div className="space-y-3">
               <p>שלום, {user.userName} ({user.role})</p>
               {user.role === 'customer' && (
-                <Link to="/search" className={buttonVariants()}>חיפוש מנקה</Link>
+                <div className="flex gap-2">
+                  <Link to="/chat" className={buttonVariants()}>חיפוש בצ׳אט</Link>
+                  <Link to="/search" className={buttonVariants({ variant: 'outline' })}>חיפוש בטופס</Link>
+                </div>
               )}
               <Button variant="outline" onClick={logout}>התנתקי</Button>
             </div>

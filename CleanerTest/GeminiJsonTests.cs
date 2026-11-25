@@ -59,6 +59,108 @@ namespace CleanerTest
                 GeminiJson.BuildRequest(new List<LlmMessage> { new("robot", "Hi") }));
         }
 
+        private static readonly LlmTool SearchTool = new(
+            "search_cleaners",
+            "Search for cleaners.",
+            """{"type":"object","properties":{"hours":{"type":"number"}},"required":["hours"]}""");
+
+        [Fact]
+        public void BuildRequest_declares_the_tools_it_is_given()
+        {
+            var json = GeminiJson.BuildRequest(new List<LlmMessage> { new("user", "Hi") }, new[] { SearchTool });
+
+            using var doc = JsonDocument.Parse(json);
+            var declaration = doc.RootElement.GetProperty("tools")[0].GetProperty("functionDeclarations")[0];
+            Assert.Equal("search_cleaners", declaration.GetProperty("name").GetString());
+            Assert.Equal("Search for cleaners.", declaration.GetProperty("description").GetString());
+            Assert.Equal("object", declaration.GetProperty("parametersJsonSchema").GetProperty("type").GetString());
+        }
+
+        [Fact]
+        public void BuildRequest_has_no_tools_section_when_none_are_given()
+        {
+            using var doc = JsonDocument.Parse(GeminiJson.BuildRequest(new List<LlmMessage> { new("user", "Hi") }));
+
+            Assert.False(doc.RootElement.TryGetProperty("tools", out _));
+        }
+
+        [Fact]
+        public void BuildRequest_sends_a_tool_request_and_its_result_in_the_shape_google_expects()
+        {
+            var conversation = new List<LlmMessage>
+            {
+                new("user", "find one"),
+                new("assistant", "", new LlmToolCall("search_cleaners", """{"hours":3}""", "SIG123")),
+                new("tool", """[{"name":"Dana"}]""", ToolName: "search_cleaners")
+            };
+
+            using var doc = JsonDocument.Parse(GeminiJson.BuildRequest(conversation, new[] { SearchTool }));
+            var contents = doc.RootElement.GetProperty("contents");
+
+            Assert.Equal("model", contents[1].GetProperty("role").GetString());
+            var callPart = contents[1].GetProperty("parts")[0];
+            Assert.Equal("search_cleaners", callPart.GetProperty("functionCall").GetProperty("name").GetString());
+            Assert.Equal(3, callPart.GetProperty("functionCall").GetProperty("args").GetProperty("hours").GetInt32());
+            Assert.Equal("SIG123", callPart.GetProperty("thoughtSignature").GetString());
+
+            Assert.Equal("user", contents[2].GetProperty("role").GetString());
+            var response = contents[2].GetProperty("parts")[0].GetProperty("functionResponse");
+            Assert.Equal("search_cleaners", response.GetProperty("name").GetString());
+            Assert.Equal("Dana", response.GetProperty("response").GetProperty("result")[0].GetProperty("name").GetString());
+        }
+
+        [Fact]
+        public void BuildRequest_wraps_a_plain_text_tool_result_as_a_string()
+        {
+            var conversation = new List<LlmMessage> { new("tool", "no cleaners found", ToolName: "search_cleaners") };
+
+            using var doc = JsonDocument.Parse(GeminiJson.BuildRequest(conversation));
+            var result = doc.RootElement.GetProperty("contents")[0].GetProperty("parts")[0]
+                .GetProperty("functionResponse").GetProperty("response").GetProperty("result");
+
+            Assert.Equal("no cleaners found", result.GetString());
+        }
+
+        [Fact]
+        public void BuildRequest_rejects_a_tool_result_without_a_tool_name()
+        {
+            Assert.Throws<ArgumentException>(() =>
+                GeminiJson.BuildRequest(new List<LlmMessage> { new("tool", "{}") }));
+        }
+
+        [Fact]
+        public void ParseReply_reads_a_tool_request_and_keeps_the_signature()
+        {
+            var json = """
+                {
+                  "candidates": [ { "content": { "role": "model", "parts": [
+                    { "functionCall": { "name": "search_cleaners", "args": { "hours": 3, "date": "2026-11-25" } },
+                      "thoughtSignature": "SIG123" }
+                  ] } } ],
+                  "usageMetadata": { "promptTokenCount": 40, "candidatesTokenCount": 9 }
+                }
+                """;
+
+            var reply = GeminiJson.ParseReply(json);
+
+            Assert.True(reply.HasToolCalls);
+            var call = Assert.Single(reply.ToolCalls!);
+            Assert.Equal("search_cleaners", call.Name);
+            Assert.Equal("SIG123", call.ProviderData);
+            using var args = JsonDocument.Parse(call.ArgumentsJson);
+            Assert.Equal(3, args.RootElement.GetProperty("hours").GetInt32());
+            Assert.Equal("", reply.Text);
+        }
+
+        [Fact]
+        public void ParseReply_has_no_tool_requests_for_a_plain_text_answer()
+        {
+            var reply = GeminiJson.ParseReply("""{"candidates":[{"content":{"parts":[{"text":"Hi"}]}}]}""");
+
+            Assert.False(reply.HasToolCalls);
+            Assert.Null(reply.ToolCalls);
+        }
+
         // The real answer Gemini returned for "Say hello in one short sentence." (signature shortened).
         private const string RealResponse = """
             {

@@ -181,7 +181,7 @@ namespace CleanerTest
             cancelled.Cancel();
 
             await Assert.ThrowsAnyAsync<OperationCanceledException>(
-                () => CreateClient(handler).SendAsync(Conversation, cancelled.Token));
+                () => CreateClient(handler).SendAsync(Conversation, ct: cancelled.Token));
 
             Assert.True(handler.Requests.Count <= 1);
         }
