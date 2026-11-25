@@ -5,6 +5,7 @@ using Clean.Data;
 using Clean.Data.Repositories;
 using Clean.Service;
 using CleanAPI;
+using CleanAPI.Mcp;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -128,6 +129,11 @@ builder.Services.AddHttpClient<ILlmClient, GeminiClient>(client =>
     client.BaseAddress = new Uri("https://generativelanguage.googleapis.com/v1beta/");
     client.Timeout = TimeSpan.FromSeconds(12);
 });
+// The MCP server: the tools the agent can use, served over HTTP and protected by the same JWT as the Controllers.
+builder.Services.AddMcpServer()
+    .WithHttpTransport()
+    .WithTools<CleanerTools>()
+    .AddAuthorizationFilters();
 var policy = "policy";
 builder.Services.AddCors(options =>
 {
@@ -159,5 +165,6 @@ app.UseAuthorization();
 app.UseShabbat();
 
 app.MapControllers();
+app.MapMcp("/mcp").RequireAuthorization();
 
 app.Run();

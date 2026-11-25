@@ -103,7 +103,7 @@ Legend: `[ ]` to do · `[x]` done
 - [ ] Make signup return the created cleaner (`POST /api/cleaners` returns an empty body, customers return the object)
 - [x] `ILlmClient` supports tools (neutral `LlmTool` / `LlmToolCall` / tool messages, Gemini `functionCall` mapping); unit-tested and verified against the real API with a toy tool (request, result, final answer). Gemini's thought signature is always sent back unchanged; whether it is mandatory was not established (the second experiment timed out)
 - [ ] Revisit the 12 second HttpClient timeout once the agent runs (tool conversations may need longer)
-- [ ] MCP server in C# (NuGet: `ModelContextProtocol`) built on the existing Services
+- [x] MCP server in C# (`ModelContextProtocol.AspNetCore` 2.4.0) hosted inside the API at `/mcp`, protected by the same JWT, built on the existing Services; verified with a real MCP client (tools/list, a valid call, readable errors)
 - [ ] Tools: `search_cleaners`, `get_cleaner_profile`, `get_availability`, `create_booking_draft`
 - [ ] The agent: free-text request → parameters → tool calls → suggestions
 - [ ] **Human in the loop:** the agent only creates a draft; the customer confirms with a button
