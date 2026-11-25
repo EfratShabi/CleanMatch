@@ -32,7 +32,7 @@ namespace Clean.Service
             var today = DateOnly.FromDateTime(IsraelTime.Now(_timeProvider));
             var message = SearchIntentPrompt.Build(today, asked) + "\n\nCustomer request:\n" + customerText;
 
-            var reply = await _llm.SendAsync(new[] { new LlmMessage("user", message) }, ct);
+            var reply = await _llm.SendAsync(new[] { new LlmMessage("user", message) }, ct: ct);
 
             return SearchIntentParser.Parse(reply.Text);
         }

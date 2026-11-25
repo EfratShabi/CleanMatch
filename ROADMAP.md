@@ -101,11 +101,13 @@ Legend: `[ ]` to do · `[x]` done
 - [x] Sanity limit on `Hours` in `CleanerSearchService` (huge values used to overflow into a 500)
 - [ ] Decision before going live: paid Gemini tier (free tier may use the content)
 - [ ] Make signup return the created cleaner (`POST /api/cleaners` returns an empty body, customers return the object)
+- [ ] `ILlmClient` supports tools (neutral `LlmTool` / `LlmToolCall` / tool messages, Gemini `functionCall` mapping); unit-tested, still to be verified against the real API
 - [ ] MCP server in C# (NuGet: `ModelContextProtocol`) built on the existing Services
 - [ ] Tools: `search_cleaners`, `get_cleaner_profile`, `get_availability`, `create_booking_draft`
 - [ ] The agent: free-text request → parameters → tool calls → suggestions
 - [ ] **Human in the loop:** the agent only creates a draft; the customer confirms with a button
-- [ ] Chat endpoint + chat window in React
+- [x] Chat window in React over the free-text search endpoint (`/chat`; the browser keeps `Known` and `Asked`)
+- [ ] Upgrade the chat to the agent (replaces the fixed question flow, adds booking drafts)
 - [ ] Test with scenarios: "tomorrow morning", "up to 80 ILS", "someone highly rated near Rehovot"
 
 ## Stage 5 – Polish and deployment

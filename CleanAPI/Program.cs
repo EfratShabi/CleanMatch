@@ -126,7 +126,7 @@ builder.Services.AddSingleton(new GeminiSettings(
 builder.Services.AddHttpClient<ILlmClient, GeminiClient>(client =>
 {
     client.BaseAddress = new Uri("https://generativelanguage.googleapis.com/v1beta/");
-    client.Timeout = TimeSpan.FromSeconds(30);
+    client.Timeout = TimeSpan.FromSeconds(12);
 });
 var policy = "policy";
 builder.Services.AddCors(options =>
