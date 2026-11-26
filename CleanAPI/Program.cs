@@ -1,10 +1,12 @@
-﻿using Clean.Core.Llm;
+﻿using Clean.Core.Agent;
+using Clean.Core.Llm;
 using Clean.Core.Repositories;
 using Clean.Core.Services;
 using Clean.Data;
 using Clean.Data.Repositories;
 using Clean.Service;
 using CleanAPI;
+using CleanAPI.Agent;
 using CleanAPI.Mcp;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -129,6 +131,11 @@ builder.Services.AddHttpClient<ILlmClient, GeminiClient>(client =>
     client.BaseAddress = new Uri("https://generativelanguage.googleapis.com/v1beta/");
     client.Timeout = TimeSpan.FromSeconds(12);
 });
+// The agent: its tools are reached through our own /mcp endpoint (address from configuration, see McpSettings).
+builder.Services.AddSingleton(new McpSettings(builder.Configuration["Mcp:Endpoint"] ?? "http://localhost:5184/mcp"));
+builder.Services.AddScoped<IToolSessionFactory, McpToolSessionFactory>();
+builder.Services.AddScoped<ISearchAgent, SearchAgent>();
+
 // The MCP server: the tools the agent can use, served over HTTP and protected by the same JWT as the Controllers.
 builder.Services.AddMcpServer()
     .WithHttpTransport()

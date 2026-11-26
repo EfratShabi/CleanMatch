@@ -129,6 +129,47 @@ namespace CleanerTest
         }
 
         [Fact]
+        public void BuildRequest_sends_the_system_instruction_apart_from_the_conversation()
+        {
+            var json = GeminiJson.BuildRequest(new List<LlmMessage> { new("user", "Hi") }, null, "Always answer in Hebrew.");
+
+            using var doc = JsonDocument.Parse(json);
+            Assert.Equal("Always answer in Hebrew.",
+                doc.RootElement.GetProperty("systemInstruction").GetProperty("parts")[0].GetProperty("text").GetString());
+            Assert.Equal(1, doc.RootElement.GetProperty("contents").GetArrayLength());
+        }
+
+        [Fact]
+        public void BuildRequest_has_no_system_instruction_when_none_is_given()
+        {
+            using var doc = JsonDocument.Parse(GeminiJson.BuildRequest(new List<LlmMessage> { new("user", "Hi") }));
+
+            Assert.False(doc.RootElement.TryGetProperty("systemInstruction", out _));
+        }
+
+        [Fact]
+        public void BuildRequest_groups_several_tool_requests_and_their_results_into_one_turn_each()
+        {
+            var conversation = new List<LlmMessage>
+            {
+                new("user", "two things"),
+                new("assistant", "", new LlmToolCall("a", "{}")),
+                new("assistant", "", new LlmToolCall("b", "{}")),
+                new("tool", "1", ToolName: "a"),
+                new("tool", "2", ToolName: "b")
+            };
+
+            using var doc = JsonDocument.Parse(GeminiJson.BuildRequest(conversation));
+            var contents = doc.RootElement.GetProperty("contents");
+
+            Assert.Equal(3, contents.GetArrayLength());
+            Assert.Equal(2, contents[1].GetProperty("parts").GetArrayLength());
+            Assert.Equal("model", contents[1].GetProperty("role").GetString());
+            Assert.Equal(2, contents[2].GetProperty("parts").GetArrayLength());
+            Assert.Equal("user", contents[2].GetProperty("role").GetString());
+        }
+
+        [Fact]
         public void ParseReply_reads_a_tool_request_and_keeps_the_signature()
         {
             var json = """

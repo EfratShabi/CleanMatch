@@ -6,17 +6,23 @@ namespace Clean.Service
 {
     public static class GeminiJson
     {
-        public static string BuildRequest(IReadOnlyList<LlmMessage> conversation, IReadOnlyList<LlmTool>? tools = null)
+        public static string BuildRequest(
+            IReadOnlyList<LlmMessage> conversation, IReadOnlyList<LlmTool>? tools = null, string? systemInstruction = null)
         {
             if (conversation.Count == 0)
             {
                 throw new ArgumentException("The conversation is empty.");
             }
 
-            var request = new JsonObject
+            var request = new JsonObject { ["contents"] = ToContents(conversation) };
+
+            if (!string.IsNullOrWhiteSpace(systemInstruction))
             {
-                ["contents"] = new JsonArray(conversation.Select(ToContent).ToArray())
-            };
+                request["systemInstruction"] = new JsonObject
+                {
+                    ["parts"] = new JsonArray(new JsonObject { ["text"] = systemInstruction })
+                };
+            }
 
             if (tools is { Count: > 0 })
             {
@@ -71,19 +77,36 @@ namespace Clean.Service
                 toolCalls.Count > 0 ? toolCalls : null);
         }
 
-        private static JsonObject ToContent(LlmMessage message) => message.Role switch
+        // Neighbouring messages with the same Google role become one content with several parts. Gemini needs this
+        // when the model asks for several tools at once: all requests in one "model" turn, all results in one "user" turn.
+        private static JsonArray ToContents(IReadOnlyList<LlmMessage> conversation)
         {
-            "user" => Content("user", new JsonObject { ["text"] = message.Text }),
-            "assistant" when message.ToolCall is not null => Content("model", ToFunctionCallPart(message.ToolCall)),
-            "assistant" => Content("model", new JsonObject { ["text"] = message.Text }),
-            "tool" => Content("user", ToFunctionResponsePart(message)),
-            _ => throw new ArgumentException($"Unknown role '{message.Role}'.")
-        };
+            var contents = new JsonArray();
+            JsonArray? currentParts = null;
+            string? currentRole = null;
 
-        private static JsonObject Content(string role, JsonObject part) => new()
+            foreach (var message in conversation)
+            {
+                var (role, part) = ToPart(message);
+                if (currentParts is null || role != currentRole)
+                {
+                    currentParts = new JsonArray();
+                    currentRole = role;
+                    contents.Add(new JsonObject { ["role"] = role, ["parts"] = currentParts });
+                }
+                currentParts.Add(part);
+            }
+
+            return contents;
+        }
+
+        private static (string Role, JsonObject Part) ToPart(LlmMessage message) => message.Role switch
         {
-            ["role"] = role,
-            ["parts"] = new JsonArray(part)
+            "user" => ("user", new JsonObject { ["text"] = message.Text }),
+            "assistant" when message.ToolCall is not null => ("model", ToFunctionCallPart(message.ToolCall)),
+            "assistant" => ("model", new JsonObject { ["text"] = message.Text }),
+            "tool" => ("user", ToFunctionResponsePart(message)),
+            _ => throw new ArgumentException($"Unknown role '{message.Role}'.")
         };
 
         private static JsonObject ToFunctionCallPart(LlmToolCall call)
