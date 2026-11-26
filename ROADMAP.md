@@ -105,7 +105,7 @@ Legend: `[ ]` to do · `[x]` done
 - [ ] Revisit the 12 second HttpClient timeout once the agent runs (tool conversations may need longer)
 - [x] MCP server in C# (`ModelContextProtocol.AspNetCore` 2.4.0) hosted inside the API at `/mcp`, protected by the same JWT, built on the existing Services; verified with a real MCP client (tools/list, a valid call, readable errors)
 - [ ] Tools: `search_cleaners`, `get_cleaner_profile`, `get_availability`, `create_booking_draft`
-- [ ] The agent: free-text request → parameters → tool calls → suggestions
+- [x] The agent: `SearchAgent` loop (step ceiling, system instruction with today's date) + `McpToolSession` (the customer's own token) + `POST api/agent/chat`; the browser keeps the history; verified against the real model (asks for a missing duration, searches, answers chit-chat without a tool)
 - [ ] **Human in the loop:** the agent only creates a draft; the customer confirms with a button
 - [x] Chat window in React over the free-text search endpoint (`/chat`; the browser keeps `Known` and `Asked`)
 - [ ] Upgrade the chat to the agent (replaces the fixed question flow, adds booking drafts)

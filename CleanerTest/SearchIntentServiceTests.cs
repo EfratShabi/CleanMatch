@@ -24,7 +24,8 @@ namespace CleanerTest
             public FakeLlm(Func<LlmReply> reply) => _reply = reply;
 
             public Task<LlmReply> SendAsync(
-                IReadOnlyList<LlmMessage> conversation, IReadOnlyList<LlmTool>? tools = null, CancellationToken ct = default)
+                IReadOnlyList<LlmMessage> conversation, IReadOnlyList<LlmTool>? tools = null,
+                string? systemInstruction = null, CancellationToken ct = default)
             {
                 Conversations.Add(conversation);
                 return Task.FromResult(_reply());

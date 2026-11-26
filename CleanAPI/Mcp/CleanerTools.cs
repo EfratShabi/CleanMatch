@@ -40,7 +40,8 @@ namespace CleanAPI.Mcp
         [Authorize(Roles = "customer")]
         [Description("Search for cleaners available at a specific date and time for the logged-in customer. " +
                      "Returns up to 5 cleaners sorted by match score (distance and rating), with the total price. " +
-                     "Use it only after the customer gave a date, a start time and a duration.")]
+                     "Use it only after the customer herself stated a date, a start time and a duration in hours. " +
+                     "Never assume a missing value: ask the customer instead.")]
         public async Task<string> SearchCleaners(
             ClaimsPrincipal user,
             [Description("Date in the format yyyy-MM-dd. Today or later.")] string date,
